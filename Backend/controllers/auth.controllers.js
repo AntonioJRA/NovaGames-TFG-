@@ -91,8 +91,7 @@ export const autenticarToken = async (req, res, next) => {
   }
 
   //extraer el token de la constante autHeader
-  const token = autHeader.split(" ")[1];
-
+  const token = autHeader.split(" ")[1];;
   //verificar la autenticidad del token
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) {
@@ -198,7 +197,7 @@ export const refreshToken = (req, res) => {
  * @param {Array} rolesPermitidos donde establecerá los roles permitidos
  * @returns o un error o permite que siga al siguiente método
  */
-export const autorizarRole = (rolesPermitidos) => {
+export const autorizarRol = (rolesPermitidos) => {
   return (req, res, next) => {
     if (!rolesPermitidos.includes(req.user.role)) {
       return res

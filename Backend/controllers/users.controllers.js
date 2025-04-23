@@ -3,7 +3,9 @@ import bcrypt from "bcryptjs";
 
 export const getAllUsers = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM users");
+    const [result] = await pool.query(
+      "SELECT * FROM users ORDER BY username ASC"
+    );
     res.status(200).json(result);
   } catch (error) {
     res
@@ -28,10 +30,36 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const upgradeUserToDeveloper = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const [result] = await pool.query(
+      "UPDATE users SET role = 'developer' WHERE id = ?",
+      [id]
+    );
+    console.log(result);
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha sido actualizado",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
 export const updateProfile = async (req, res) => {
   try {
-    const { username, profile_image, password, role } = req.body;
-    const { id } = req.params;
+    const { username, profile_image } = req.body;
+    const id = req.user.id;
 
     const campos = [];
     const valores = [];
@@ -43,16 +71,6 @@ export const updateProfile = async (req, res) => {
     if (profile_image) {
       campos.push("profile_image = ?");
       valores.push(profile_image);
-    }
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      campos.push("password = ?");
-      valores.push(hashedPassword); // Recuerda hashearla si hace falta
-    }
-    const rolesPermitidos = ["user", "developer", "admin"];
-    if (role && rolesPermitidos.includes(role)) {
-      campos.push("role = ?");
-      valores.push(role);
     }
 
     if (campos.length === 0) {
@@ -80,12 +98,76 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const changePassword = async (req, res) => {
+  try {
+    const { password, repeatPassword } = req.body;
+    const id = req.user.id;
+
+    if (password && repeatPassword) {
+      if (password === repeatPassword) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const [result] = await pool.query(
+          `UPDATE users SET password = ? WHERE id = ?`,
+          [hashedPassword, id]
+        );
+
+        if (result.affectedRows == 0) {
+          return res.status(400).json({
+            message: "El usuario no existe",
+          });
+        } else {
+          return res.status(200).json({
+            message: "Contraseña actualizada",
+          });
+        }
+      } else {
+        return res
+          .status(200)
+          .json({ message: "Las contraseñas no coinciden. Intente de nuevo" });
+      }
+    } else {
+      return res
+        .status(200)
+        .json({ message: "Por favor, introduzca password y repeatPassword" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const changeUserRole = async (req, res) => {
+  try {
+    const { idUser, role } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET role = ? WHERE id = ?",
+      [role, idUser]
+    );
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha sido actualizado",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+
+
 export const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [
-      id,
-    ]);
+    const { idUser } = req.body;
+    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [idUser]);
 
     if (result.affectedRows == 0) {
       return res.status(400).json({
@@ -102,12 +184,3 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
-
-export const autorizarRol=(rolesPermitidos)=>{
-  return (req,res,next)=>{
-    if(!rolesPermitidos.includes(req.user.role)){
-      return res.status(403).json({message: 'No tiene permiso para acceder a esta ruta'})
-    }
-    next();
-  }
-}
