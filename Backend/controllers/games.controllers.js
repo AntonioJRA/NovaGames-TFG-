@@ -119,3 +119,268 @@ export const getGamesByFilter = async (req, res) => {
       .json({ message: "Error al obtener juego", error: error.message });
   }
 };
+
+
+
+
+// tfg controller
+import { pool } from "../db.js";
+
+
+
+export const getMostRecentGamesLimit = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM games ORDER BY created_at DESC LIMIT 10"
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los juegos", error: error.message });
+  }
+};
+export const getMostRatedGamesLimit = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM games ORDER BY rating DESC LIMIT 10"
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los juegos", error: error.message });
+  }
+};
+
+export const deleteGame = async (req, res) => {
+  //extraer los campos
+  const { idGame } = req.params;
+  try {
+    const [result] = await pool.query("DELETE FROM games WHERE idAlumno = ?", [
+      idGame,
+    ]);
+
+    if (result.affectedRows == 1) {
+      res.status(200).json({ message: "Juego eliminado" });
+    } else {
+      res.status(400).json({ message: "Juego no eliminado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar el juego" });
+  }
+};
+
+export const getCategories = async (req, res) => {
+  try {
+    const [result] = await pool.query("SELECT * FROM categories");
+    if (result.length === 0) return res.status(404).json("No hay categorías");
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los juegos", error: error.message });
+  }
+};
+
+export const getGameJamsByRecentOrder = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM game_jams ORDER BY update_date DESC"
+    );
+    if (result.length === 0) return res.status(404).json("No hay game jams");
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los juegos", error: error.message });
+  }
+};
+
+export const getOpenGameJams = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM game_jams WHERE is_open = true"
+    );
+    if (result.length === 0)
+      return res.status(404).json("No hay game jams activas");
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener las game jams",
+      error: error.message,
+    });
+  }
+};
+
+export const getGameJam = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM game_jams WHERE id = ? LIMIT 1",
+      [id]
+    );
+    if (result.length === 0)
+      return res.status(404).json("No existe la game jam");
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener la game jam", error: error.message });
+  }
+};
+
+export const getParticipantsGameJam = async (req, res) => {
+  const { idGameJam } = req.params;
+  try {
+    const [result] = await pool.query("SELECT * FROM game_jam_participants", [
+      idGameJam,
+    ]);
+
+    const [countResult] = await pool.query(
+      "SELECT count(*) as total FROM game_jam_participants",
+      [idGameJam]
+    );
+
+    if (result.length === 0)
+      return res.status(404).json("No hay participantes");
+
+    res.status(200).json(result, countResult);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener la game jam", error: error.message });
+  }
+};
+
+// export const joinGameJam = async (req, res) => {
+//   try {
+//     const { idGameJam } = req.params;
+
+//     const [result] = await pool.query(
+//       "SELECT * FROM game_jam_participants",
+//       [idGameJam]
+//     );
+
+//     res.status(200).json({message: 'Has sido inscrito en la Game Jam'});
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error al obtener la game jam", error: error.message });
+//   }
+// };
+
+export const getVotes = async (req, res) => {
+  try {
+    const [result] = await pool.query("SELECT * FROM game_jam_votes");
+
+    if (result.length === 0) return res.status(404).json("No hay votos");
+
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener la game jam", error: error.message });
+  }
+};
+
+export const checkUserVote = async (req, res) => {
+  // url/nombre_gj/juego_gj
+  const { gameJamId, gameId } = req.params;
+  // del jwt
+  const userId = req.user.id;
+  try {
+    // Comprobar si el usuario ya ha votado por este juego en esta game jam
+    const [existingVote] = await pool.query(
+      `SELECT * FROM votes WHERE user_id = ? AND game_jam_id = ? AND game_id = ?`,
+      [userId, gameJamId, gameId]
+    );
+
+    if (existingVote.length > 0) {
+      // El usuario ya votó
+      res.status(200).json({ hasVoted: true, voteId: existingVote[0].id });
+    } else {
+      // El usuario no ha votado
+      res.status(200).json({ hasVoted: false });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener el voto", error: error.message });
+  }
+};
+
+export const addVote = async (req, res) => {
+  try {
+    /* usuario del jwt
+    juego y gamejam de juegos_game_jam
+    */
+
+    const { originalidad, arte, musica, diversion, tema, comentario } =
+      req.body;
+    const params = [
+      "originalidad",
+      "arte",
+      "musica",
+      "diversion",
+      "tema",
+      "comentario",
+    ];
+    const values = [originalidad, arte, musica, diversion, tema, comentario];
+
+    // Construir la parte de columnas dinámicamente
+    const columns = params.join(", ");
+
+    // Construir la parte de valores dinámicamente
+    const placeholders = params.map(() => "?").join(", ");
+
+    // Ejecutar la consulta
+    const [result] = await pool.query(
+      `INSERT INTO game_jam_votes (${columns}) VALUES (${placeholders})`,
+      values
+    );
+
+    if (result.affectedRows == 1) {
+      res.status(201).json({ message: "Voto insertado", id: result.insertId });
+    } else {
+      res.status(400).json({ message: "Voto no insertado" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener la game jam", error: error.message });
+  }
+};
+
+export const updatePatchAlumno=async(req,res)=>{ //updatea uno en concreto
+    //extraer los campos
+    const {apeNom,idCurso}=req.body
+    const {id}=req.params;  //extraer de la URL el id
+    try {
+        const [result]=await pool.query("update alumnos set apellidosNombre=ifnull(?,apellidosNombre), idCurso=ifnull(?,idCurso) where idAlumno=?",[apeNom,idCurso,id]);
+        // console.log(result);
+        if(result.affectedRows==1){
+            res.status(200).json({message: "Alumno actualizado"});
+        }else{
+            res.status(400).json({message: "Alumno no actualizado"});
+        }
+    } catch (error) {
+        res.status(500).json({message:'Error al actualizar el alumno'});
+    }
+}
+
+export const deleteVote=async (req,res)=>{
+  //extraer los campos
+  const {idVote}=req.params;
+  try {
+      const [result]=await pool.query("DELETE from game_jam_votes WHERE id = ?",[idVote]);
+
+      if(result.affectedRows==1){
+          res.status(200).json({message: "Voto eliminado"});
+      }else{
+          res.status(400).json({message: "Voto no eliminado"});
+      }
+  } catch (error) {
+      res.status(500).json({message:'Error al eliminar el voto'});  
+  }
+}
