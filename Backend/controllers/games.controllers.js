@@ -120,18 +120,23 @@ export const getGamesByFilter = async (req, res) => {
   }
 };
 
-
-
-
-// tfg controller
-import { pool } from "../db.js";
-
-
+export const getMostRatedGamesLimit = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM games ORDER BY rating DESC, RAND() LIMIT 10"
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los 10 juegos mejor valorados", error: error.message });
+  }
+};
 
 export const getMostRecentGamesLimit = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY created_at DESC LIMIT 10"
+      "SELECT * FROM games ORDER BY upload_date DESC LIMIT 10"
     );
     res.status(200).json(result);
   } catch (error) {
@@ -140,18 +145,30 @@ export const getMostRecentGamesLimit = async (req, res) => {
       .json({ message: "Error al obtener los juegos", error: error.message });
   }
 };
-export const getMostRatedGamesLimit = async (req, res) => {
+
+export const addGame = async (req, res) => {
+  const idUser = req.user.id;
+  const { title, decription, download_url } = req.body
   try {
-    const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY rating DESC LIMIT 10"
-    );
-    res.status(200).json(result);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al obtener los juegos", error: error.message });
-  }
+     const [result]=await pool.query("INSERT INTO games (developer_id, title, description, upload) VALUES (?,?)", [nomApe, idCurso]);
+
+     res.status(201).json({id:result.insertId});
+} catch (error) {
+    res.status(500).json({
+        message:"Error en el servidor"
+    })
+}
 };
+
+
+
+
+
+
+
+// tfg controller
+
+
 
 export const deleteGame = async (req, res) => {
   //extraer los campos
@@ -383,4 +400,27 @@ export const deleteVote=async (req,res)=>{
   } catch (error) {
       res.status(500).json({message:'Error al eliminar el voto'});  
   }
+}
+
+
+
+
+
+
+export const valorarGames=()=>{
+  /*
+  UPDATE games g
+LEFT JOIN (
+    SELECT 
+        id_game, 
+        COUNT(*) AS rating_count,
+        SUM(rating) AS rating_sum
+    FROM valoracion_juego
+    GROUP BY id_game
+) v ON g.id = v.id_game
+SET 
+    g.rating_count = v.rating_count,
+    g.rating_sum = v.rating_sum;
+
+  */
 }
