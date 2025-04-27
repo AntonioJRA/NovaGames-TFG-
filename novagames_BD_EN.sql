@@ -11,7 +11,8 @@ CREATE TABLE users (
     role ENUM('user', 'developer', 'admin'),
     registration_date DATETIME DEFAULT NOW(),
     is_verified BOOLEAN,
-    verification_token VARCHAR(255)
+    verification_token VARCHAR(255),
+    novapoints INT
 );
 
 CREATE TABLE games (
@@ -29,7 +30,7 @@ CREATE TABLE games (
 CREATE TABLE content_blocks (
   id INT PRIMARY KEY AUTO_INCREMENT,
   game_id INT, 
-  block_type ENUM('text', 'image', 'video'), 
+  block_type ENUM('text', 'image', 'gif'), 
   content TEXT,
   order_index INT,
   FOREIGN KEY (game_id) REFERENCES games(id)
@@ -60,10 +61,19 @@ CREATE TABLE posts (
     post_date DATETIME DEFAULT NOW()
 );
 
+CREATE TABLE posts_images (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  post_id INT, 
+  type ENUM('image', 'gif'), 
+  content TEXT,
+  order_index INT
+);
+
 CREATE TABLE comments (
     id INT PRIMARY KEY AUTO_INCREMENT,
     game_id INT,
     post_id INT,
+    comment_id INT,
     user_id INT,
     content TEXT,
     comment_date DATETIME DEFAULT NOW()
@@ -83,7 +93,9 @@ CREATE TABLE game_jams (
     theme VARCHAR(50),
     start_date DATETIME DEFAULT NOW(),
     end_date DATETIME DEFAULT NOW(),
-    is_open BOOLEAN
+    is_open BOOLEAN,
+    cover VARCHAR(255),
+    rewards INT
 );
 
 CREATE TABLE games_game_jams (
@@ -129,10 +141,14 @@ ALTER TABLE game_ratings
 -- Publicaciones hechas por el usuario (desarrollador)
 ALTER TABLE posts
     ADD CONSTRAINT fk_post_developer FOREIGN KEY (developer_id) REFERENCES users(id) ON DELETE CASCADE;
+-- Publicaciones hechas por el usuario (desarrollador)
+ALTER TABLE posts_images
+    ADD CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE;
 
 -- Comentarios hechos por el usuario
 ALTER TABLE comments
-    ADD CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    ADD CONSTRAINT fk_comment_reply FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE;
 
 -- Votos emitidos por el usuario
 ALTER TABLE game_jam_votes
@@ -463,15 +479,36 @@ INSERT INTO game_categories (game_id, category_id) VALUES
 
 -- POSTS
 INSERT INTO posts (game_id, developer_id, title, content, post_date) VALUES
-(1, 2, 'Update 1.1', 'Minor bugs fixed', NOW()),
-(2, 2, 'New Level', 'Includes a secret new level', NOW()),
-(3, 2, 'Improved Art', 'Graphics improvements in backgrounds', NOW());
+(1, 3, 'Minor bugs fixed', 'In this update, we focused on fixing minor bugs that were causing issues with the gameplay experience. We addressed small inconsistencies in the game logic that could affect performance, as well as some graphical glitches that appeared in certain scenarios. Players should now notice smoother transitions and fewer crashes or unexpected behavior in the game.', '2024-11-03 16:49:10'),
+(1, 3, 'New level added', 'A brand new level has been added to the game, expanding the overall experience. This level introduces new environmental challenges, puzzles, and enemies, designed to test the skills of even the most seasoned players. We’ve added several interactive elements that make this level unique, along with a new soundtrack to immerse players in the atmosphere of the new world.', '2024-11-24 10:12:25'),
+(1, 3, 'Improved graphics performance', 'This update brings significant improvements to the graphics performance. We’ve optimized several rendering processes, particularly in high-intensity areas where performance issues were most noticeable. Players will now experience faster loading times, more stable frame rates, and reduced graphical lag. Additionally, we’ve improved texture quality in specific environments to enhance visual fidelity.', '2024-12-15 14:45:00'),
+(1, 3, 'Bug fixes and tweaks', 'In this patch, we’ve focused on several key bug fixes and gameplay tweaks. These include adjustments to AI behavior in certain combat scenarios, which now makes enemy tactics more challenging and realistic. We\'ve also fixed several collision issues, ensuring that characters and objects no longer get stuck in walls or other environmental features. Several minor visual bugs in the HUD have also been addressed for a more polished experience.', '2025-01-05 09:30:50'),
+(1, 3, 'Added multiplayer mode', 'This major update introduces multiplayer mode to the game. Players can now team up with friends and enjoy a cooperative experience, tackling challenges together. Multiplayer features include voice chat, leaderboards, and cross-platform support. In addition, we’ve included dedicated servers to ensure a smooth and lag-free gaming experience. We’ve also added new multiplayer-specific missions and rewards to make the experience more exciting.', '2025-01-26 11:00:12'),
+(1, 3, 'Minor UI adjustments', 'In this update, we’ve made several adjustments to the user interface to improve overall usability. The menus have been redesigned for better navigation, and we’ve streamlined the HUD to reduce clutter. Additionally, we’ve added customizations for players to adjust the layout according to their preferences. New icons and more intuitive tooltips have been introduced to help users understand the features at a glance.', '2025-02-16 13:25:35'),
+(1, 3, 'Optimization for better performance', 'This update focuses on optimizing game performance across all platforms. We’ve worked on reducing memory usage and improving the overall frame rate stability. Specifically, we\'ve enhanced loading times, reduced stuttering in certain areas, and improved the responsiveness of the controls. Several game assets were compressed to decrease loading times and improve in-game performance, making it smoother for all users.', '2025-03-09 16:55:40'),
+(1, 3, 'New characters introduced', 'The game now features new characters, each with their own unique abilities, backstories, and playstyles. These characters are introduced through a series of story-driven quests that expand the game’s narrative. In addition to these characters, new voice lines and animated cutscenes have been included to provide a richer storytelling experience. Players can unlock these characters through progression or special in-game events.', '2025-03-30 18:22:10'),
+(1, 3, 'Bug fixes and level balancing', 'This update focuses on resolving several remaining bugs and balancing issues across the game’s levels. We’ve fine-tuned enemy difficulty to ensure a smoother progression curve, making the game more enjoyable for players of all skill levels. A number of platforming sections have been tweaked for better fluidity, and we’ve fixed some minor bugs related to quest triggers. Additionally, we’ve made adjustments to the loot system, ensuring that rewards are more balanced across the various difficulty levels.', '2025-04-20 12:10:05'),
+(1, 3, 'Major content expansion', 'In this significant update, we’ve added a large amount of new content to the game. This includes several new quests, areas to explore, and optional side missions. We’ve expanded the game’s lore with new NPCs and storylines that provide deeper context to the world. New gameplay mechanics have also been introduced, allowing for greater customization of characters. Additionally, we’ve added a plethora of new gear, items, and cosmetic options, ensuring that players have even more ways to personalize their experience.', '2025-05-11 14:00:45');
+
+INSERT INTO posts_images (post_id, type, content, order_index) VALUES
+(10, 'image', 'url1', 1),
+(10, 'image', 'url2', 2),
+(10, 'gif', 'url3', 3);
 
 -- COMMENTS
-INSERT INTO comments (game_id, post_id, user_id, content, comment_date) VALUES
-(1, 1, 1, 'Great improvement!', NOW()),
-(2, 2, 1, 'Love the new level', NOW()),
-(3, 3, 3, 'Graphics are awesome', NOW());
+-- Comentarios para el juego con id 1 (Galactic War)
+INSERT INTO comments (game_id, post_id, user_id, content, comment_date, comment_id) VALUES
+(1, 1, 1, 'Great improvement!', '2024-11-04 10:00:00', NULL),
+(1, 1, 2, 'Really enjoyed the new features!', '2024-11-04 12:00:00', NULL),
+(1, 1, 3, 'Could use more levels', '2024-11-04 14:00:00', NULL),
+(1, 1, 4, 'Awesome gameplay!', '2024-11-04 16:00:00', NULL),
+(1, 1, 5, 'I agree, but some improvements are needed', '2024-11-04 18:00:00', 1),
+
+(1, 2, 1, 'Love the new level', '2024-07-23 10:00:00', NULL),
+(1, 2, 2, 'The game looks promising!', '2024-07-23 12:00:00', NULL),
+(1, 2, 3, 'Need some improvements on the gameplay', '2024-07-23 14:00:00', NULL),
+(1, 2, 4, 'The atmosphere is great, but the controls are a bit off', '2024-07-23 16:00:00', NULL),
+(1, 2, 5, 'I have to disagree, the controls are just fine', '2024-07-23 18:00:00', 8);
 
 -- IMAGES
 INSERT INTO images (game_id, name) VALUES
