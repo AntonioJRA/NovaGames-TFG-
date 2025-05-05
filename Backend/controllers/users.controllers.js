@@ -16,7 +16,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id  = req.user.id;
     const [[result]] = await pool.query(
       "SELECT * FROM users WHERE id = ? LIMIT 1",
       [id]
@@ -38,7 +38,57 @@ export const upgradeUserToDeveloper = async (req, res) => {
       "UPDATE users SET role = 'developer' WHERE id = ?",
       [id]
     );
-    console.log(result);
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha ascendido a \"Developer\"",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const downgradeDeveloperToUser = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const [result] = await pool.query(
+      "UPDATE users SET role = 'user' WHERE id = ?",
+      [id]
+    );
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha descendido a \"User\"",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const updateNovapoints = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const { rewards } = req.body
+
+    const [result] = await pool.query(
+      "UPDATE users SET novapoints = novapoints + ? WHERE id = ?",
+      [rewards, id]
+    );
 
     if (result.affectedRows == 0) {
       return res.status(400).json({
@@ -47,6 +97,52 @@ export const upgradeUserToDeveloper = async (req, res) => {
     } else {
       return res.status(200).json({
         message: "El usuario ha sido actualizado",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const changeUserRole = async (req, res) => {
+  try {
+    const { idUser, role } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET role = ? WHERE id = ?",
+      [role, idUser]
+    );
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha sido actualizado",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { idUser } = req.body;
+    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [idUser]);
+
+    if (result.affectedRows == 0) {
+      return res.status(400).json({
+        message: "El usuario no existe",
+      });
+    } else {
+      return res.status(200).json({
+        message: "El usuario ha sido borrado",
       });
     }
   } catch (error) {
@@ -137,50 +233,3 @@ export const changePassword = async (req, res) => {
   }
 };
 
-export const changeUserRole = async (req, res) => {
-  try {
-    const { idUser, role } = req.body;
-
-    const [result] = await pool.query(
-      "UPDATE users SET role = ? WHERE id = ?",
-      [role, idUser]
-    );
-
-    if (result.affectedRows == 0) {
-      return res.status(400).json({
-        message: "El usuario no existe",
-      });
-    } else {
-      return res.status(200).json({
-        message: "El usuario ha sido actualizado",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      message: "Error en el servidor",
-    });
-  }
-};
-
-
-
-export const deleteUser = async (req, res) => {
-  try {
-    const { idUser } = req.body;
-    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [idUser]);
-
-    if (result.affectedRows == 0) {
-      return res.status(400).json({
-        message: "El usuario no existe",
-      });
-    } else {
-      return res.status(200).json({
-        message: "El usuario ha sido borrado",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      message: "Error en el servidor",
-    });
-  }
-};

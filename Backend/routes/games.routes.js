@@ -1,28 +1,37 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, getAllGames, getGame, getGamesByFilter,  getGamesByUser, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames } from '../controllers/games.controllers.js';
+import { addGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGame, updateGameRatings } from '../controllers/games.controllers.js';
 import { autenticarToken } from '../controllers/auth.controllers.js';
+import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
 
 const router = Router();
 
-// Obtener todos los juegos
+// get all + count
 router.get('/juegos', getAllGames);
-// Obtener 30 juegos aleatoriamente
+// get all by user
+router.get('/juegos/usuario', autenticarToken, getAllUserGames);
+// get random limit 30
 router.get('/juegos/random', getRandomGames);
-// Filtrar los juegos 
-router.get('/juegos/filtros', getGamesByFilter);
-// Juegos del usuario
-router.get('/juegos/usuario', autenticarToken, getGamesByUser);
-// 10 juegos mejor valorados. En caso de empate, habrá aleatoriedad entre ellos
+// get all by filter (category, rating, time) + count
+router.get('/juegos/filtros', validateGamesByFilter, getGamesByFilter);
+// get all by include (buscador)
+router.get('/juegos/buscador', getSearchedGames);
+// get games Limit 10, order Rating (si hay empate, random)
 router.get('/inicio/juegos/valoracion', getMostRatedGamesLimit);
-// 10 juegos más recientes
+// get games Limit 10, order Upload_Date
 router.get('/inicio/juegos/recientes', getMostRecentGamesLimit);
-// Obtener un juego
+// get 1 by id
 router.get('/juegos/:id', getGame);
-// Subir un juego
-router.post('juegos/subir', autenticarToken, addGame);
+// post 1 with title (crear seccion juego)
+router.post('/juegos/crear', autenticarToken, addGame);
+// update 1 (guardar cambios)
+router.patch('/juegos/guardar', updateGame);
+// update 1 is_open=true (publicar)
+router.put('/juegos/publicar', publicGame);
+// update rating_count y rating_sum
+router.put('/juegos/actualizar-ratings', validateUpdateRatings, updateGameRatings);
 
 
 export { router as routesGames };

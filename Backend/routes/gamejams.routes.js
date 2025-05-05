@@ -23,4 +23,4 @@ router.put('/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin
 router.delete('/usuarios', autenticarToken, autorizarRol(['admin']), validateDeleteUser, deleteUser);
 
 
-export { router as routesUsers };
+export { router as routesGameJams };

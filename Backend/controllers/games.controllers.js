@@ -1,11 +1,74 @@
 import { pool } from "../db.js";
 
+export const updateGameRatings = async (req, res) => {
+  const { idGame, userRating } = req.body;
+  try {
+    const [result] = await pool.query(
+      "UPDATE games SET rating_count = rating_count + 1, rating_sum = rating_sum + ? WHERE id = ?",
+      [userRating, idGame]
+    );
+
+    if (result.affectedRows == 1) {
+      res.status(200).json({ message: "Ratings actualizado" });
+    } else {
+      res.status(400).json({ message: "Ratings no actualizado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar ratings" });
+  }
+};
+
+export const getAllUserGames = async (req, res) => {
+  const id = req.user.id;
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM games WHERE developer_id = ?",
+      [id]
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
 export const getAllGames = async (req, res) => {
   try {
     const [result] = await pool.query("SELECT * FROM games");
     const [countResult] = await pool.query(
       "SELECT COUNT(*) AS count FROM games"
     );
+
+    res.status(200).json({
+      results: countResult[0].count,
+      games: result,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
+export const getSearchedGames = async (req, res) => {
+  const { searchedGame } = req.body;
+  try {
+    const [result] = await pool.query(
+      "SELECT * FROM games WHERE title LIKE ?;",
+      [`%${searchedGame}%`]
+    );
+    const [countResult] = await pool.query(
+      "SELECT COUNT(*) AS count FROM games WHERE title LIKE ?;",
+      [`%${searchedGame}%`]
+    );
+
+    if (result.length === 0)
+      return res.status(200).json({
+        message: "No se encontraron resultados",
+        games: 0,
+      });
 
     res.status(200).json({
       results: countResult[0].count,
@@ -47,21 +110,58 @@ export const getRandomGames = async (req, res) => {
   }
 };
 
-export const getGamesByUser = async (req, res) => {
-  const idUser = req.user.id;
+export const publicGame = async (req, res) => {
+  const { idGame } = req.body;
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games WHERE developer_id = ?",
-      [idUser]
+      "UPDATE games SET is_open = true WHERE id = ?",
+      [idGame]
     );
+    res.json({ message: "Juego publicado" });
+  } catch (err) {
+    res.status(500).json({ message: "Error al publicar juego", error: err });
+  }
+};
 
-    if (result.length === 0)
-      return res.status(404).json("Aún no has creado ningún juego");
-    res.status(200).json(result);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al obtener juego", error: error.message });
+export const updateGame = async (req, res) => {
+  const { idGame, title, download_url, cover } = req.body;
+
+  if (!idGame) {
+    return res.status(400).json({ message: "idGame is required" });
+  }
+
+  const fields = [];
+  const values = [];
+
+  if (title !== undefined) {
+    fields.push("title = ?");
+    values.push(title);
+  }
+  if (download_url !== undefined) {
+    fields.push("download_url = ?");
+    values.push(download_url);
+  }
+  if (cover !== undefined) {
+    fields.push("cover = ?");
+    values.push(cover);
+  }
+
+  if (fields.length === 0) {
+    return res.status(400).json({ message: "No hay campos para actualizar" });
+  }
+
+  values.push(idGame); // Para el WHERE
+
+  const sql = `UPDATE games SET ${fields.join(", ")} WHERE id = ?`;
+
+  try {
+    const [result] = await pool.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Juego no encontrado" });
+    }
+    res.json({ message: "Juego actualizado correctamente" });
+  } catch (err) {
+    res.status(500).json({ message: "Error al actualizar juego", error: err });
   }
 };
 
@@ -127,9 +227,10 @@ export const getMostRatedGamesLimit = async (req, res) => {
     );
     res.status(200).json(result);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al obtener los 10 juegos mejor valorados", error: error.message });
+    res.status(500).json({
+      message: "Error al obtener los 10 juegos mejor valorados",
+      error: error.message,
+    });
   }
 };
 
@@ -148,27 +249,22 @@ export const getMostRecentGamesLimit = async (req, res) => {
 
 export const addGame = async (req, res) => {
   const idUser = req.user.id;
-  const { title, decription, download_url } = req.body
+  const { title } = req.body;
   try {
-     const [result]=await pool.query("INSERT INTO games (developer_id, title, description, upload) VALUES (?,?)", [nomApe, idCurso]);
+    const [result] = await pool.query(
+      "INSERT INTO games (developer_id, title) VALUES (?,?)",
+      [idUser, title]
+    );
 
-     res.status(201).json({id:result.insertId});
-} catch (error) {
+    res.status(201).json({ message: "Juego creado con éxito" });
+  } catch (error) {
     res.status(500).json({
-        message:"Error en el servidor"
-    })
-}
+      message: "Error en el servidor",
+    });
+  }
 };
 
-
-
-
-
-
-
 // tfg controller
-
-
 
 export const deleteGame = async (req, res) => {
   //extraer los campos
@@ -369,58 +465,42 @@ export const addVote = async (req, res) => {
   }
 };
 
-export const updatePatchAlumno=async(req,res)=>{ //updatea uno en concreto
-    //extraer los campos
-    const {apeNom,idCurso}=req.body
-    const {id}=req.params;  //extraer de la URL el id
-    try {
-        const [result]=await pool.query("update alumnos set apellidosNombre=ifnull(?,apellidosNombre), idCurso=ifnull(?,idCurso) where idAlumno=?",[apeNom,idCurso,id]);
-        // console.log(result);
-        if(result.affectedRows==1){
-            res.status(200).json({message: "Alumno actualizado"});
-        }else{
-            res.status(400).json({message: "Alumno no actualizado"});
-        }
-    } catch (error) {
-        res.status(500).json({message:'Error al actualizar el alumno'});
-    }
-}
-
-export const deleteVote=async (req,res)=>{
+export const updatePatchAlumno = async (req, res) => {
+  //updatea uno en concreto
   //extraer los campos
-  const {idVote}=req.params;
+  const { apeNom, idCurso } = req.body;
+  const { id } = req.params; //extraer de la URL el id
   try {
-      const [result]=await pool.query("DELETE from game_jam_votes WHERE id = ?",[idVote]);
-
-      if(result.affectedRows==1){
-          res.status(200).json({message: "Voto eliminado"});
-      }else{
-          res.status(400).json({message: "Voto no eliminado"});
-      }
+    const [result] = await pool.query(
+      "update alumnos set apellidosNombre=ifnull(?,apellidosNombre), idCurso=ifnull(?,idCurso) where idAlumno=?",
+      [apeNom, idCurso, id]
+    );
+    // console.log(result);
+    if (result.affectedRows == 1) {
+      res.status(200).json({ message: "Alumno actualizado" });
+    } else {
+      res.status(400).json({ message: "Alumno no actualizado" });
+    }
   } catch (error) {
-      res.status(500).json({message:'Error al eliminar el voto'});  
+    res.status(500).json({ message: "Error al actualizar el alumno" });
   }
-}
+};
 
+export const deleteVote = async (req, res) => {
+  //extraer los campos
+  const { idVote } = req.params;
+  try {
+    const [result] = await pool.query(
+      "DELETE from game_jam_votes WHERE id = ?",
+      [idVote]
+    );
 
-
-
-
-
-export const valorarGames=()=>{
-  /*
-  UPDATE games g
-LEFT JOIN (
-    SELECT 
-        id_game, 
-        COUNT(*) AS rating_count,
-        SUM(rating) AS rating_sum
-    FROM valoracion_juego
-    GROUP BY id_game
-) v ON g.id = v.id_game
-SET 
-    g.rating_count = v.rating_count,
-    g.rating_sum = v.rating_sum;
-
-  */
-}
+    if (result.affectedRows == 1) {
+      res.status(200).json({ message: "Voto eliminado" });
+    } else {
+      res.status(400).json({ message: "Voto no eliminado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar el voto" });
+  }
+};

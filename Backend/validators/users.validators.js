@@ -27,6 +27,27 @@ export const validateProfile = [
   },
 ];
 
+export const validateUpdateNovapoints = [
+  check("rewards")
+    .exists()
+    .notEmpty()
+    .withMessage("El rewards no puede estar vacío")
+    .isInt()
+    .withMessage("El rewards debe ser un número entero"),
+
+  (req, res, next) => {
+    //función que maneja los errores
+    const errores = validationResult(req); //recoge los errores de validación de la petición al servidor
+    if (!errores.isEmpty()) {
+      //Si hay errores, se responde con el error 400
+      return res.status(400).json({ errors: errores.array() });
+    } else {
+      //Si no hay errores se pasa al siguiente middleware
+      next();
+    }
+  },
+];
+
 export const validateChangePassword = [
   check("password")
     .exists()
@@ -69,8 +90,8 @@ export const validateChangeUserRole = [
     .exists()
     .notEmpty()
     .withMessage("Es necesario introducir el rol")
-    .isIn(['user','developer','admin'])
-    .withMessage("El rol debe ser \"user\", \"developer\" o \"admin\" "),
+    .isIn(["user", "developer", "admin"])
+    .withMessage('El rol debe ser "user", "developer" o "admin" '),
 
   (req, res, next) => {
     //función que maneja los errores
