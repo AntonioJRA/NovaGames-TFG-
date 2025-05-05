@@ -12,7 +12,7 @@ CREATE TABLE users (
     registration_date DATETIME DEFAULT NOW(),
     is_verified BOOLEAN,
     verification_token VARCHAR(255),
-    novapoints INT
+    novapoints INT DEFAULT 0
 );
 
 CREATE TABLE games (
@@ -21,10 +21,11 @@ CREATE TABLE games (
     title VARCHAR(100),
     upload_date DATETIME DEFAULT NOW(),
     download_url VARCHAR(255),
-    rating_count INT,
-    rating_sum DECIMAL(2,1),
     downloads INT,
-    cover VARCHAR(255)
+    cover VARCHAR(255),
+    is_open BOOLEAN DEFAULT FALSE,
+    rating_count INT DEFAULT 0,
+    rating_sum DECIMAL(2,1) DEFAULT 0
 );
 
 CREATE TABLE content_blocks (
@@ -95,7 +96,8 @@ CREATE TABLE game_jams (
     end_date DATETIME DEFAULT NOW(),
     is_open BOOLEAN,
     cover VARCHAR(255),
-    rewards INT
+    rewards INT,
+    is_last BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE games_game_jams (
@@ -126,7 +128,14 @@ CREATE TABLE game_jam_votes (
 
 -- Juegos creados por el usuario (desarrollador)
 ALTER TABLE games
-    ADD CONSTRAINT fk_game_developer FOREIGN KEY (developer_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_game_developer FOREIGN KEY (developer_id) REFERENCES users(id) ON DELETE CASCADE,
+    ADD COLUMN total_rating DECIMAL(3,2) 
+		GENERATED ALWAYS AS (
+			CASE 
+			WHEN rating_count > 0 THEN rating_sum / rating_count 
+			ELSE 0 
+			END
+		) VIRTUAL;
     
 -- Juegos y sus categorias
 ALTER TABLE game_categories
@@ -135,8 +144,8 @@ ALTER TABLE game_categories
 -- Valoraciones de los juegos por usuarios
 ALTER TABLE game_ratings
     ADD CONSTRAINT pk_valoracion PRIMARY KEY (game_id, user_id),
-    ADD CONSTRAINT fk_game_ratings FOREIGN KEY (game_id) REFERENCES games(id),
-    ADD CONSTRAINT fk_valoracion_usuario FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT fk_game_ratings FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
+    ADD CONSTRAINT fk_valoracion_usuario FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 -- Publicaciones hechas por el usuario (desarrollador)
 ALTER TABLE posts
@@ -174,58 +183,57 @@ INSERT INTO users (username, email, password, role, registration_date, is_verifi
 ('Clara Gómez', 'clara@gmail.com', '$2a$10$YhihmZMOcN6cZFOQGCIDTOLSRUKUvQYfR.A5fuYcD1Jof2775Ree.', 'admin', '2022-05-04 00:00:00', true, null); -- Clara123456789?
 
 -- GAMES
-INSERT INTO games (developer_id, title, upload_date, download_url, downloads, cover) VALUES
-(3, 'Galactic War', '2024-11-03 16:49:10', 'url1', 1234567, 'gamecover.png'),
-(2, 'Mystic Island', '2024-07-22 09:24:43', 'url2', 2345678, 'gamecover.png'),
-(3, 'Shadow Hunter', '2023-07-17 08:56:42', 'url3', 3456789, 'gamecover.png'),
-(3, 'Pixel Dash', '2024-11-01 18:55:30', 'url4', 4567890, 'gamecover.png'),
-(3, 'Dragon Trials', '2025-02-13 07:07:23', 'url5', 5678901, 'gamecover.png'),
-(5, 'Rogue Quest', '2024-07-20 17:34:28', 'url6', 6789012, 'gamecover.png'),
-(5, 'Zombie School', '2023-11-27 00:19:39', 'url7', 7890123, 'gamecover.png'),
-(3, 'Dark Moon', '2024-01-21 13:55:00', 'url8', 8901234, 'gamecover.png'),
-(2, 'Neon Drift', '2025-03-24 03:56:53', 'url9', 9012345, 'gamecover.png'),
-(4, 'Frozen Tundra', '2024-12-08 03:36:20', 'url10', 123456, 'gamecover.png'),
-(2, 'Lost in Space', '2023-09-01 16:51:55', 'url11', 234567, 'gamecover.png'),
-(5, 'Quantum Breaker', '2024-04-27 10:57:04', 'url12', 345678, 'gamecover.png'),
-(2, 'Jungle Trap', '2025-01-14 11:57:03', 'url13', 456789, 'gamecover.png'),
-(3, 'Tower Defense', '2024-11-06 00:12:48', 'url14', 567890, 'gamecover.png'),
-(4, 'Mega Bot', '2024-11-24 18:48:05', 'url15', 678901, 'gamecover.png'),
-(5, 'Alien Siege', '2023-06-06 20:17:30', 'url16', 789012, 'gamecover.png'),
-(5, 'Crystal Maze', '2024-02-25 13:50:01', 'url17', 890123, 'gamecover.png'),
-(5, 'Solar Battle', '2023-11-23 14:26:18', 'url18', 901234, 'gamecover.png'),
-(2, 'Cursed Castle', '2023-07-05 18:50:47', 'url19', 12345, 'gamecover.png'),
-(2, 'Iron Mecha', '2025-04-04 10:42:40', 'url20', 23456, 'gamecover.png'),
-(3, 'Cyber Clash', '2024-08-22 19:37:06', 'url21', 34567, 'gamecover.png'),
-(5, 'Lava Run', '2024-06-25 06:04:46', 'url22', 45678, 'gamecover.png'),
-(3, 'Toxic Swamp', '2024-08-20 18:06:53', 'url23', 56789, 'gamecover.png'),
-(4, 'Dream Catcher', '2023-06-05 18:24:17', 'url24', 67890, 'gamecover.png'),
-(3, 'Haunted Circus', '2025-02-14 13:04:29', 'url25', 78901, 'gamecover.png'),
-(2, 'Biohazard X', '2024-10-08 22:06:07', 'url26', 89012, 'gamecover.png'),
-(4, 'Twilight Arena', '2024-03-07 17:38:24', 'url27', 90123, 'gamecover.png'),
-(4, 'Sky High', '2024-09-17 19:42:26', 'url28', 12345, 'gamecover.png'),
-(4, 'Retro Space', '2024-04-05 07:40:45', 'url29', 23456, 'gamecover.png'),
-(5, 'Phantom City', '2023-05-06 10:44:21', 'url30', 34567, 'gamecover.png'),
-(3, 'Starlight', '2024-08-30 18:36:22', 'url31', 45678, 'gamecover.png'),
-(3, 'Ocean Escape', '2025-01-30 02:13:13', 'url32', 56789, 'gamecover.png'),
-(3, 'Witchcraft', '2023-06-29 22:44:06', 'url33', 67890, 'gamecover.png'),
-(2, 'Monster Dungeon', '2023-10-07 01:33:06', 'url34', 78901, 'gamecover.png'),
-(4, 'Digital Storm', '2024-03-28 14:44:45', 'url35', 89012, 'gamecover.png'),
-(3, 'Magic Beats', '2024-01-26 00:35:19', 'url36', 90123, 'gamecover.png'),
-(3, 'Stealth Ops', '2024-11-10 20:28:07', 'url37', 12345, 'gamecover.png'),
-(2, 'Heroic Tactics', '2023-08-31 15:03:32', 'url38', 23456, 'gamecover.png'),
-(4, 'Lost Relic', '2025-02-28 16:01:41', 'url39', 34567, 'gamecover.png'),
-(5, 'Rocket League', '2024-08-04 23:03:30', 'url40', 45678, 'gamecover.png'),
-(5, 'Battlezone VR', '2023-12-23 21:39:38', 'url41', 56789, 'gamecover.png'),
-(2, 'Mech Factory', '2024-02-10 11:55:20', 'url42', 67890, 'gamecover.png'),
-(2, 'Sniper Alley', '2024-09-14 02:38:09', 'url43', 78901, 'gamecover.png'),
-(4, 'Island Raiders', '2024-10-16 18:03:39', 'url44', 89012, 'gamecover.png'),
-(4, 'Death Highway', '2024-03-14 23:44:39', 'url45', 90123, 'gamecover.png'),
-(3, 'Asteroid Miner', '2025-04-17 12:03:58', 'url46', 123456, 'gamecover.png'),
-(3, 'Tropical Dash', '2024-04-22 21:17:47', 'url47', 234567, 'gamecover.png'),
-(5, 'Underworld', '2023-07-31 05:27:32', 'url48', 345678, 'gamecover.png'),
-(4, 'Firestorm', '2024-06-01 20:35:26', 'url49', 456789, 'gamecover.png'),
-(5, 'Cyber Samurai', '2024-01-01 03:45:19', 'url50', 567890, 'gamecover.png');
-
+INSERT INTO games (developer_id, title, upload_date, download_url, downloads, cover, is_open) VALUES
+(3, 'Galactic War', '2024-11-03 16:49:10', 'url1', 1234567, 'gamecover.png', TRUE),
+(2, 'Mystic Island', '2024-07-22 09:24:43', 'url2', 2345678, 'gamecover.png', FALSE),
+(3, 'Shadow Hunter', '2023-07-17 08:56:42', 'url3', 3456789, 'gamecover.png', TRUE),
+(3, 'Pixel Dash', '2024-11-01 18:55:30', 'url4', 4567890, 'gamecover.png', FALSE),
+(3, 'Dragon Trials', '2025-02-13 07:07:23', 'url5', 5678901, 'gamecover.png', TRUE),
+(5, 'Rogue Quest', '2024-07-20 17:34:28', 'url6', 6789012, 'gamecover.png', FALSE),
+(5, 'Zombie School', '2023-11-27 00:19:39', 'url7', 7890123, 'gamecover.png', TRUE),
+(3, 'Dark Moon', '2024-01-21 13:55:00', 'url8', 8901234, 'gamecover.png', FALSE),
+(2, 'Neon Drift', '2025-03-24 03:56:53', 'url9', 9012345, 'gamecover.png', TRUE),
+(4, 'Frozen Tundra', '2024-12-08 03:36:20', 'url10', 123456, 'gamecover.png', FALSE),
+(2, 'Lost in Space', '2023-09-01 16:51:55', 'url11', 234567, 'gamecover.png', TRUE),
+(5, 'Quantum Breaker', '2024-04-27 10:57:04', 'url12', 345678, 'gamecover.png', FALSE),
+(2, 'Jungle Trap', '2025-01-14 11:57:03', 'url13', 456789, 'gamecover.png', TRUE),
+(3, 'Tower Defense', '2024-11-06 00:12:48', 'url14', 567890, 'gamecover.png', FALSE),
+(4, 'Mega Bot', '2024-11-24 18:48:05', 'url15', 678901, 'gamecover.png', TRUE),
+(5, 'Alien Siege', '2023-06-06 20:17:30', 'url16', 789012, 'gamecover.png', FALSE),
+(5, 'Crystal Maze', '2024-02-25 13:50:01', 'url17', 890123, 'gamecover.png', TRUE),
+(5, 'Solar Battle', '2023-11-23 14:26:18', 'url18', 901234, 'gamecover.png', FALSE),
+(2, 'Cursed Castle', '2023-07-05 18:50:47', 'url19', 12345, 'gamecover.png', TRUE),
+(2, 'Iron Mecha', '2025-04-04 10:42:40', 'url20', 23456, 'gamecover.png', FALSE),
+(3, 'Cyber Clash', '2024-08-22 19:37:06', 'url21', 34567, 'gamecover.png', TRUE),
+(5, 'Lava Run', '2024-06-25 06:04:46', 'url22', 45678, 'gamecover.png', FALSE),
+(3, 'Toxic Swamp', '2024-08-20 18:06:53', 'url23', 56789, 'gamecover.png', TRUE),
+(4, 'Dream Catcher', '2023-06-05 18:24:17', 'url24', 67890, 'gamecover.png', FALSE),
+(3, 'Haunted Circus', '2025-02-14 13:04:29', 'url25', 78901, 'gamecover.png', TRUE),
+(2, 'Biohazard X', '2024-10-08 22:06:07', 'url26', 89012, 'gamecover.png', FALSE),
+(4, 'Twilight Arena', '2024-03-07 17:38:24', 'url27', 90123, 'gamecover.png', TRUE),
+(4, 'Sky High', '2024-09-17 19:42:26', 'url28', 12345, 'gamecover.png', FALSE),
+(4, 'Retro Space', '2024-04-05 07:40:45', 'url29', 23456, 'gamecover.png', TRUE),
+(5, 'Phantom City', '2023-05-06 10:44:21', 'url30', 34567, 'gamecover.png', FALSE),
+(3, 'Starlight', '2024-08-30 18:36:22', 'url31', 45678, 'gamecover.png', TRUE),
+(3, 'Ocean Escape', '2025-01-30 02:13:13', 'url32', 56789, 'gamecover.png', FALSE),
+(3, 'Witchcraft', '2023-06-29 22:44:06', 'url33', 67890, 'gamecover.png', TRUE),
+(2, 'Monster Dungeon', '2023-10-07 01:33:06', 'url34', 78901, 'gamecover.png', FALSE),
+(4, 'Digital Storm', '2024-03-28 14:44:45', 'url35', 89012, 'gamecover.png', TRUE),
+(3, 'Magic Beats', '2024-01-26 00:35:19', 'url36', 90123, 'gamecover.png', FALSE),
+(3, 'Stealth Ops', '2024-11-10 20:28:07', 'url37', 12345, 'gamecover.png', TRUE),
+(2, 'Heroic Tactics', '2023-08-31 15:03:32', 'url38', 23456, 'gamecover.png', FALSE),
+(4, 'Lost Relic', '2025-02-28 16:01:41', 'url39', 34567, 'gamecover.png', TRUE),
+(5, 'Rocket League', '2024-08-04 23:03:30', 'url40', 45678, 'gamecover.png', FALSE),
+(5, 'Battlezone VR', '2023-12-23 21:39:38', 'url41', 56789, 'gamecover.png', TRUE),
+(2, 'Mech Factory', '2024-02-10 11:55:20', 'url42', 67890, 'gamecover.png', FALSE),
+(2, 'Sniper Alley', '2024-09-14 02:38:09', 'url43', 78901, 'gamecover.png', TRUE),
+(4, 'Island Raiders', '2024-10-16 18:03:39', 'url44', 89012, 'gamecover.png', FALSE),
+(4, 'Death Highway', '2024-03-14 23:44:39', 'url45', 90123, 'gamecover.png', TRUE),
+(3, 'Asteroid Miner', '2025-04-17 12:03:58', 'url46', 123456, 'gamecover.png', FALSE),
+(3, 'Tropical Dash', '2024-04-22 21:17:47', 'url47', 234567, 'gamecover.png', TRUE),
+(5, 'Underworld', '2023-07-31 05:27:32', 'url48', 345678, 'gamecover.png', FALSE),
+(4, 'Firestorm', '2024-06-01 20:35:26', 'url49', 456789, 'gamecover.png', TRUE),
+(5, 'Cyber Samurai', '2024-01-01 03:45:19', 'url50', 567890, 'gamecover.png', FALSE);
 
 -- USERS_RATING
 INSERT INTO game_ratings (game_id, user_id, rating) VALUES
@@ -517,11 +525,12 @@ INSERT INTO images (game_id, name) VALUES
 (3, 'ninja_cat_ss2.png');
 
 -- GAME_JAMS
-INSERT INTO game_jams (winner_id, title, description, theme, start_date, end_date, is_open) VALUES
-(2, 'Retro Jam 2024', 'Create a retro-style game', 'Retro', '2024-01-10 10:00:00', '2024-01-20 18:00:00', false),
-(2, 'Space Jam', 'Games about space', 'Space', '2024-03-01 09:00:00', '2024-03-10 20:00:00', false),
-(null, 'Cat Jam', 'Games about cats', 'Cats', '2024-05-01 08:00:00', '2024-05-15 23:59:59', true);
-
+INSERT INTO game_jams (winner_id, title, description, theme, start_date, end_date, is_open, cover, rewards) VALUES
+(2, 'Retro Jam 2024', 'Create a retro-style game', 'Retro', '2024-01-10 10:00:00', '2024-01-20 18:00:00', false, 'cover_game_jam.png', 1500),
+(2, 'Space Jam', 'Games about space', 'Space', '2024-03-01 09:00:00', '2024-03-10 20:00:00', false, 'cover_game_jam.png', 4000),
+(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:39:00', '2025-05-05 22:40:00', false, 'cover_game_jam.png', 1000),
+(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:41:00', '2025-05-05 22:42:00', false, 'cover_game_jam.png', 1000),
+(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:43:00', '2025-05-05 22:44:00', false, 'cover_game_jam.png', 1000);
 
 -- GAMES_GAME_JAMS
 INSERT INTO games_game_jams (game_id, game_jam_id, average_score) VALUES
