@@ -123,48 +123,6 @@ export const publicGame = async (req, res) => {
   }
 };
 
-export const updateGame = async (req, res) => {
-  const { idGame, title, download_url, cover } = req.body;
-
-  if (!idGame) {
-    return res.status(400).json({ message: "idGame is required" });
-  }
-
-  const fields = [];
-  const values = [];
-
-  if (title !== undefined) {
-    fields.push("title = ?");
-    values.push(title);
-  }
-  if (download_url !== undefined) {
-    fields.push("download_url = ?");
-    values.push(download_url);
-  }
-  if (cover !== undefined) {
-    fields.push("cover = ?");
-    values.push(cover);
-  }
-
-  if (fields.length === 0) {
-    return res.status(400).json({ message: "No hay campos para actualizar" });
-  }
-
-  values.push(idGame); // Para el WHERE
-
-  const sql = `UPDATE games SET ${fields.join(", ")} WHERE id = ?`;
-
-  try {
-    const [result] = await pool.query(sql, values);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Juego no encontrado" });
-    }
-    res.json({ message: "Juego actualizado correctamente" });
-  } catch (err) {
-    res.status(500).json({ message: "Error al actualizar juego", error: err });
-  }
-};
-
 export const getGamesByFilter = async (req, res) => {
   const { category, rating, time } = req.query;
 

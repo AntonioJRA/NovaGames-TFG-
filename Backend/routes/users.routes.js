@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { validateChangePassword, validateChangeUserRole, validateDeleteUser, validateProfile, validateUpdateNovapoints } from '../validators/users.validators.js';
-import { changePassword, changeUserRole, deleteUser, downgradeDeveloperToUser, getAllUsers, getUser, updateNovapoints, updateProfile, upgradeUserToDeveloper } from '../controllers/users.controllers.js';
+import { changePassword, changeUserRole, deleteUser, downgradeDeveloperToUser, getAllUsers, getUser, getVotesByUser, updateNovapoints, updateProfile, upgradeUserToDeveloper } from '../controllers/users.controllers.js';
 import { autorizarRol, autenticarToken } from '../controllers/auth.controllers.js';
 
 const router = Router();
@@ -11,6 +11,8 @@ const router = Router();
 // router.get('/usuarios', getAllUsers);
 // get 1 (user logueado via token)
 router.get('/usuarios/usuario', autenticarToken, getUser);
+// get votes by user from active gamejam
+router.get('/usuarios/votos', autenticarToken, getVotesByUser);
 // user → dev (publica un juego)
 router.put('/usuarios/usuario-desarrollador', autenticarToken, upgradeUserToDeveloper);
 // dev → user (elimina todos sus juegos)

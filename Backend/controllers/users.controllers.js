@@ -233,3 +233,22 @@ export const changePassword = async (req, res) => {
   }
 };
 
+export const getVotesByUser = async (req, res) => {
+  const id  = req.user.id;
+  try {
+    const [result] = await pool.query(
+      `
+      SELECT gjv.* FROM game_jam_votes AS gjv
+      JOIN game_jams AS gj ON gjv.game_jam_id = gj.id
+      WHERE gjv.user_id = ? AND gj.is_open = TRUE
+      `,
+      [id]
+    );
+    if (!result) return res.status(200).json("Actualmente no tienes ningún voto");
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener votos", error: error.message });
+  }
+};

@@ -1,7 +1,7 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGame, updateGameRatings } from '../controllers/games.controllers.js';
+import { addGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGameRatings } from '../controllers/games.controllers.js';
 import { autenticarToken } from '../controllers/auth.controllers.js';
 import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
@@ -26,8 +26,6 @@ router.get('/inicio/juegos/recientes', getMostRecentGamesLimit);
 router.get('/juegos/:id', getGame);
 // post 1 with title (crear seccion juego)
 router.post('/juegos/crear', autenticarToken, addGame);
-// update 1 (guardar cambios)
-router.patch('/juegos/guardar', updateGame);
 // update 1 is_open=true (publicar)
 router.put('/juegos/publicar', publicGame);
 // update rating_count y rating_sum

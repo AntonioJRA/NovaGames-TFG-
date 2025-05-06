@@ -80,20 +80,19 @@ CREATE TABLE comments (
     comment_date DATETIME DEFAULT NOW()
 );
 
-CREATE TABLE images (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    game_id INT,
-    name VARCHAR(255)
-);
-
 CREATE TABLE game_jams (
     id INT PRIMARY KEY AUTO_INCREMENT,
     winner_id INT DEFAULT NULL,
+    winning_game_id INT DEFAULT NULL,
     title VARCHAR(100),
     description TEXT,
     theme VARCHAR(50),
-    start_date DATETIME DEFAULT NOW(),
-    end_date DATETIME DEFAULT NOW(),
+    registration_start DATETIME,
+    registration_end DATETIME,
+    creation_start DATETIME,
+    creation_end DATETIME,
+    voting_start DATETIME,
+    voting_end DATETIME,
     is_open BOOLEAN,
     cover VARCHAR(255),
     rewards INT,
@@ -116,14 +115,13 @@ CREATE TABLE game_jam_votes (
     game_jam_id INT,
     game_id INT,
     user_id INT,
-    vote_score DECIMAL(2,1),
+    comment VARCHAR(255),
+    vote_date DATETIME DEFAULT NOW(),
     originality INT,
     art INT,
     music INT,
     fun INT,
-    theme INT,
-    comment VARCHAR(255),
-    vote_date DATETIME DEFAULT NOW()
+    theme INT
 );
 
 -- Juegos creados por el usuario (desarrollador)
@@ -160,17 +158,86 @@ ALTER TABLE comments
     ADD CONSTRAINT fk_comment_reply FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE;
 
 -- Votos emitidos por el usuario
+-- 1. Agregar la columna calculada
 ALTER TABLE game_jam_votes
-    ADD CONSTRAINT fk_vote_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+ADD vote_score DECIMAL(4,2)
+  GENERATED ALWAYS AS ((originality + art + music + fun + theme) / 5) VIRTUAL;
+
+-- 2. Agregar la clave foránea
+ALTER TABLE game_jam_votes
+ADD CONSTRAINT fk_vote_user
+FOREIGN KEY (user_id) REFERENCES users(id)
+ON DELETE CASCADE;
+
 
 -- Ganador de una game jam (si se elimina el ganador, puedes dejarlo en NULL si prefieres)
 ALTER TABLE game_jams
-    ADD CONSTRAINT fk_jam_winner FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_jam_winner FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL,
+    ADD CONSTRAINT fk_jam_winning_game FOREIGN KEY (winning_game_id) REFERENCES games(id) ON DELETE SET NULL;
 
 -- Participación en game jams
 ALTER TABLE game_jam_participants
     ADD CONSTRAINT fk_participant_user FOREIGN KEY (developer_id) REFERENCES users(id) ON DELETE CASCADE;
 
+
+-- TRIGGERS
+DELIMITER //
+
+CREATE TRIGGER trg_avg_score_after_insert
+AFTER INSERT ON game_jam_votes
+FOR EACH ROW
+BEGIN
+  UPDATE games_game_jams
+  SET average_score = (
+    SELECT ROUND(AVG(v.vote_score), 2)
+    FROM game_jam_votes v
+    WHERE v.game_id = NEW.game_id
+  )
+  WHERE game_id = NEW.game_id;
+END;
+//
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER trg_avg_score_after_update
+AFTER UPDATE ON game_jam_votes
+FOR EACH ROW
+BEGIN
+  UPDATE games_game_jams
+  SET average_score = (
+    SELECT ROUND(AVG(v.vote_score), 2)
+    FROM game_jam_votes v
+    WHERE v.game_id = NEW.game_id
+  )
+  WHERE game_id = NEW.game_id;
+END;
+//
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER trg_avg_score_after_delete
+AFTER DELETE ON game_jam_votes
+FOR EACH ROW
+BEGIN
+  UPDATE games_game_jams
+  SET average_score = (
+    SELECT ROUND(AVG(v.vote_score), 2)
+    FROM game_jam_votes v
+    WHERE v.game_id = OLD.game_id
+  )
+  WHERE game_id = OLD.game_id;
+END;
+//
+
+DELIMITER ;
+
+
+
+-- INSERTS
 
 -- USERS
 INSERT INTO users (username, email, password, role, registration_date, is_verified, verification_token) VALUES
@@ -518,25 +585,68 @@ INSERT INTO comments (game_id, post_id, user_id, content, comment_date, comment_
 (1, 2, 4, 'The atmosphere is great, but the controls are a bit off', '2024-07-23 16:00:00', NULL),
 (1, 2, 5, 'I have to disagree, the controls are just fine', '2024-07-23 18:00:00', 8);
 
--- IMAGES
-INSERT INTO images (game_id, name) VALUES
-(1, 'space_runner_cover.jpg'),
-(2, 'mysterious_tower_ss1.png'),
-(3, 'ninja_cat_ss2.png');
-
 -- GAME_JAMS
-INSERT INTO game_jams (winner_id, title, description, theme, start_date, end_date, is_open, cover, rewards) VALUES
-(2, 'Retro Jam 2024', 'Create a retro-style game', 'Retro', '2024-01-10 10:00:00', '2024-01-20 18:00:00', false, 'cover_game_jam.png', 1500),
-(2, 'Space Jam', 'Games about space', 'Space', '2024-03-01 09:00:00', '2024-03-10 20:00:00', false, 'cover_game_jam.png', 4000),
-(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:39:00', '2025-05-05 22:40:00', false, 'cover_game_jam.png', 1000),
-(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:41:00', '2025-05-05 22:42:00', false, 'cover_game_jam.png', 1000),
-(null, 'Flash Jam', 'A 1-minute challenge jam', 'Speed', '2025-05-05 22:43:00', '2025-05-05 22:44:00', false, 'cover_game_jam.png', 1000);
+INSERT INTO game_jams (
+    winner_id, winning_game_id, title, description, theme,
+    registration_start, registration_end,
+    creation_start, creation_end,
+    voting_start, voting_end,
+    is_open, cover, rewards, is_last
+) VALUES 
+(
+    2, 2, 'Sci-Fi Jam 2025', 'Build futuristic adventures.', 'Space & Tech',
+    '2025-03-01 00:00:00', '2025-03-07 23:59:59',
+    '2025-03-08 00:00:00', '2025-03-21 23:59:59',
+    '2025-03-22 00:00:00', '2025-03-28 23:59:59',
+    FALSE, 'sci-fi-jam-cover.png', 300, FALSE
+),
+(
+    5, 6, 'Fantasy Jam 2025', 'Unleash your imagination in magical realms.', 'Fantasy',
+    '2025-04-01 00:00:00', '2025-04-07 23:59:59',
+    '2025-04-08 00:00:00', '2025-04-21 23:59:59',
+    '2025-04-22 00:00:00', '2025-04-28 23:59:59',
+    FALSE, 'fantasy-jam-cover.png', 400, TRUE
+),
+(
+    NULL, NULL, 'Time Travel Jam 2025', 'Create games that bend time and reality.', 'Time Travel',
+    '2025-05-01 00:00:00', '2025-05-07 23:59:59',
+    '2025-05-08 00:00:00', '2025-05-21 23:59:59',
+    '2025-05-22 00:00:00', '2025-05-28 23:59:59',
+    TRUE, 'timetravel-jam-cover.png', 500, FALSE
+),
+(
+    NULL, NULL, 'Time Travel Jam 2025', 'Create games that bend time and reality.', 'Time Travel',
+    '2025-06-01 00:00:00', '2025-06-07 23:59:59',
+    '2025-06-08 00:00:00', '2025-06-21 23:59:59',
+    '2025-06-22 00:00:00', '2025-06-28 23:59:59',
+    FALSE, 'timetravel-jam-cover.png', 500, FALSE
+);
+
 
 -- GAMES_GAME_JAMS
-INSERT INTO games_game_jams (game_id, game_jam_id, average_score) VALUES
-(1, 2, 4.3),
-(2, 1, 3.9),
-(3, 3, 4.7);
+INSERT INTO games_game_jams (game_id, game_jam_id) VALUES
+(1, 2),
+(2, 1),
+(3, 3),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 3),
+(10, 2),
+(11, 2),
+(12, 2),
+(13, 2),
+(14, 2),
+(15, 2),
+(16, 2),
+(17, 2),
+(18, 2),
+(19, 2),
+(20, 2),
+(21, 3);
+
 
 -- GAME_JAM_PARTICIPANTS
 INSERT INTO game_jam_participants (game_jam_id, developer_id) VALUES
@@ -545,7 +655,33 @@ INSERT INTO game_jam_participants (game_jam_id, developer_id) VALUES
 (3, 2);
 
 -- GAME_JAM_VOTES
-INSERT INTO game_jam_votes (game_jam_id, game_id, user_id, vote_score, originality, art, music, fun, theme, comment, vote_date) VALUES
-(1, 2, 1, 4.0, 4, 4, 3, 4, 5, 'Very fun', NOW()),
-(2, 1, 3, 4.5, 5, 4, 4, 5, 5, 'Great use of space theme', NOW()),
-(3, 3, 1, 4.8, 5, 5, 5, 5, 5, 'Amazing cat game!', NOW());
+INSERT INTO game_jam_votes (game_jam_id, game_id, user_id, originality, art, music, fun, theme, comment, vote_date) VALUES
+(3, 3, 1, 1, 2, 4, 3, 3, 'Amazing graphics!', '2025-05-06 11:40:08'),
+(3, 3, 1, 5, 2, 1, 5, 2, 'The controls are a bit tricky', '2025-05-06 11:40:08'),
+(3, 3, 1, 5, 1, 4, 1, 3, 'The controls are a bit tricky', '2025-05-06 11:40:08'),
+(3, 1, 1, 4, 4, 2, 4, 1, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 2, 2, 1, 2, 1, 3, 2, 'Excellent sound design', '2025-05-06 11:40:08'),
+(3, 1, 2, 2, 5, 3, 3, 3, 'The controls are a bit tricky', '2025-05-06 11:40:08'),
+(3, 3, 2, 4, 4, 4, 1, 5, 'The controls are a bit tricky', '2025-05-06 11:40:08'),
+(3, 1, 2, 3, 2, 4, 4, 2, 'Great game!', '2025-05-06 11:40:08'),
+(3, 3, 3, 5, 5, 4, 1, 3, 'Excellent sound design', '2025-05-06 11:40:08'),
+(3, 3, 3, 1, 4, 5, 5, 4, 'Amazing graphics!', '2025-05-06 11:40:08'),
+(3, 1, 3, 2, 4, 1, 4, 5, 'Amazing graphics!', '2025-05-06 11:40:08'),
+(3, 2, 4, 4, 4, 4, 4, 5, 'Too hard for me', '2025-05-06 11:40:08'),
+(3, 1, 4, 3, 5, 3, 3, 4, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 2, 4, 4, 1, 3, 5, 1, 'Too hard for me', '2025-05-06 11:40:08'),
+(3, 1, 4, 5, 5, 2, 2, 3, 'Not my style', '2025-05-06 11:40:08'),
+(3, 2, 5, 3, 2, 5, 1, 4, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 1, 5, 3, 3, 3, 1, 4, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 1, 5, 4, 5, 2, 3, 4, 'The controls are a bit tricky', '2025-05-06 11:40:08'),
+(3, 1, 6, 1, 3, 3, 4, 2, 'Too hard for me', '2025-05-06 11:40:08'),
+(3, 1, 6, 4, 5, 1, 3, 1, 'Not my style', '2025-05-06 11:40:08'),
+(3, 3, 6, 2, 2, 3, 5, 3, 'Amazing graphics!', '2025-05-06 11:40:08'),
+(3, 3, 6, 3, 1, 4, 1, 5, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 1, 7, 3, 4, 3, 3, 1, 'Could be more fun', '2025-05-06 11:40:08'),
+(3, 2, 7, 3, 2, 1, 1, 1, 'Excellent sound design', '2025-05-06 11:40:08'),
+(3, 1, 7, 3, 4, 1, 4, 1, 'Too hard for me', '2025-05-06 11:40:08'),
+(3, 2, 7, 1, 2, 5, 5, 1, 'Great game!', '2025-05-06 11:40:08');
+
+
+

@@ -9,6 +9,9 @@ import { pool } from "./db.js";
 import { routesUsers } from "./routes/users.routes.js";
 import { routesGames } from "./routes/games.routes.js";
 import { routesGameJams } from "./routes/gamejams.routes.js";
+import { routesSectionGames } from "./routes/sectiongames.routes.js";
+import { routesPosts } from "./routes/posts.routes.js";
+import { routesComments } from "./routes/comments.routes.js";
 
 // functions
 const deleteNoVerifUsers = () => {
@@ -40,8 +43,8 @@ const closeEndedGameJams = () => {
       const [rows] = await pool.query(
         `
               SELECT id FROM game_jams 
-              WHERE end_date <= ? AND is_open = TRUE
-              ORDER BY end_date DESC
+              WHERE voting_end <= ? AND is_open = TRUE
+              ORDER BY voting_end DESC
               LIMIT 1
             `,
         [now]
@@ -75,7 +78,7 @@ const openStartedGameJams = () => {
 
       if (rows.length === 0) {
         const [rows2] = await pool.query(
-          `SELECT id FROM game_jams WHERE start_date <= ? && end_date >= ? ORDER BY start_date DESC`,
+          `SELECT id FROM game_jams WHERE registration_start <= ? && voting_end >= ? ORDER BY registration_start DESC`,
           [now, now]
         );
         if (rows2.length !== 0) {
@@ -108,6 +111,9 @@ app.use(routerAuth);
 app.use(routesUsers);
 app.use(routesGames);
 app.use(routesGameJams);
+app.use(routesSectionGames);
+app.use(routesPosts);
+app.use(routesComments);
 
 // Cron job para eliminar usuarios no verificados después de una semana
 deleteNoVerifUsers();
