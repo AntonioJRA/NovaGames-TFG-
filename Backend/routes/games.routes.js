@@ -1,7 +1,7 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGameRatings } from '../controllers/games.controllers.js';
+import { addGame, deleteGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGameRatings } from '../controllers/games.controllers.js';
 import { autenticarToken } from '../controllers/auth.controllers.js';
 import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
@@ -30,6 +30,8 @@ router.post('/juegos/crear', autenticarToken, addGame);
 router.put('/juegos/publicar', publicGame);
 // update rating_count y rating_sum
 router.put('/juegos/actualizar-ratings', validateUpdateRatings, updateGameRatings);
+// delete 1
+router.delete('/juegos/eliminar/:idGame', deleteGame);
 
 
 export { router as routesGames };

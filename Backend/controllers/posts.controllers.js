@@ -40,3 +40,23 @@ export const getPost = async (req, res) => {
   }
 };
 
+export const addPost = async (req, res) => {
+  const idUser = req.user.id;
+  const { idGame, title, content } = req.body;
+  try {
+    const [result] = await pool.query(
+      "INSERT INTO posts (game_id, developer_id, title, content) VALUES (?,?,?,?)",
+      [idGame, idUser, title, content]
+    );
+
+    if (result.affectedRows == 1) {
+      res.status(201).json({ message: "Publicación creada con éxito" });
+    } else {
+      res.status(400).json({ message: "Error al crear la publicación" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};

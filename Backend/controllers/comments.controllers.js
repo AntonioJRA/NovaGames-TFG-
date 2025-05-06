@@ -10,6 +10,7 @@ export const getCommentsFromGame = async (req, res) => {
       ,[idGame]
     );
 
+    if(result.length === 0) return res.status(200).json({message:"Aún no hay ningún comentario"});
     res.status(200).json(result);
   } catch (error) {
     res
@@ -28,6 +29,7 @@ export const getCommentsFromPost = async (req, res) => {
       ,[idPost]
     );
 
+    if(result.length === 0) return res.status(200).json({message:"Aún no hay ningún comentario"});
     res.status(200).json(result);
   } catch (error) {
     res

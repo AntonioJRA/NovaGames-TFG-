@@ -103,11 +103,6 @@ export const autenticarToken = async (req, res, next) => {
 };
 
 export const register = async (req, res) => {
-  // {
-  //     "username":"Tony",
-  //     "email":"antoniojra99@gmail.com",
-  //     "password":"tony"
-  // }
   try {
     const { username, password, email } = req.body;
 

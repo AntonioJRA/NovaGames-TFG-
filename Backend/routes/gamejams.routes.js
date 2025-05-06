@@ -17,6 +17,10 @@ router.get('/gamejams/jam-limit', getGameJamLimit);
 router.get('/gamejams/juegos-jam-buscador', getSearchedGameFromJam);
 // get all games (buscador)
 router.get('/gamejams/juegos-jam-limit', getGamesFromGameJamLimit);
+// Game_jam participants post 1
+router.get('/gamejams/participar/inscribirse', getGamesFromGameJamLimit);
+// Game_jam participants delete 1
+router.get('/gamejams/participar/abandonar', getGamesFromGameJamLimit);
 
 
 export { router as routesGameJams };
