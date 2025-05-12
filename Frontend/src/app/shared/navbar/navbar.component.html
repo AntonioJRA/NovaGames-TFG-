@@ -1,0 +1,88 @@
+<header>
+  <div
+    class="h-20 flex justify-between items-center px-8 py-4 bg-primary border-b-2 border-surface text-lg text-text"
+  >
+    <div>
+      <img
+        class="transition-all duration-300 ease-in-out w-52"
+        src="assets/images/novagames/logo.png"
+        alt="logo"
+      />
+    </div>
+
+    <!-- Botón Menú Mobile-->
+    <button class="md:hidden focus:outline-none" (click)="toggleMenu()">
+      <i class="text-3xl mb-0 fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Menú principal -->
+    <nav class="hidden md:flex space-x-6">
+      <a href="">Inicio</a>
+      <a href="juegos">Juegos</a>
+      <a href="subir-juego">Subir Juego</a>
+    </nav>
+    <!-- Idiomas y login -->
+    <div class="hidden md:flex items-center space-x-2">
+      <img
+        class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+        src="assets/images/languages/spanish.png"
+        alt="spanish"
+      />
+      <img
+        class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+        src="assets/images/languages/english.png"
+        alt="english"
+      />
+      <div class="">
+        <p>LogIn/Register</p>
+      </div>
+    </div>
+    <!-- Menú mobile-->
+    <div
+      [ngClass]="{
+        'translate-x-0': isMenuOpen,
+        '-translate-x-full': !isMenuOpen
+      }"
+      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50"
+      (click)="toggleMenu()"
+    ></div>
+    <div
+      [ngClass]="{
+        'translate-x-0': isMenuOpen,
+        '-translate-x-full': !isMenuOpen
+      }"
+      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary/70 text-text md:hidden"
+    >
+      <div
+        class="flex flex-col items-center space-y-2 bg-primary border border-surface border-t-0 px-8 py-2"
+      >
+        <div class="flex">
+          <img
+            class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+            src="assets/images/languages/spanish.png"
+            alt="spanish"
+          />
+          <img
+            class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+            src="assets/images/languages/english.png"
+            alt="english"
+          />
+        </div>
+        <div class="">
+          <p>LogIn/Register</p>
+        </div>
+      </div>
+      <nav>
+        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+          Inicio
+        </p>
+        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+          Juegos
+        </p>
+        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+          Subir Juego
+        </p>
+      </nav>
+    </div>
+  </div>
+</header>

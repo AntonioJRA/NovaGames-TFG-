@@ -36,9 +36,9 @@ export const getAllUserGames = async (req, res) => {
 
 export const getAllGames = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM games");
+    const [result] = await pool.query("SELECT * FROM games WHERE is_open = TRUE");
     const [countResult] = await pool.query(
-      "SELECT COUNT(*) AS count FROM games"
+      "SELECT COUNT(*) AS count FROM games WHERE is_open = TRUE"
     );
 
     res.status(200).json({
@@ -181,7 +181,7 @@ export const getGamesByFilter = async (req, res) => {
 export const getMostRatedGamesLimit = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY rating DESC, RAND() LIMIT 10"
+      "SELECT * FROM games ORDER BY total_rating DESC, RAND() LIMIT 10"
     );
     res.status(200).json(result);
   } catch (error) {

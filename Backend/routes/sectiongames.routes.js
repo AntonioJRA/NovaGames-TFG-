@@ -6,9 +6,9 @@ import { getCategories, updateSectionGame } from '../controllers/sectiongames.co
 const router = Router();
 
 // get all categories (buscador include)
-router.get('/categorias', getCategories);
+router.get('/api/categorias', getCategories);
 // update 1 (guardar cambios)
-router.patch('/juegos/guardar', updateSectionGame);
+router.patch('/api/juegos/guardar', updateSectionGame);
 
 
 export { router as routesSectionGames };

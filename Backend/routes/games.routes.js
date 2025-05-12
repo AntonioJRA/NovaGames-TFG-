@@ -9,29 +9,29 @@ import { validateGamesByFilter, validateUpdateRatings } from '../validators/game
 const router = Router();
 
 // get all + count
-router.get('/juegos', getAllGames);
+router.get('/api/juegos', getAllGames);
 // get all by user
-router.get('/juegos/usuario', autenticarToken, getAllUserGames);
+router.get('/api/juegos/usuario', autenticarToken, getAllUserGames);
 // get random limit 30
-router.get('/juegos/random', getRandomGames);
+router.get('/api/juegos/random', getRandomGames);
 // get all by filter (category, rating, time) + count
-router.get('/juegos/filtros', validateGamesByFilter, getGamesByFilter);
+router.get('/api/juegos/filtros', validateGamesByFilter, getGamesByFilter);
 // get all by include (buscador)
-router.get('/juegos/buscador', getSearchedGames);
+router.get('/api/juegos/buscador', getSearchedGames);
 // get games Limit 10, order Rating (si hay empate, random)
-router.get('/inicio/juegos/valoracion', getMostRatedGamesLimit);
+router.get('/api/juegos/valoracion', getMostRatedGamesLimit);
 // get games Limit 10, order Upload_Date
-router.get('/inicio/juegos/recientes', getMostRecentGamesLimit);
+router.get('/api/juegos/recientes', getMostRecentGamesLimit);
 // get 1 by id
-router.get('/juegos/:id', getGame);
+router.get('/api/juegos/:id', getGame);
 // post 1 with title (crear seccion juego)
-router.post('/juegos/crear', autenticarToken, addGame);
+router.post('/api/juegos/crear', autenticarToken, addGame);
 // update 1 is_open=true (publicar)
-router.put('/juegos/publicar', publicGame);
+router.put('/api/juegos/publicar', publicGame);
 // update rating_count y rating_sum
-router.put('/juegos/actualizar-ratings', validateUpdateRatings, updateGameRatings);
+router.put('/api/juegos/actualizar-ratings', validateUpdateRatings, updateGameRatings);
 // delete 1
-router.delete('/juegos/eliminar/:idGame', deleteGame);
+router.delete('/api/juegos/eliminar/:idGame', deleteGame);
 
 
 export { router as routesGames };

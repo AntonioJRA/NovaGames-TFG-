@@ -7,11 +7,11 @@ import { autenticarToken } from '../controllers/auth.controllers.js';
 const router = Router();
 
 // get all by game_id order by post_date
-router.get('/publicaciones', getAllPosts);
+router.get('/api/publicaciones', getAllPosts);
 // get all by game_id order by post_date
-router.get('/publicaciones/:id', getPost);
+router.get('/api/publicaciones/:id', getPost);
 // post 1
-router.post('/publicaciones/crear', autenticarToken, addPost);
+router.post('/api/publicaciones/crear', autenticarToken, addPost);
 
 
 export { router as routesPosts };

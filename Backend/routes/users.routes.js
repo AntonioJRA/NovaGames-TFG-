@@ -10,21 +10,21 @@ const router = Router();
 // // Obtiene todos los usuarios
 // router.get('/usuarios', getAllUsers);
 // get 1 (user logueado via token)
-router.get('/usuarios/usuario', autenticarToken, getUser);
+router.get('/api/usuarios/usuario', autenticarToken, getUser);
 // get votes by user from active gamejam
-router.get('/usuarios/votos', autenticarToken, getVotesByUser);
+router.get('/api/usuarios/votos', autenticarToken, getVotesByUser);
 // user → dev (publica un juego)
-router.put('/usuarios/usuario-desarrollador', autenticarToken, upgradeUserToDeveloper);
+router.put('/api/usuarios/usuario-desarrollador', autenticarToken, upgradeUserToDeveloper);
 // dev → user (elimina todos sus juegos)
-router.put('/usuarios/desarrollador-usuario', autenticarToken, downgradeDeveloperToUser);
+router.put('/api/usuarios/desarrollador-usuario', autenticarToken, downgradeDeveloperToUser);
 // dev → user (elimina todos sus juegos)
-router.put('/usuarios/actualizar-novapoints', autenticarToken, validateUpdateNovapoints, updateNovapoints);
+router.put('/api/usuarios/actualizar-novapoints', autenticarToken, validateUpdateNovapoints, updateNovapoints);
 // Permite al usuario modificar su perfil
-router.patch('/usuarios/perfil/editar-perfil', autenticarToken, validateProfile, updateProfile);
+router.patch('/api/usuarios/perfil/editar-perfil', autenticarToken, validateProfile, updateProfile);
 // Permite al usuario cambiar su contraseña
-router.put('/usuarios/perfil/cambiar-password', autenticarToken, validateChangePassword, changePassword);
+router.put('/api/usuarios/perfil/cambiar-password', autenticarToken, validateChangePassword, changePassword);
 // update rol (a cualquier rol)
-router.put('/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin']), validateChangeUserRole, changeUserRole);
+router.put('/api/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin']), validateChangeUserRole, changeUserRole);
 // // Permite a los admin banear usuarios
 // router.delete('/usuarios', autenticarToken, autorizarRol(['admin']), validateDeleteUser, deleteUser);
 
