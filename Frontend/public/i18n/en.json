@@ -3,5 +3,9 @@
         "home": "Home",
         "games": "Games",
         "uploadGame": "Upload Game"
+    },
+    "home": {
+        "popularGames": "Popular Games",
+        "precentGames": "Recent Games"
     }
 }

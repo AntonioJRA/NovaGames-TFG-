@@ -2,7 +2,7 @@
   <div
     class="h-20 flex justify-between items-center px-8 py-4 bg-primary border-b-2 border-surface text-lg text-text"
   >
-    <div>
+    <div class="">
       <img
         class="transition-all duration-300 ease-in-out w-52"
         src="assets/images/novagames/logo.png"
@@ -11,27 +11,58 @@
     </div>
 
     <!-- Botón Menú Mobile-->
-    <button class="md:hidden focus:outline-none" (click)="toggleMenu()">
+    <button class="lg:hidden focus:outline-none" (click)="toggleMenu()">
       <i class="text-3xl mb-0 fa-solid fa-bars"></i>
     </button>
 
     <!-- Menú principal -->
-    <nav class="hidden md:flex space-x-6">
-      <a href="">Inicio</a>
-      <a href="juegos">Juegos</a>
-      <a href="subir-juego">Subir Juego</a>
+    <nav class="hidden lg:flex space-x-6 text-xl">
+      <a
+        [routerLink]="'/'"
+        routerLinkActive="bg-accent"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="py-2 px-4 rounded-xl"
+      >
+        {{ "navbar.home" | translate }}
+      </a>
+      <a
+        [routerLink]="'/juegos'"
+        routerLinkActive="bg-accent"
+        class="py-2 px-4 rounded-xl"
+      >
+        {{ "navbar.games" | translate }}
+      </a>
+      <a
+        [routerLink]="'/subir-juego'"
+        routerLinkActive="bg-accent"
+        class="py-2 px-4 rounded-xl"
+      >
+        {{ "navbar.uploadGame" | translate }}
+      </a>
     </nav>
     <!-- Idiomas y login -->
-    <div class="hidden md:flex items-center space-x-2">
+    <div class="hidden lg:flex items-center space-x-2">
       <img
-        class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+        [ngClass]="
+          langServ.getCurrentLang() === 'es'
+            ? 'border-accent'
+            : 'border-surface'
+        "
+        class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
         src="assets/images/languages/spanish.png"
         alt="spanish"
+        (click)="langServ.changeLang('es')"
       />
       <img
-        class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+        [ngClass]="
+          langServ.getCurrentLang() === 'en'
+            ? 'border-accent'
+            : 'border-surface'
+        "
+        class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
         src="assets/images/languages/english.png"
         alt="english"
+        (click)="langServ.changeLang('en')"
       />
       <div class="">
         <p>LogIn/Register</p>
@@ -43,7 +74,7 @@
         'translate-x-0': isMenuOpen,
         '-translate-x-full': !isMenuOpen
       }"
-      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50"
+      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50 lg:hidden"
       (click)="toggleMenu()"
     ></div>
     <div
@@ -51,21 +82,33 @@
         'translate-x-0': isMenuOpen,
         '-translate-x-full': !isMenuOpen
       }"
-      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary/70 text-text md:hidden"
+      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden"
     >
       <div
         class="flex flex-col items-center space-y-2 bg-primary border border-surface border-t-0 px-8 py-2"
       >
         <div class="flex">
           <img
-            class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+            [ngClass]="
+              langServ.getCurrentLang() === 'es'
+                ? 'border-accent'
+                : 'border-surface'
+            "
+            class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
             src="assets/images/languages/spanish.png"
             alt="spanish"
+            (click)="langServ.changeLang('es')"
           />
           <img
-            class="w-12 h-12 object-cover rounded-full border-4 border-surface"
+            [ngClass]="
+              langServ.getCurrentLang() === 'en'
+                ? 'border-accent'
+                : 'border-surface'
+            "
+            class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
             src="assets/images/languages/english.png"
             alt="english"
+            (click)="langServ.changeLang('en')"
           />
         </div>
         <div class="">
@@ -74,13 +117,13 @@
       </div>
       <nav>
         <p class="w-full h-full bg-primary border border-surface px-8 py-2">
-          Inicio
+          {{ "navbar.home" | translate }}
         </p>
         <p class="w-full h-full bg-primary border border-surface px-8 py-2">
-          Juegos
+          {{ "navbar.games" | translate }}
         </p>
         <p class="w-full h-full bg-primary border border-surface px-8 py-2">
-          Subir Juego
+          {{ "navbar.uploadGame" | translate }}
         </p>
       </nav>
     </div>

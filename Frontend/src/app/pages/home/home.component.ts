@@ -2,15 +2,19 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Game } from '../../models/games/games';
 import { GamesService } from '../../services/games.service';
 import { CommonModule } from '@angular/common';
+import { LanguageService } from '../../services/language.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
   public aPopularGames!:Game[];
   public gamesService = inject(GamesService);
+
+  constructor(public langServie:LanguageService){}
 
   ngOnInit(){
     this.getAllGames()

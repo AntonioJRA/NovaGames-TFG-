@@ -3,5 +3,9 @@
         "home": "Inicio",
         "games": "Juegos",
         "uploadGame": "Subir Juego"
+    },
+    "home": {
+        "popularGames": "Juegos Populares",
+        "precentGames": "Juegos Recientes"
     }
 }
