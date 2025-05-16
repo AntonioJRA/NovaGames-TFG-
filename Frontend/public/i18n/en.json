@@ -1,11 +1,53 @@
 {
-    "navbar": {
-        "home": "Home",
-        "games": "Games",
-        "uploadGame": "Upload Game"
+  "navbar": {
+    "home": "Home",
+    "games": "Games",
+    "uploadGame": "Upload Game",
+    "login": "Log In",
+    "signUp": "Sign Up"
+  },
+  "home": {
+    "popularGames": "Popular Games",
+    "precentGames": "Recent Games"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "email": "Email",
+      "password": "Password",
+      "forgot": "Forgot your password?",
+      "google": "or log in with",
+      "button": "Enter",
+      "error": "Wrong credentials",
+      "notVerified": "Account not verified"
     },
-    "home": {
-        "popularGames": "Popular Games",
-        "precentGames": "Recent Games"
+    "signUp": {
+      "title": "Sign Up",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "policy": "By continuing, you accept our Terms of Service and Privacy Policy.",
+      "button": "Create an account",
+      "error": {
+        "username": {
+          "required": "Required field",
+          "length": "Must be at least 6 characters long",
+          "pattern": "Can only contain letters, numbers, and spaces"
+        },
+        "email": {
+          "required": "Required field",
+          "format": "Must be a valid email format"
+        },
+        "password": {
+          "required": "Required field",
+          "length": "Must be at least 8 characters long",
+          "pattern": "Must include at least one uppercase letter, one lowercase letter, one number, and one special character"
+        }
+      },
+      "alert": {
+        "title": "Registration completed successfully",
+        "text": "Check your email to verify your account"
+      }
     }
+  }
 }

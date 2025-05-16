@@ -1,0 +1,87 @@
+<app-logo-header />
+<div class="flex justify-center pt-6">
+  <app-change-language></app-change-language>
+</div>
+<div
+  class="flex flex-col items-center space-y-6 justify-center px-24 pt-8 text-black lg:flex-row lg:space-y-0 lg:space-x-16"
+>
+  <!-- LOG IN -->
+  <div
+    class="flex flex-col items-center justify-center bg-white p-6 rounded max-w-[332px]"
+  >
+    <h1 class="flex text-4xl mb-8 max-w-60">
+      {{ "auth.login.title" | translate }}
+    </h1>
+    <form
+      action=""
+      [formGroup]="logInForm"
+      (submit)="loginOnSubmit()"
+      class="text-lg relative"
+    >
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <input
+            type="text"
+            name="email"
+            id="login-email"
+            formControlName="loginEmail"
+            class="border border-gray-300 py-2 pl-4 pr-6"
+            placeholder="{{ 'auth.login.email' | translate }}"
+          />
+        </div>
+        <div class="flex flex-col">
+          <input
+            type="text"
+            name="password"
+            id="login-password"
+            formControlName="loginPassword"
+            class="border border-gray-300 py-2 pl-4 pr-6"
+            placeholder="{{ 'auth.login.password' | translate }}"
+          />
+          <p
+            class="text-sm cursor-pointer hover:underline self-end text-blue-700 mt-1"
+          >
+            {{ "auth.login.forgot" | translate }}
+          </p>
+          @if (loginError) {
+          <small class="text-red-500 italic self-start"
+            >* {{ "auth.login.error" | translate }}</small
+          >
+          }  @else if (loginVerifError) {
+            <small class="text-red-500 italic self-start"
+            >* {{ "auth.login.notVerified" | translate }}</small
+          >
+          }
+        </div>
+      </div>
+
+      <!-- <div class="">
+        <div class="flex justify-center items-center space-x-3">
+          <hr class="w-8 border-0 border-t border-gray-300" />
+          <p class="text-sm text-gray-400">
+            {{ "auth.login.google" | translate }}
+          </p>
+          <hr class="w-8 border-0 border-t border-gray-300" />
+        </div>
+        <figure class="flex justify-center self-center h-10 mt-3.5">
+          <img
+            src="assets/images/social/google-icon.png"
+            alt="google-icon.png"
+            class="border border-gray-300 p-1 rounded-full cursor-pointer"
+          />
+        </figure>
+      </div> -->
+
+      <div class="">
+        <app-button
+          content="{{ 'auth.login.button' | translate }} "
+          extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
+          [disabledClasses]="
+            'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'
+          "
+          type="submit"
+          [disabled]="!logInForm.valid"
+        ></app-button>
+      </div>
+    </form>
+  </div>

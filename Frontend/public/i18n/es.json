@@ -1,11 +1,53 @@
 {
-    "navbar": {
-        "home": "Inicio",
-        "games": "Juegos",
-        "uploadGame": "Subir Juego"
+  "navbar": {
+    "home": "Inicio",
+    "games": "Juegos",
+    "uploadGame": "Subir Juego",
+    "login": "Iniciar sesión",
+    "signUp": "Registrarse"
+  },
+  "home": {
+    "popularGames": "Juegos Populares",
+    "precentGames": "Juegos Recientes"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "google": "o inicia sesión con",
+      "button": "Acceder",
+      "error": "Credenciales incorrectos",
+      "notVerified": "Cuenta no verificada"
     },
-    "home": {
-        "popularGames": "Juegos Populares",
-        "precentGames": "Juegos Recientes"
+    "signUp": {
+      "title": "Crear una cuenta",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "policy": "Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.",
+      "button": "Confirmar",
+      "error": {
+        "username": {
+          "required": "Dato requerido",
+          "length": "Debe tener al menos 6 caracteres",
+          "pattern": "Solo puede contener letras, números y espacios"
+        },
+        "email": {
+          "required": "Dato requerido",
+          "format": "Debe tener formato de email"
+        },
+        "password": {
+          "required": "Dato requerido",
+          "length": "Debe tener al menos 8 caracteres",
+          "pattern": "Debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial"
+        }
+      },
+      "alert": {
+        "title": "Registro realizado con éxito",
+        "text": "Revise su correo electrónico para verificar su cuenta"
+      }
     }
+  }
 }

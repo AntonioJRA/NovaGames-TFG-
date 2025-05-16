@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Game } from '../../models/games/games';
+import { Game } from '../../models/game/game';
 import { GamesService } from '../../services/games.service';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';

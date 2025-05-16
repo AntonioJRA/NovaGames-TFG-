@@ -1,0 +1,20 @@
+<div class="flex items-center space-x-2">
+  <img
+    [ngClass]="
+      langServ.getCurrentLang() === 'es' ? 'border-accent' : 'border-surface'
+    "
+    class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
+    src="assets/images/languages/spanish.png"
+    alt="spanish"
+    (click)="langServ.changeLang('es')"
+  />
+  <img
+    [ngClass]="
+      langServ.getCurrentLang() === 'en' ? 'border-accent' : 'border-surface'
+    "
+    class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
+    src="assets/images/languages/english.png"
+    alt="english"
+    (click)="langServ.changeLang('en')"
+  />
+</div>

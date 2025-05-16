@@ -3,6 +3,28 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background: linear-gradient(to bottom, #253c75, #3b3f4a);
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter/Inter_24pt-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter/Inter_24pt-Light.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter/Inter_24pt-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter/Inter_24pt-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to bottom, #253c75, #3b3f4a);
 }

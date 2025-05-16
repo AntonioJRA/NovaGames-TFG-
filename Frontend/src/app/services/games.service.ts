@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, throwError } from 'rxjs';
-import { Game } from '../models/games/games';
+import { Game } from '../models/game/game';
 import { environment } from '../../environments/environment';
 
 
@@ -11,12 +11,11 @@ import { environment } from '../../environments/environment';
 })
 export class GamesService {
 
-  public url: string = "http://localhost:3000"
   public http = inject(HttpClient)
   
 
   getAllGames(): Observable<Game[]> {
-    return this.http.get<Game[]>(`${this.url}${environment.routes.getAllGames}`).pipe(
+    return this.http.get<Game[]>(`${environment.apiUrl}${environment.routes.getAllGames}`).pipe(
       catchError(this.handleError)
     )
   }

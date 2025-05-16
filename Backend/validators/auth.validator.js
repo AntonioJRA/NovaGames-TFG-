@@ -34,6 +34,8 @@ export const validarRegister = [
     .withMessage("El username es obligatorio")
     .notEmpty()
     .withMessage("El username no puede estar vacío")
+    .isLength({ min: 6 })
+    .withMessage("Debe tener al menos 6 caracteres")
     .matches(/^[a-zA-Z0-9 ]+$/)
     .withMessage("El username solo puede contener letras, números y espacios"),
 
@@ -51,8 +53,8 @@ export const validarRegister = [
     .withMessage("La contraseña es obligatoria")
     .notEmpty()
     .withMessage("La contraseña no puede estar vacía")
-    .isLength({ min: 8, max: 16 })
-    .withMessage("Debe tener entre 8 y 16 caracteres")
+    .isLength({ min: 8 })
+    .withMessage("Debe tener al menos 8 caracteres")
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)
     .withMessage(
       "Debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial"

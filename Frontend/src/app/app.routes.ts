@@ -7,14 +7,29 @@ export const routes: Routes = [
       import('./pages/home/home.component').then((c) => c.HomeComponent),
   },
   {
-    path: 'juegos',
+    path: 'games',
     loadComponent: () =>
       import('./pages/games/games.component').then((c) => c.GamesComponent),
   },
   {
-    path: 'subir-juego',
+    path: 'upload-game',
     loadComponent: () =>
       import('./pages/upload-game/upload-game.component').then((c) => c.UploadGameComponent),
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login.component').then((c) => c.LoginComponent),
+  },
+  {
+    path: 'sign-up',
+    loadComponent: () =>
+      import('./pages/signup/signup.component').then((c) => c.SignupComponent),
+  },
+  {
+    path: 'verification',
+    loadComponent: () =>
+      import('./pages/user-verif/user-verif.component').then((c) => c.UserVerifComponent),
   },
 ];
 

@@ -2,7 +2,7 @@
   <div
     class="h-20 flex justify-between items-center px-8 py-4 bg-primary border-b-2 border-surface text-lg text-text"
   >
-    <div class="">
+    <div class="py-2 px-4 cursor-pointer" (click)="navToHome()">
       <img
         class="transition-all duration-300 ease-in-out w-52"
         src="assets/images/novagames/logo.png"
@@ -16,57 +16,57 @@
     </button>
 
     <!-- Menú principal -->
-    <nav class="hidden lg:flex space-x-6 text-xl">
+    <nav class="hidden lg:flex space-x-2 text-xl">
       <a
         [routerLink]="'/'"
         routerLinkActive="bg-accent"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="py-2 px-4 rounded-xl"
+        class="py-2 px-4 rounded-xl hover:bg-accent/20"
       >
         {{ "navbar.home" | translate }}
       </a>
       <a
-        [routerLink]="'/juegos'"
+        [routerLink]="'/games'"
         routerLinkActive="bg-accent"
-        class="py-2 px-4 rounded-xl"
+        class="py-2 px-4 rounded-xl hover:bg-accent/20"
       >
         {{ "navbar.games" | translate }}
       </a>
       <a
-        [routerLink]="'/subir-juego'"
+        [routerLink]="'/upload-game'"
         routerLinkActive="bg-accent"
-        class="py-2 px-4 rounded-xl"
+        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
       >
         {{ "navbar.uploadGame" | translate }}
       </a>
     </nav>
     <!-- Idiomas y login -->
-    <div class="hidden lg:flex items-center space-x-2">
-      <img
-        [ngClass]="
-          langServ.getCurrentLang() === 'es'
-            ? 'border-accent'
-            : 'border-surface'
-        "
-        class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
-        src="assets/images/languages/spanish.png"
-        alt="spanish"
-        (click)="langServ.changeLang('es')"
-      />
-      <img
-        [ngClass]="
-          langServ.getCurrentLang() === 'en'
-            ? 'border-accent'
-            : 'border-surface'
-        "
-        class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
-        src="assets/images/languages/english.png"
-        alt="english"
-        (click)="langServ.changeLang('en')"
-      />
-      <div class="">
-        <p>LogIn/Register</p>
+    <div class="hidden lg:flex items-center space-x-4">
+      @if (!isUserLogged) {
+      <div class="hidden lg:flex items-center space-x-1">
+        <div class="py-2 cursor-pointer text-nowrap" (click)="navToLogIn()">
+          <p class="hover:underline">{{ "navbar.login" | translate }} |</p>
+        </div>
+        <div class="py-2 cursor-pointer text-nowrap" (click)="navToSignUp()">
+          <p class="hover:underline">{{ "navbar.signUp" | translate }}</p>
+        </div>
       </div>
+      } @else {
+      <div class="flex justify-center items-center space-x-2 mr-5">
+        <figure class="">
+          <img
+            [src]="'assets/images/profile_images/' + userData.profile_image"
+            alt=""
+            class="h-12 border-4 border-accent rounded-full aspect-square object-contain"
+          />
+        </figure>
+        <div class="flex flex-col justify-center items-center mt-1">
+          <p class="text-xl mb-0">{{ userData.username }}</p>
+          <small class="opacity-50 mt-0">{{ userData.email }}</small>
+        </div>
+      </div>
+      }
+      <app-change-language></app-change-language>
     </div>
     <!-- Menú mobile-->
     <div
@@ -88,43 +88,39 @@
         class="flex flex-col items-center space-y-2 bg-primary border border-surface border-t-0 px-8 py-2"
       >
         <div class="flex">
-          <img
-            [ngClass]="
-              langServ.getCurrentLang() === 'es'
-                ? 'border-accent'
-                : 'border-surface'
-            "
-            class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
-            src="assets/images/languages/spanish.png"
-            alt="spanish"
-            (click)="langServ.changeLang('es')"
-          />
-          <img
-            [ngClass]="
-              langServ.getCurrentLang() === 'en'
-                ? 'border-accent'
-                : 'border-surface'
-            "
-            class="cursor-pointer w-12 h-12 object-cover rounded-full border-4"
-            src="assets/images/languages/english.png"
-            alt="english"
-            (click)="langServ.changeLang('en')"
-          />
+          <app-change-language></app-change-language>
         </div>
-        <div class="">
-          <p>LogIn/Register</p>
+        <div
+          class="text-center py-2 px-4 cursor-pointer hover:underline"
+          (click)="navToLogIn()"
+        >
+          <p class="">{{ "navbar.login" | translate }} /</p>
+          <p class="">{{ "navbar.signUp" | translate }}</p>
         </div>
       </div>
-      <nav>
-        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+      <nav class="flex flex-col p-6">
+        <a
+          [routerLink]="'/'"
+          routerLinkActive="bg-accent"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="py-2 px-4 rounded-xl hover:bg-accent/20"
+        >
           {{ "navbar.home" | translate }}
-        </p>
-        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+        </a>
+        <a
+          [routerLink]="'/games'"
+          routerLinkActive="bg-accent"
+          class="py-2 px-4 rounded-xl hover:bg-accent/20"
+        >
           {{ "navbar.games" | translate }}
-        </p>
-        <p class="w-full h-full bg-primary border border-surface px-8 py-2">
+        </a>
+        <a
+          [routerLink]="'/upload-game'"
+          routerLinkActive="bg-accent"
+          class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
+        >
           {{ "navbar.uploadGame" | translate }}
-        </p>
+        </a>
       </nav>
     </div>
   </div>

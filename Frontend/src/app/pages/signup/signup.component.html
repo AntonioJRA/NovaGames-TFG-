@@ -1,0 +1,126 @@
+<app-logo-header />
+
+<div *ngIf="succesfullyRegister">
+  <div
+    class="bg-white rounded text-black font-semibold absolute py-4 px-10 right-[50%] translate-x-[50%] top-[45%] shadow-lg z-20"
+  >
+    <p class="p-0 m-0" >{{ "auth.signUp.title" | translate }}</p>
+  </div>
+  <div
+    class="bg-black/20 rounded absolute top-20 right-0 left-0 bottom-[90px] z-10"
+  ></div>
+</div>
+
+
+<div class="flex justify-center pt-6">
+  <app-change-language></app-change-language>
+</div>
+<div
+  class="flex flex-col items-center space-y-6 justify-center px-24 pt-8 text-black lg:flex-row lg:space-y-0 lg:space-x-16"
+>
+  <div
+    class="flex flex-col items-center bg-white p-6 py-[1.9rem] rounded justify-center max-w-[332px]"
+  >
+    <h1 class="text-4xl mb-8 text-center">
+      {{ "auth.signUp.title" | translate }}
+    </h1>
+    <form
+      action=""
+      [formGroup]="signUpForm"
+      (submit)="signupOnSubmit()"
+      class="text-lg"
+    >
+      <div class="space-y-2">
+        <div class="flex flex-col relative">
+          <input
+            type="text"
+            name="username"
+            id="signup-username"
+            formControlName="signupUsername"
+            class="border border-gray-300 py-2 pl-4 pr-6"
+            placeholder="{{ 'auth.signUp.username' | translate }}"
+          />
+          @if (signupUsernameRequired) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.username.required" | translate }}</small
+          >
+          } @else if (signupUsernameMinLength) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.username.length" | translate }}</small
+          >
+          } @else if (signupUsernamePattern) {
+          <small class="text-red-500 italic self-start"
+            >* {{ "auth.signUp.error.username.pattern" | translate }}</small
+          >
+          }
+        </div>
+        <div class="flex flex-col relative">
+          <input
+            type="email"
+            name="email"
+            id="signup-email"
+            autocomplete="email"
+            formControlName="signupEmail"
+            class="border border-gray-300 py-2 pl-4 pr-6"
+            placeholder="{{ 'auth.signUp.email' | translate }}"
+          />
+          @if (signupEmailRequired) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.email.required" | translate }}</small
+          >
+          } @else if (signupEmailFormat) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.email.format" | translate }}</small
+          >
+          }
+        </div>
+        <div class="flex flex-col relative">
+          <input
+            type="password"
+            name="password"
+            id="signup-password"
+            formControlName="signupPassword"
+            autocomplete="new-password"
+            class="border border-gray-300 py-2 pl-4 pr-6"
+            placeholder="{{ 'auth.signUp.password' | translate }}"
+          />
+          @if (signupPasswordRequired) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.password.required" | translate }}
+          </small>
+          } @else if (signupPasswordMinLength) {
+          <small class="text-red-500 italic self-end"
+            >* {{ "auth.signUp.error.password.length" | translate }}</small
+          >
+          } @else if (signupPasswordPattern) {
+          <small class="text-red-500 italic self-end leading-tight text-right"
+            >* {{ "auth.signUp.error.password.pattern" | translate }}</small
+          >
+          }
+        </div>
+      </div>
+      <div class="flex text-xs mt-4">
+        <input
+          type="checkbox"
+          name="policy"
+          id="policy"
+          formControlName="signupPolicy"
+        />
+        <label class="text-gray-700 max-w-64 ml-2" for="policy">
+          {{ "auth.signUp.policy" | translate }}
+        </label>
+      </div>
+      <div class="">
+        <app-button
+          content="{{ 'auth.signUp.button' | translate }} "
+          extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
+          [disabledClasses]="
+            'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'
+          "
+          type="submit"
+          [disabled]="!signUpForm.valid"
+        ></app-button>
+      </div>
+    </form>
+  </div>
+</div>

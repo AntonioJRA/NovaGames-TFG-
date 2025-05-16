@@ -5,6 +5,8 @@ import { pool } from "../db.js";
 import { REFRESH_SECRET_KEY, SECRET_KEY } from "../config.js";
 import { sendMail } from "../mailer.js";
 
+const URL = 'http://localhost:3000'
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -16,7 +18,7 @@ export const login = async (req, res) => {
     if (result.length == 0) {
       return res
         .status(401)
-        .json({ message: `Email y/o password incorrectos.` });
+        .json({ message: `wrong credentials` });
     }
 
     //verificar la contraseña con bcrypt
@@ -26,13 +28,13 @@ export const login = async (req, res) => {
       //si no coincide
       return res
         .status(401)
-        .json({ message: `Email y/o password incorrectos.` });
+        .json({ message: `wrong credentials` });
     }
     //Verificar que la cuenta esta activada
     if (!result[0].is_verified) {
       return res
         .status(403)
-        .json({ message: "Cuenta no activa. Revisa tu correo para activarla" });
+        .json({ message: "account no verif" });
     }
 
     //generar el token
@@ -77,7 +79,7 @@ export const login = async (req, res) => {
     // );
 
     //devolver al usuario el token
-    res.status(200).json(token);
+    res.status(200).json({token: token});
   } catch (error) {
     res.status(500).json({ message: "Error al obtener los usuarios" });
   }
@@ -127,7 +129,7 @@ export const register = async (req, res) => {
       );
 
       //enviar el email para notificar la activacion
-      const activarLink = `http://localhost:3000/activar/${activacionToken}`;
+      const activarLink = `${URL}/activar/${activacionToken}`;
 
       const emailHTML = `
             <h2>¡Bienbenid@ a NovaGames!</h2>
