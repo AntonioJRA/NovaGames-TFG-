@@ -21,6 +21,9 @@ export const getUser = async (req, res) => {
       "SELECT * FROM users WHERE id = ? LIMIT 1",
       [id]
     );
+
+    return res.status(200).json(result);
+
     if (!result) return res.status(200).json("No existe el usuario");
     res.status(200).json(result);
   } catch (error) {

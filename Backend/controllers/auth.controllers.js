@@ -5,20 +5,20 @@ import { pool } from "../db.js";
 import { REFRESH_SECRET_KEY, SECRET_KEY } from "../config.js";
 import { sendMail } from "../mailer.js";
 
-const URL = 'http://localhost:3000'
+const URL = "http://localhost:3000";
+const FRONT_URL = "http://localhost:4200";
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [result] = await pool.query("SELECT * FROM users WHERE email = ? LIMIT 1", [
-      email,
-    ]);
+    const [result] = await pool.query(
+      "SELECT * FROM users WHERE email = ? LIMIT 1",
+      [email]
+    );
 
     //comprobar si el email existe
     if (result.length == 0) {
-      return res
-        .status(401)
-        .json({ message: `wrong credentials` });
+      return res.status(401).json({ message: `wrong credentials` });
     }
 
     //verificar la contraseña con bcrypt
@@ -26,15 +26,11 @@ export const login = async (req, res) => {
 
     if (!validatePass) {
       //si no coincide
-      return res
-        .status(401)
-        .json({ message: `wrong credentials` });
+      return res.status(401).json({ message: `wrong credentials` });
     }
     //Verificar que la cuenta esta activada
     if (!result[0].is_verified) {
-      return res
-        .status(403)
-        .json({ message: "account no verif" });
+      return res.status(403).json({ message: "account no verif" });
     }
 
     //generar el token
@@ -79,7 +75,7 @@ export const login = async (req, res) => {
     // );
 
     //devolver al usuario el token
-    res.status(200).json({token: token});
+    res.status(200).json({ token: token });
   } catch (error) {
     res.status(500).json({ message: "Error al obtener los usuarios" });
   }
@@ -93,7 +89,7 @@ export const autenticarToken = async (req, res, next) => {
   }
 
   //extraer el token de la constante autHeader
-  const token = autHeader.split(" ")[1];;
+  const token = autHeader.split(" ")[1];
   //verificar la autenticidad del token
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) {
@@ -105,9 +101,11 @@ export const autenticarToken = async (req, res, next) => {
 };
 
 export const register = async (req, res) => {
-  try {
-    const { username, password, email } = req.body;
+  const { username, password, email } = req.body;
+  const lang = req.headers["accept-language"] || "es";
+  console.log(lang);
 
+  try {
     // SELECT 1 devuelve solo un valor, y LIMIT 1 hace que el motor de la base de datos se detenga al encontrar el primer resultado, lo cual mejora el rendimiento.
     const [user] = await pool.query(
       "SELECT 1 FROM users WHERE email = ? LIMIT 1",
@@ -129,12 +127,21 @@ export const register = async (req, res) => {
       );
 
       //enviar el email para notificar la activacion
-      const activarLink = `${URL}/activar/${activacionToken}`;
+      const activarLink = `${URL}/api/activar/${activacionToken}`;
 
-      const emailHTML = `
+      let emailHTML;
+
+      if (lang === "es") {
+        emailHTML = `
             <h2>¡Bienbenid@ a NovaGames!</h2>
             <p>Para activar tu cuenta, haz click en el siguiente enlace:</p>
             <a href="${activarLink}">Activar cuenta</a>`;
+      } else {
+        emailHTML = `
+            <h2>Welcome to NovaGames!</h2>
+            <p>To activate your account, click the following link:</p>
+            <a href="${activarLink}">Activate account</a>`;
+      }
 
       await sendMail(email, "NovaGames Account", emailHTML);
 
@@ -209,7 +216,7 @@ export const activarCuenta = async (req, res) => {
   const { token } = req.params;
 
   const [user] = await pool.query(
-    "SELECT 1 FROM users WHERE verification_token = ? LIMIT 1",
+    "SELECT id, role FROM users WHERE verification_token = ? LIMIT 1",
     [token]
   );
 
@@ -220,8 +227,26 @@ export const activarCuenta = async (req, res) => {
       `UPDATE users SET is_verified = ?, verification_token = ? WHERE verification_token = ?`,
       [true, null, token]
     );
-    res.status(200).json({
-      message: "Cuenta activada correctamente. Ya puedes iniciar sesion.",
-    });
+
+    //generar el token
+    const jwtToken = jwt.sign(
+      {
+        id: user[0].id,
+        role: user[0].role,
+        createTo: new Date().toISOString(),
+      },
+      SECRET_KEY,
+      {
+        //https://jwt.io todas las partes de jwt
+        expiresIn: "1h",
+      }
+    );
+
+    // Redireccionar al frontend con el token
+    return res.redirect(`${FRONT_URL}/auth/${jwtToken}`);
+
+    // res.status(200).json({
+    //   message: "Cuenta activada correctamente. Ya puedes iniciar sesion.",
+    // });
   }
 };

@@ -17,7 +17,6 @@ export class AuthService {
   login(userData: { email: string; password: string }): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      // 'Authorization': 'Bearer tu_token' // si necesitas un token
     });
 
     return this.http
@@ -27,15 +26,23 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-  register(userData: {
-    username: string;
-    email: string;
-    password: string;
-  }): Observable<any> {
+  register(
+    userData: {
+      username: string;
+      email: string;
+      password: string;
+    },
+    language: string
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept-Language': language,
+    });
     return this.http
       .post<any>(
         `${environment.apiUrl}${environment.routes.register}`,
-        userData
+        userData,
+        { headers }
       )
       .pipe(catchError(this.handleError));
   }

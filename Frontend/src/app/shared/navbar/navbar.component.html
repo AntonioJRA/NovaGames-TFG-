@@ -52,18 +52,47 @@
         </div>
       </div>
       } @else {
-      <div class="flex justify-center items-center space-x-2 mr-5">
-        <figure class="">
-          <img
-            [src]="'assets/images/profile_images/' + userData.profile_image"
-            alt=""
-            class="h-12 border-4 border-accent rounded-full aspect-square object-contain"
-          />
-        </figure>
-        <div class="flex flex-col justify-center items-center mt-1">
-          <p class="text-xl mb-0">{{ userData.username }}</p>
-          <small class="opacity-50 mt-0">{{ userData.email }}</small>
+      <div class="flex justify-center items-center relative">
+        <div
+          class="flex justify-center items-center space-x-2 cursor-pointer py-2 px-4 rounded-xl hover:bg-accent"
+          (click)="toggleProfile()"
+        >
+          <figure class="">
+            <img
+              [src]="'assets/images/profile_images/' + userData.profile_image"
+              alt=""
+              class="h-12 border-4 border-accent rounded-full aspect-square object-contain bg-accent"
+            />
+          </figure>
+          <div class="flex flex-col leading-4">
+            <p class="text-xl">{{ userData.username }}</p>
+            <small class="opacity-50">{{ userData.email }}</small>
+          </div>
         </div>
+        @if (isProfileOpen) {
+        <div
+          class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2"
+        >
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.profile" | translate }}
+          </p>
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.myGames" | translate }}
+          </p>
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.signOut" | translate }}
+          </p>
+        </div>
+        }
       </div>
       }
       <app-change-language></app-change-language>
@@ -85,19 +114,62 @@
       class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden"
     >
       <div
-        class="flex flex-col items-center space-y-2 bg-primary border border-surface border-t-0 px-8 py-2"
+        class="flex flex-col items-center space-y-2 bg-primary border-b border-surface px-6 pb-6 pt-4"
       >
         <div class="flex">
           <app-change-language></app-change-language>
         </div>
-        <div
-          class="text-center py-2 px-4 cursor-pointer hover:underline"
-          (click)="navToLogIn()"
-        >
-          <p class="">{{ "navbar.login" | translate }} /</p>
-          <p class="">{{ "navbar.signUp" | translate }}</p>
+
+        @if (!isUserLogged) {
+        <div class="flex flex-col items-center leading-3">
+          <div class="py-2 cursor-pointer text-nowrap" (click)="navToLogIn()">
+            <p class="hover:underline">{{ "navbar.login" | translate }}</p>
+          </div>
+          <div class="py-2 cursor-pointer text-nowrap" (click)="navToSignUp()">
+            <p class="hover:underline">{{ "navbar.signUp" | translate }}</p>
+          </div>
         </div>
+        } @else {
+        <div class="flex flex-col justify-center items-center">
+          <div
+            class="flex flex-col items-center text-center cursor-pointer py-2 px-4" (click)="navToProfile()"
+          >
+            <figure class="">
+              <img
+                [src]="'assets/images/profile_images/' + userData.profile_image"
+                alt=""
+                class="h-12 border-4 border-accent rounded-full aspect-square object-contain bg-accent"
+              />
+            </figure>
+            <div class="flex flex-col leading-4">
+              <p class="text-xl">{{ userData.username }}</p>
+              <small class="opacity-50">{{ userData.email }}</small>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col w-full">
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.profile" | translate }}
+          </p>
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.myGames" | translate }}
+          </p>
+          <p
+            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
+            (click)="navToProfile()"
+          >
+            {{ "navbar.signOut" | translate }}
+          </p>
+        </div>
+        }
       </div>
+
       <nav class="flex flex-col p-6">
         <a
           [routerLink]="'/'"

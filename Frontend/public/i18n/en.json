@@ -4,7 +4,10 @@
     "games": "Games",
     "uploadGame": "Upload Game",
     "login": "Log In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "profile": "Profile",
+    "myGames": "My Games",
+    "signOut": "Sign Out"
   },
   "home": {
     "popularGames": "Popular Games",
@@ -46,7 +49,8 @@
       },
       "alert": {
         "title": "Registration completed successfully",
-        "text": "Check your email to verify your account"
+        "text": "Check your email to verify your account",
+        "emailAlreadyExists": "An account with that email address already exists"
       }
     }
   }

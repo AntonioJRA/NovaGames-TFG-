@@ -4,7 +4,10 @@
     "games": "Juegos",
     "uploadGame": "Subir Juego",
     "login": "Iniciar sesión",
-    "signUp": "Registrarse"
+    "signUp": "Registrarse",
+    "profile": "Perfil",
+    "myGames": "Mis juegos",
+    "signOut": "Cerrar sesión"
   },
   "home": {
     "popularGames": "Juegos Populares",
@@ -46,7 +49,8 @@
       },
       "alert": {
         "title": "Registro realizado con éxito",
-        "text": "Revise su correo electrónico para verificar su cuenta"
+        "text": "Revise su correo electrónico para verificar su cuenta",
+        "emailAlreadyExists": "Ya existe una cuenta con ese correo electrónico"
       }
     }
   }

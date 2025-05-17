@@ -129,7 +129,9 @@ export class SignupComponent {
         password: formValue.signupPassword,
       };
 
-      this.authServ.register(data).subscribe({
+      const language = localStorage.getItem('lang') || 'es';
+
+      this.authServ.register(data, language).subscribe({
         next: (data) => {
           this.translate
             .get(['auth.signUp.alert.title', 'auth.signUp.alert.text'])
@@ -147,7 +149,15 @@ export class SignupComponent {
           this.signUpForm.reset();
         },
         error: (err) => {
-          console.log(err);
+          this.translate
+            .get(['auth.signUp.alert.emailAlreadyExists'])
+            .subscribe((translations) => {
+              Swal.fire({
+                icon: 'error',
+                title: translations['auth.signUp.alert.emailAlreadyExists'],
+                showConfirmButton: true,
+              });
+            });
         },
       });
     }

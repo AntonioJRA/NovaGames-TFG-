@@ -64,7 +64,7 @@ export class LoginComponent {
         next: (data) => {
           this.loginError = false;
           this.loginVerifError = false;
-          localStorage.setItem('user_session', data.token); // Guarda el token
+          localStorage.setItem('user_session', data.token);
           this.router.navigateByUrl('');
         },
         error: (err) => {

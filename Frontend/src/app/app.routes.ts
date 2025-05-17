@@ -7,6 +7,11 @@ export const routes: Routes = [
       import('./pages/home/home.component').then((c) => c.HomeComponent),
   },
   {
+    path: 'auth/:token',
+    loadComponent: () =>
+      import('./pages/home/home.component').then((c) => c.HomeComponent),
+  },
+  {
     path: 'games',
     loadComponent: () =>
       import('./pages/games/games.component').then((c) => c.GamesComponent),
@@ -27,9 +32,9 @@ export const routes: Routes = [
       import('./pages/signup/signup.component').then((c) => c.SignupComponent),
   },
   {
-    path: 'verification',
+    path: 'profile',
     loadComponent: () =>
-      import('./pages/user-verif/user-verif.component').then((c) => c.UserVerifComponent),
+      import('./pages/profile/profile.component').then((c) => c.ProfileComponent),
   },
 ];
 
