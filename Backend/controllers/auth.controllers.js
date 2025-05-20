@@ -43,7 +43,7 @@ export const login = async (req, res) => {
       SECRET_KEY,
       {
         //https://jwt.io todas las partes de jwt
-        expiresIn: "1h",
+        expiresIn: "7d",
       }
     );
 

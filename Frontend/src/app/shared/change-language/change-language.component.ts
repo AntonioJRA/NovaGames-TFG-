@@ -1,17 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router, RouterLinkActive, RouterModule } from '@angular/router';
+import { Component, Input } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-language',
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule],
   templateUrl: './change-language.component.html',
-  styles: ``
+  styles: ``,
 })
 export class ChangeLanguageComponent {
- constructor (public langServ: LanguageService) {}
+  @Input() extraClasses: string | undefined;
 
-
+  constructor(public langServ: LanguageService) {}
 }

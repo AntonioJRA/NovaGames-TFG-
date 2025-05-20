@@ -52,6 +52,7 @@ export class SignupComponent {
         [
           Validators.required,
           Validators.minLength(6),
+          Validators.maxLength(30),
           Validators.pattern(/^[a-zA-Z0-9 ]+$/),
         ],
       ],

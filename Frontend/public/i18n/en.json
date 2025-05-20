@@ -22,7 +22,10 @@
       "google": "or log in with",
       "button": "Enter",
       "error": "Wrong credentials",
-      "notVerified": "Account not verified"
+      "notVerified": "Account not verified",
+      "verificationComplete1": "Verification completed successfully",
+      "verificationComplete2": "Get ready to enjoy everything NovaGames has to offer!",
+      "goToHome": "Return to Novagames"
     },
     "signUp": {
       "title": "Sign Up",
@@ -34,7 +37,7 @@
       "error": {
         "username": {
           "required": "Required field",
-          "length": "Must be at least 6 characters long",
+          "length": "Must be between 6 and 30 characters",
           "pattern": "Can only contain letters, numbers, and spaces"
         },
         "email": {
@@ -53,5 +56,10 @@
         "emailAlreadyExists": "An account with that email address already exists"
       }
     }
+  },
+  "profile": {
+    "myProfile": "Profile",
+    "myGames": "My Games",
+    "adminPanel": "Admin Panel"
   }
 }

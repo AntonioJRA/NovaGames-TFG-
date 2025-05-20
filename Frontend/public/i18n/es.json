@@ -22,7 +22,10 @@
       "google": "o inicia sesión con",
       "button": "Acceder",
       "error": "Credenciales incorrectos",
-      "notVerified": "Cuenta no verificada"
+      "notVerified": "Cuenta no verificada",
+      "verificationComplete1": "Verificación completada correctamente",
+      "verificationComplete2": "¡Prepárate para disfrutar de todo lo que NovaGames tiene para ti!",
+      "goToHome": "Volver a Novagames"
     },
     "signUp": {
       "title": "Crear una cuenta",
@@ -43,7 +46,7 @@
         },
         "password": {
           "required": "Dato requerido",
-          "length": "Debe tener al menos 8 caracteres",
+          "length": "Debe tener entre 6 y 30 caracteres",
           "pattern": "Debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial"
         }
       },
@@ -53,5 +56,10 @@
         "emailAlreadyExists": "Ya existe una cuenta con ese correo electrónico"
       }
     }
+  },
+  "profile": {
+    "myProfile": "Perfil",
+    "myGames": "Mis juegos",
+    "adminPanel": "Panel de administrador"
   }
 }

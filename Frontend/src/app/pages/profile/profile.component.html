@@ -1,1 +1,111 @@
-<p>profile works!</p>
+<app-logo-header />
+
+<div class="flex">
+  <aside
+    class="bg-primary h-screen flex flex-col items-center transition-all w-14 duration-200 ease-in md:w-96"
+  >
+    <app-change-language
+      extraClasses="flex-col space-x-0 space-y-2 md:flex-row md:space-x-2 md:space-y-0 my-4"
+    />
+    <nav class="flex flex-col space-y-3 p-2 w-full">
+      <div
+        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
+        [ngClass]="{
+          'bg-accent': isProfileOpen,
+          'hover:bg-accent/20': !isProfileOpen
+        }"
+        (click)="showSection('profile')"
+      >
+        <div class="pl-2 md:pl-2">
+          <i class="fa-solid fa-user p-1.5"></i>
+        </div>
+        <div
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-2"
+        >
+          {{ "profile.myProfile" | translate }}
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
+        [ngClass]="{
+          'bg-accent': isMyGamesOpen,
+          'hover:bg-accent/20': !isMyGamesOpen
+        }"
+        (click)="showSection('games')"
+      >
+        <div class="">
+          <i class="fa-solid fa-gamepad p-2 ml-0.5"></i>
+        </div>
+        <div
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1"
+        >
+          {{ "profile.myGames" | translate }}
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
+        [ngClass]="{
+          'bg-accent': isAdminPanelOpen,
+          'hover:bg-accent/20': !isAdminPanelOpen
+        }"
+        (click)="showSection('admin')"
+      >
+        <div class="">
+          <i class="fa-solid fa-sliders p-2 ml-1"></i>
+        </div>
+        <div
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1.5"
+        >
+          {{ "profile.adminPanel" | translate }}
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="pt-4 w-full px-[5%] flex flex-col space-y-4">
+    <div
+      class="bg-accent self-center rounded text-center text-4xl py-6 uppercase w-full h-32 flex justify-center items-center font-bold"
+    >
+      {{ activeSectionKey | translate }}
+    </div>
+    @if (isProfileOpen) {
+    <div class="flex justify-center items-center mt-4">
+      <figure class="z-10">
+        <img
+          [src]="'assets/images/profile_images/' + userData.profile_image"
+          alt=""
+          class="w-40 border-4 border-accent rounded-full aspect-square object-contain bg-accent"
+        />
+      </figure>
+      <div
+        class="flex justify-between bg-accent -ml-10 space-x-5 text-3xl w-8/12 rounded-r-xl h-24 pr-10"
+      >
+        <div
+          class="flex flex-col justify-center text-center w-full leading-2 pl-10"
+        >
+          <p class="">{{ userData.username }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="">
+      <h1>DATOS</h1>
+      <p class="opacity-50">{{ userData.email }}</p>
+      <p class="opacity-50">{{ userData.registration_date | date: "short" }}</p>
+    </div>
+    } @else if (isMyGamesOpen) {
+    <div
+      routerLinkActive="bg-accent"
+      class="py-2 px-4 rounded-xl hover:bg-accent/20"
+    >
+      {{ "profile.myGames" | translate }}
+    </div>
+    } @else if (isAdminPanelOpen) {
+    <div
+      routerLinkActive="bg-accent"
+      class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
+    >
+      {{ "profile.adminPanel" | translate }}
+    </div>
+    }
+  </main>
+</div>

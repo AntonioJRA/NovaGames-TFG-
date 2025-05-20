@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
-  NavigationEnd,
   Router,
   RouterLinkActive,
   RouterModule,
@@ -12,7 +11,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeLanguageComponent } from '../change-language/change-language.component';
 import { UsersService } from '../../services/users.service';
 import { User } from '../../models/user/user';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -30,9 +28,8 @@ export class NavbarComponent implements OnInit {
   isMenuOpen: boolean = false;
   isProfileOpen: boolean = false;
   isUserLogged: boolean = false;
-  userToken: string = '';
   userData!: User;
-  token!: string;
+  sessionToken!: string;
 
   constructor(
     public langServ: LanguageService,
@@ -45,35 +42,9 @@ export class NavbarComponent implements OnInit {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
     window.addEventListener('resize', this.onDesktopToMobile.bind(this));
 
-    this.token = localStorage.getItem('user_session') || '';
-
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.token = localStorage.getItem('user_session') || '';
-        this.checkToken();
-      }
-    });
-
-    await this.checkEmail();
+    this.sessionToken = localStorage.getItem('user_session') || '';
 
     this.checkToken();
-  }
-
-  checkEmail(): Promise<void> {
-    return new Promise((resolve) => {
-      this.router.events
-        .pipe(filter((event) => event instanceof NavigationEnd))
-        .subscribe(async (event: NavigationEnd) => {
-          const url = event.urlAfterRedirects || event.url;
-          const tokenMatch = url.match(/\/auth\/([^\/\?]+)/);
-          if (tokenMatch && tokenMatch[1]) {
-            const token = tokenMatch[1];
-            localStorage.setItem('user_session', token);
-            await this.router.navigate(['']);
-          }
-          resolve();
-        });
-    });
   }
 
   onMobileToDesktop() {
@@ -90,9 +61,8 @@ export class NavbarComponent implements OnInit {
   }
 
   checkToken() {
-    console.log(this.token);
-    if (this.token) {
-      this.userServ.getUser(this.token).subscribe({
+    if (this.sessionToken) {
+      this.userServ.getUser(this.sessionToken).subscribe({
         next: (data) => {
           this.userData = data;
           this.isUserLogged = true;
@@ -139,5 +109,12 @@ export class NavbarComponent implements OnInit {
     if (this.isMenuOpen) {
       document.body.style.overflow = 'auto';
     }
+  }
+
+  signOut() {
+    localStorage.removeItem('user_session');
+    this.router.navigate(['/']).then(() => {
+      window.location.reload();
+    });
   }
 }

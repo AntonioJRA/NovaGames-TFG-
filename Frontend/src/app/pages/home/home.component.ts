@@ -8,26 +8,29 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-home',
   imports: [CommonModule, TranslatePipe],
-  templateUrl: './home.component.html'
+  templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
-  public aPopularGames!:Game[];
+  public aPopularGames!: Game[];
   public gamesService = inject(GamesService);
+  token!: string;
 
-  constructor(public langServie:LanguageService){}
+  constructor(
+    public langServie: LanguageService
+  ) {}
 
-  ngOnInit(){
-    this.getAllGames()
+  ngOnInit() {
+    this.getAllGames();
   }
 
-  private getAllGames(){
+  private getAllGames() {
     this.gamesService.getAllGames().subscribe({
-      next:(data)=>{
-        this.aPopularGames = data
+      next: (data) => {
+        this.aPopularGames = data;
       },
-      error:(err)=>{console.log(err.message);}
-    })
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
   }
-
-  
 }

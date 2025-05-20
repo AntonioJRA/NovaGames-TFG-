@@ -4,17 +4,12 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import translationES from '../../public/i18n/es.json';
 import translationEN from '../../public/i18n/en.json';
-import {
-  TranslateModule,
-  TranslateLoader,
-  TranslateService,
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [NavbarComponent, FooterComponent, RouterOutlet, TranslatePipe, CommonModule],
+  imports: [NavbarComponent, FooterComponent, RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -41,10 +36,14 @@ export class AppComponent {
     this.translate.use(lang === 'es' ? 'es' : 'en');
 
     // Lógica del navbar
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const hiddenRoutes = ['/login', '/sign-up', '/profile'];
-        this.showNavbar = !hiddenRoutes.includes(event.urlAfterRedirects);
+        const currentUrl = event.urlAfterRedirects;
+        this.showNavbar = !(
+          hiddenRoutes.includes(currentUrl) ||
+          currentUrl.startsWith('/auth/')
+        );
       }
     });
   }

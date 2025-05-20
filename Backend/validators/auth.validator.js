@@ -34,7 +34,7 @@ export const validarRegister = [
     .withMessage("El username es obligatorio")
     .notEmpty()
     .withMessage("El username no puede estar vacío")
-    .isLength({ min: 6 })
+    .isLength({ min: 6, max: 30 })
     .withMessage("Debe tener al menos 6 caracteres")
     .matches(/^[a-zA-Z0-9 ]+$/)
     .withMessage("El username solo puede contener letras, números y espacios"),

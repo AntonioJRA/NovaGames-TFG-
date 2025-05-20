@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'auth/:token',
     loadComponent: () =>
-      import('./pages/home/home.component').then((c) => c.HomeComponent),
+      import('./pages/verification/verification.component').then((c) => c.VerificationComponent),
   },
   {
     path: 'games',

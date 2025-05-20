@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LogoHeaderComponent } from '../../shared/logo-header/logo-header.component';
 import { ButtonComponent } from '../../shared/button/button.component';
 import { Router } from '@angular/router';
@@ -7,7 +7,6 @@ import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -62,9 +61,9 @@ export class LoginComponent {
 
       this.authServ.login(data).subscribe({
         next: (data) => {
+          localStorage.setItem('user_session', data.token);
           this.loginError = false;
           this.loginVerifError = false;
-          localStorage.setItem('user_session', data.token);
           this.router.navigateByUrl('');
         },
         error: (err) => {
