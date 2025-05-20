@@ -41,6 +41,8 @@ export class NavbarComponent implements OnInit {
   async ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
     window.addEventListener('resize', this.onDesktopToMobile.bind(this));
+    this.onMobileToDesktop()
+    this.onDesktopToMobile()
 
     this.sessionToken = localStorage.getItem('user_session') || '';
 

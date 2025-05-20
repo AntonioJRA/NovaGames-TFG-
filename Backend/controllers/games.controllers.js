@@ -124,7 +124,7 @@ export const publicGame = async (req, res) => {
 };
 
 export const getGamesByFilter = async (req, res) => {
-  const { category, rating, time } = req.query;
+  const { categories, rating, time } = req.query;
 
   try {
     let games = "SELECT * FROM games";
@@ -132,11 +132,11 @@ export const getGamesByFilter = async (req, res) => {
     let query = "";
     let params = [];
 
-    if (category || rating || time) {
+    if (categories || rating || time) {
       // Filtro por categoría
-      if (category) {
+      if (categories) {
         query += ` JOIN game_categories AS gc ON games.id = gc.game_id WHERE gc.category_id = ?`;
-        params.push(category);
+        params.push(categories);
       } else {
         query += " WHERE 1=1";
       }

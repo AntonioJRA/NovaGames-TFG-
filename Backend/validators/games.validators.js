@@ -30,7 +30,7 @@ export const validateUpdateRatings = [
 ];
 
 export const validateGamesByFilter = [
-  check("category")
+  check("categories")
     .optional()
     .notEmpty()
     .withMessage("El category no puede estar vacío")

@@ -1,1 +1,152 @@
-<p>games works!</p>
+<div class="lg:flex">
+  <aside class="lg:w-80">
+    <form action="" class="" [formGroup]="filterForm" (submit)="onSubmit()">
+      <div class="flex justify-around lg:flex-col">
+        <div class="cursor-pointer px-5">
+          <div
+            class="flex items-center justify-between"
+            (click)="openFilter('categories')"
+          >
+            <p class="py-2 text-2xl">Categorias</p>
+            <i
+              class="fa-solid fa-chevron-right text-xs lg:text-xl"
+              [ngClass]="{ 'fa-rotate-90': isCategoriesFilterOpen }"
+            ></i>
+          </div>
+
+          <div
+            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] w-10/12 top-[10.6rem] lg:relative lg:w-auto lg:top-0"
+            *ngIf="isCategoriesFilterOpen"
+          >
+            <div
+              class="grid grid-cols-3 items-center lg:grid-cols-2 lg:pl-2"
+              formArrayName="categories"
+            >
+              <div
+                class="flex space-x-1 py-1"
+                *ngFor="let category of aCategories; let i = index"
+              >
+                <input
+                  type="checkbox"
+                  [formControlName]="i"
+                  [id]="'cat' + i"
+                  class="cursor-pointer hover:font-bold"
+                /><label
+                  [for]="'cat' + i"
+                  class="cursor-pointer hover:font-bold"
+                  >{{ category }}</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cursor-pointer px-5">
+          <div
+            class="flex items-center justify-between"
+            (click)="openFilter('rating')"
+          >
+            <p class="py-2 text-2xl">Valoracion</p>
+            <i
+              class="fa-solid fa-chevron-right text-xs lg:text-xl"
+              [ngClass]="{ 'fa-rotate-90': isRatingFilterOpen }"
+            ></i>
+          </div>
+          <div
+            class="absolute flex justify-center bg-white text-black px-10 py-2 rounded top-[10.6rem] left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0"
+            *ngIf="isRatingFilterOpen"
+          >
+            <input
+              type="number"
+              min="0"
+              max="5"
+              step="0.1"
+              formControlName="rating"
+            />
+            <input
+              type="range"
+              id="valor"
+              min="0"
+              max="5"
+              step="0.01"
+              formControlName="rating"
+            />
+          </div>
+        </div>
+
+        <div class="cursor-pointer px-5">
+          <div
+            class="flex items-center justify-between"
+            (click)="openFilter('time')"
+          >
+            <p class="py-2 text-2xl">Antigüedad</p>
+            <i
+              class="fa-solid fa-chevron-right text-xs lg:text-xl"
+              [ngClass]="{ 'fa-rotate-90': isTimeFilterOpen }"
+            ></i>
+          </div>
+          <div
+            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0 w-10/12 top-[10.6rem]"
+            *ngIf="isTimeFilterOpen"
+          >
+            <div class="grid grid-cols-4 text-xl lg:grid-cols-1">
+              <div class="flex justify-center items-center">
+                <input
+                  type="radio"
+                  name="time"
+                  formControlName="time"
+                  value="week"
+                  id="week"
+                  class="cursor-pointer hover:font-bold"
+                />
+                <label for="week" class="px-5 cursor-pointer hover:font-bold"
+                  ><small>A week ago</small></label
+                >
+              </div>
+
+              <div class="flex justify-center items-center">
+                <input
+                  type="radio"
+                  name="time"
+                  formControlName="time"
+                  value="month"
+                  id="month"
+                  class="cursor-pointer hover:font-bold"
+                />
+                <label for="month" class="px-5 cursor-pointer hover:font-bold"
+                  ><small>A month ago</small></label
+                >
+              </div>
+              <div class="flex justify-center items-center">
+                <input
+                  type="radio"
+                  name="time"
+                  formControlName="time"
+                  value="year"
+                  id="year"
+                  class="cursor-pointer hover:font-bold"
+                />
+                <label for="year" class="px-5 cursor-pointer hover:font-bold"
+                  ><small>A year ago</small></label
+                >
+              </div>
+              <button
+                class="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white"
+                (click)="resetTimeInputValue()"
+              >
+                Quitar seleccion
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="bg-blue-500 w-full py-2 transition ease-in duration-50 hover:bg-blue-700 text-white"
+      >
+        Filtrar
+      </button>
+    </form>
+  </aside>
+
+  <main>aaaaaaaaaaaaaaa</main>
+</div>
