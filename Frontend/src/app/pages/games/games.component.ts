@@ -14,12 +14,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ChangeLanguageComponent } from '../../shared/change-language/change-language.component';
-import { AuthService } from '../../services/auth.service';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-games',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './games.component.html',
   styles: ``,
 })

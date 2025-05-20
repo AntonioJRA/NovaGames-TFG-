@@ -20,7 +20,7 @@ export class AuthService {
     });
 
     return this.http
-      .post<any>(`${environment.apiUrl}${environment.routes.login}`, userData, {
+      .post<any>(`${environment.apiUrl}${environment.routes.auth.login}`, userData, {
         headers,
       })
       .pipe(catchError(this.handleError));
@@ -40,7 +40,7 @@ export class AuthService {
     });
     return this.http
       .post<any>(
-        `${environment.apiUrl}${environment.routes.register}`,
+        `${environment.apiUrl}${environment.routes.auth.register}`,
         userData,
         { headers }
       )

@@ -20,11 +20,11 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getAllGames();
+    this.getMostRatedGamesLimit();
   }
 
-  private getAllGames() {
-    this.gamesService.getAllGames().subscribe({
+  private getMostRatedGamesLimit() {
+    this.gamesService.getMostRatedGamesLimit().subscribe({
       next: (data) => {
         this.aPopularGames = data;
       },

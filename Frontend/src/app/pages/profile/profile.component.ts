@@ -57,6 +57,18 @@ export class ProfileComponent implements OnInit {
     return '';
   }
 
+  formatDate(date:Date | undefined){
+    if (date) {
+      const lang = localStorage.getItem('lang') || 'es'
+
+      if (lang === 'es') {
+        console.log(date);
+        // return date
+      } else {
+        
+      }
+    }
+  }
 
   getUser() {
     if (this.sessionToken) {

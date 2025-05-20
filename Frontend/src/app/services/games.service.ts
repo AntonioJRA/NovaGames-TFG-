@@ -14,8 +14,8 @@ export class GamesService {
   public http = inject(HttpClient)
   
 
-  getAllGames(): Observable<Game[]> {
-    return this.http.get<Game[]>(`${environment.apiUrl}${environment.routes.getAllGames}`).pipe(
+  getMostRatedGamesLimit(): Observable<Game[]> {
+    return this.http.get<Game[]>(`${environment.apiUrl}${environment.routes.home.getMostRatedGamesLimit}`).pipe(
       catchError(this.handleError)
     )
   }

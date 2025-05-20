@@ -4,7 +4,7 @@
   >
     <div class="py-2 px-4 cursor-pointer" (click)="navToHome()">
       <img
-        class="transition-all duration-300 ease-in-out w-52"
+        class="transition-all duration-300 ease-in-out min-w-52 max-w-52 "
         src="assets/images/novagames/logo.png"
         alt="logo"
       />
@@ -16,7 +16,7 @@
     </button>
 
     <!-- Menú principal -->
-    <nav class="hidden lg:flex space-x-2 text-xl">
+    <nav class="hidden lg:flex space-x-2 text-xl ">
       <a
         [routerLink]="'/'"
         routerLinkActive="bg-accent"
@@ -61,12 +61,17 @@
             <img
               [src]="'assets/images/profile_images/' + userData.profile_image"
               alt=""
-              class="h-12 border-4 border-accent rounded-full aspect-square object-contain bg-accent"
+              class="h-12 min-w-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent"
             />
           </figure>
-          <div class="flex flex-col leading-4">
-            <p class="text-xl">{{ userData.username }}</p>
-            <small class="opacity-50">{{ userData.email }}</small>
+          <div class="flex flex-col leading-6">
+            <p
+              class="whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(0.4rem, 2vw, 1.25rem)]"
+            >
+              {{ userData.username }}
+            </p>
+
+            <small class="opacity-50 truncate">{{ userData.email }}</small>
           </div>
         </div>
         @if (isProfileOpen) {
@@ -132,13 +137,14 @@
         } @else {
         <div class="flex flex-col justify-center items-center">
           <div
-            class="flex flex-col items-center text-center cursor-pointer py-2 px-4" (click)="navToProfile()"
+            class="flex flex-col items-center text-center cursor-pointer py-2 px-4"
+            (click)="navToProfile()"
           >
             <figure class="">
               <img
                 [src]="'assets/images/profile_images/' + userData.profile_image"
                 alt=""
-                class="h-12 border-4 border-accent rounded-full aspect-square object-contain bg-accent"
+                class="h-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent"
               />
             </figure>
             <div class="flex flex-col leading-4">
