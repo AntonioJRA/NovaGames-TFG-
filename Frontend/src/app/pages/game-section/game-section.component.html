@@ -1,0 +1,18 @@
+<div *ngIf="!isLoading">
+  <!-- <p>{{ contentBlocksData[1][0].content | json }}</p> -->
+  @for (blockNumber of numberOfContentBlocks; track $index) {
+    <div class="border border-red-100 h-96">
+      <p class="">Bloque {{ $index+1 }}</p>
+      
+       @let maxCols = 100;
+
+       <p> {{maxCols }} </p>
+      <p class=""> {{ contentBlocksData[blockNumber][0].block_number | json }}</p>
+    </div>
+  }
+</div>
+
+
+<!-- @if (contentBlocksData[blockNumber][0].block_number === $index + 1) {
+      <p>a</p>
+    }  -->

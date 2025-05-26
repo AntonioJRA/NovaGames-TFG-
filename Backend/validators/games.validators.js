@@ -32,10 +32,11 @@ export const validateUpdateRatings = [
 export const validateGamesByFilter = [
   check("categories")
     .optional()
-    .notEmpty()
-    .withMessage("El category no puede estar vacío")
-    .matches(/^[A-Za-z\s]+$/)
-    .withMessage("Solo se permiten letras y espacios"),
+    .matches(/^(\d+,)*\d+$/)
+    .withMessage(
+      "El formato de categorías no es válido. Usa números separados por comas."
+    ),
+
   check("rating")
     .optional()
     .notEmpty()
@@ -46,7 +47,7 @@ export const validateGamesByFilter = [
     .optional()
     .notEmpty()
     .withMessage("El time no puede estar vacío")
-    .isIn(['week','month','year'])
+    .isIn(["week", "month", "year"])
     .withMessage('El valor debe ser "day" o "week"'),
 
   (req, res, next) => {

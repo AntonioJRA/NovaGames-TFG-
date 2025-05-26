@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-upload-game',
   imports: [],
   templateUrl: './upload-game.component.html',
-  styles: ``
+  styles: ``,
 })
 export class UploadGameComponent {
-
+  
 }

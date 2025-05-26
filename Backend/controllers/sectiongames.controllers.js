@@ -1,25 +1,11 @@
 import { pool } from "../db.js";
-/*
 
-{
-  "idGame": 2,
-  "game": [
-    { "title": "Título 2", "cover": "img1.jpg", "download_url": "http://url1.com" }
-  ],
-  "categories": [2,5],
-  "blocks": [
-    { "block_type": "text", "content": "Contenido 1", "order_index": 1 },
-    { "block_type": "image", "content": "img3.jpg", "order_index": 2 }
-  ]
-}
-
-*/
 export const updateSectionGame = async (req, res) => {
   const { idGame, game, categories, blocks } = req.body;
 
   console.log(req.body);
   if (!idGame) {
-    return res.status(400).json({ message: "idGame is required" });
+    return res.status(400).json({ message: "idGame es requerido" });
   }
 
   try {
@@ -75,7 +61,7 @@ const updateGameCategories = async (idGame, categories) => {
 
   // Insertar nuevas (si hay)
   if (categories.length > 0) {
-    const values = categories.map(cat => [idGame, cat]); // [[1, 'accion'], [1, 'puzzle']]
+    const values = categories.map((cat) => [idGame, cat]); // [[1, 'accion'], [1, 'puzzle']]
     const sql = "INSERT INTO game_categories (game_id, category_id) VALUES ?";
     await pool.query(sql, [values]);
   }
@@ -91,11 +77,11 @@ const updateGameBlocks = async (idGame, blocks) => {
 
   // Insertar nuevos (si hay)
   if (blocks.length > 0) {
-    const values = blocks.map(block => [
+    const values = blocks.map((block) => [
       idGame,
       block.block_type,
       block.content,
-      block.order_index
+      block.order_index,
     ]);
 
     const sql = `
@@ -106,17 +92,32 @@ const updateGameBlocks = async (idGame, blocks) => {
   }
 };
 
-export const getCategories = async (req, res) => {
+export const getContentBlocks = async (req, res) => {
+  const { id } = req.params;
   try {
+
+    if (!id)
+      return res.status(200).json({ message: "Proporciona el ID del juego" });
+
     const [result] = await pool.query(
       `
-      SELECT * FROM categories
-      `
+      SELECT * FROM content_blocks WHERE game_id = ?
+      `,
+      [id]
     );
 
-    if(result.length === 0) return res.status(200).json({message:'No existen categorias'});
+    if (result.length === 0)
+      return res.status(200).json({ message: "La seccion está vacía o no existe el juego" });
 
-    res.status(200).json(result);
+    // Agrupar por block_number
+    const grouped = result.reduce((acc, block) => {
+      const key = block.block_number;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(block);
+      return acc;
+    }, {});
+
+    res.status(200).json(grouped);
   } catch (error) {
     res
       .status(500)

@@ -1,7 +1,7 @@
-<div class="py-6 px-20 font-bold">
+<!-- <div class="py-6 px-20 font-bold">
   <h1 class="text-4xl mb-4 text-nowrap ml-4">{{ 'home.popularGames' | translate }}</h1>
   <div *ngIf="aPopularGames">
-    <div class="flex flex-col items-center justify-center sm:flex-row flex-wrap gap-4">
+    <div class="flex flex-col items-center justify-center sm:flex-row gap-4 overflow-scroll ">
       <div
         class="border border-surface rounded max-w-64 min-w-20"
         *ngFor="let game of aPopularGames"
@@ -18,5 +18,49 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
+<div class="py-6 px-20 font-bold">
+  <h1 class="text-4xl mb-4 text-nowrap ml-4">{{ 'home.popularGames' | translate }}</h1>
+  <div *ngIf="aPopularGames">
+    <div class="relative">
+      
+      <button
+        (click)="scrollLeft()"
+        class="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
+          [class.opacity-10]="isAtStart"
+      >
+        <i class="fa-solid fa-circle-left text-4xl text-white"></i>
+      </button>
+
+      
+      <div
+        #carousel
+        class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar"
+      >
+        <div
+          class="border border-surface rounded flex-shrink-0"
+          *ngFor="let game of aPopularGames"
+        >
+          <div class="text-center cursor-pointer" [id]="game.id">
+            <img
+              [src]="'assets/images/covers/' + game.cover"
+              [alt]="game.title + '.png'"
+              class="h-40 w-full object-cover"
+            />
+            <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
+          </div>
+        </div>
+      </div>
+
+      
+      <button
+        (click)="scrollRight()"
+        class="absolute -right-4 top-1/2 -translate-y-1/2 z-10"
+         [class.opacity-10]="isAtEnd"
+      >
+        <i class="fa-solid fa-circle-right text-4xl text-white"></i>
+      </button>
+    </div>
+  </div>
+</div>

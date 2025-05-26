@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   userData!: User;
   sessionToken!: string;
 
+
   constructor(
     public langServ: LanguageService,
     private router: Router,

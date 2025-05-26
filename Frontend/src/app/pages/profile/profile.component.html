@@ -68,7 +68,7 @@
     >
       {{ activeSectionKey | translate }}
     </div>
-    @if (isProfileOpen) {
+    @if (isProfileOpen) { @if (userData){
     <div class="flex justify-center items-center mt-4">
       <figure class="z-10">
         <img
@@ -100,7 +100,7 @@
         {{ userData.registration_date | date : "long" }}
       </p>
     </div>
-    } @else if (isMyGamesOpen) {
+    } } @else if (isMyGamesOpen) {
     <div
       routerLinkActive="bg-accent"
       class="py-2 px-4 rounded-xl hover:bg-accent/20"

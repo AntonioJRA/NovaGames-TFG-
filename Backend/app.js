@@ -12,6 +12,7 @@ import { routesGameJams } from "./routes/gamejams.routes.js";
 import { routesSectionGames } from "./routes/sectiongames.routes.js";
 import { routesPosts } from "./routes/posts.routes.js";
 import { routesComments } from "./routes/comments.routes.js";
+import { routesCategories } from "./routes/categories.routes.js";
 
 // functions
 const deleteNoVerifUsers = () => {
@@ -114,6 +115,7 @@ app.use(routesGameJams);
 app.use(routesSectionGames);
 app.use(routesPosts);
 app.use(routesComments);
+app.use(routesCategories);
 
 // Cron job para eliminar usuarios no verificados después de una semana
 deleteNoVerifUsers();

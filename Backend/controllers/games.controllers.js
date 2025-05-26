@@ -36,7 +36,9 @@ export const getAllUserGames = async (req, res) => {
 
 export const getAllGames = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM games WHERE is_open = TRUE");
+    const [result] = await pool.query(
+      "SELECT * FROM games WHERE is_open = TRUE"
+    );
     const [countResult] = await pool.query(
       "SELECT COUNT(*) AS count FROM games WHERE is_open = TRUE"
     );
@@ -52,34 +54,34 @@ export const getAllGames = async (req, res) => {
   }
 };
 
-export const getSearchedGames = async (req, res) => {
-  const { searchedGame } = req.body;
-  try {
-    const [result] = await pool.query(
-      "SELECT * FROM games WHERE title LIKE ?;",
-      [`%${searchedGame}%`]
-    );
-    const [countResult] = await pool.query(
-      "SELECT COUNT(*) AS count FROM games WHERE title LIKE ?;",
-      [`%${searchedGame}%`]
-    );
+// export const getSearchedGames = async (req, res) => {
+//   const { searchedGame } = req.body;
+//   try {
+//     const [result] = await pool.query(
+//       "SELECT * FROM games WHERE title LIKE ?;",
+//       [`%${searchedGame}%`]
+//     );
+//     const [countResult] = await pool.query(
+//       "SELECT COUNT(*) AS count FROM games WHERE title LIKE ?;",
+//       [`%${searchedGame}%`]
+//     );
 
-    if (result.length === 0)
-      return res.status(200).json({
-        message: "No se encontraron resultados",
-        games: 0,
-      });
+//     if (result.length === 0)
+//       return res.status(200).json({
+//         message: "No se encontraron resultados",
+//         games: 0,
+//       });
 
-    res.status(200).json({
-      results: countResult[0].count,
-      games: result,
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al obtener juegos", error: error.message });
-  }
-};
+//     res.status(200).json({
+//       results: countResult[0].count,
+//       games: result,
+//     });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error al obtener juegos", error: error.message });
+//   }
+// };
 
 export const getGame = async (req, res) => {
   const { id } = req.params;
@@ -99,7 +101,7 @@ export const getGame = async (req, res) => {
 export const getRandomGames = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY RAND() LIMIT 30"
+      "SELECT * FROM games WHERE is_open = TRUE ORDER BY RAND() LIMIT 30"
     );
 
     res.status(200).json(result);
@@ -129,16 +131,20 @@ export const getGamesByFilter = async (req, res) => {
   try {
     let games = "SELECT * FROM games";
     let count = "SELECT COUNT(*) as count FROM games";
-    let query = "";
+    let query = " WHERE is_open=TRUE";
+    let joins = "";
     let params = [];
 
     if (categories || rating || time) {
       // Filtro por categoría
       if (categories) {
-        query += ` JOIN game_categories AS gc ON games.id = gc.game_id WHERE gc.category_id = ?`;
-        params.push(categories);
+        const categoryArray = categories.split(",").map(Number);
+        const placeholders = categoryArray.map(() => "?").join(",");
+        joins += ` JOIN game_categories AS gc ON games.id = gc.game_id`;
+        query += ` AND gc.category_id IN (${placeholders})`;
+        params.push(...categoryArray);
       } else {
-        query += " WHERE 1=1";
+        query += " ";
       }
 
       // Filtro por fecha
@@ -152,19 +158,21 @@ export const getGamesByFilter = async (req, res) => {
 
       // Orden por valoración
       if (rating) {
-        query += ` AND rating >= ${rating}`;
+        query += ` AND total_rating >= ?`;
+        params.push(Number(rating));
       }
     }
     // Combinamos las queries
-    games += query;
-    count += query;
+    games += joins + query;
+    count += joins + query;
 
     const [result] = await pool.query(games, params);
     const [countResult] = await pool.query(count, params);
 
     if (result.length === 0)
-      return res.status(404).json({
-        message: "No existe ningún juego con los filtros especificados",
+      return res.status(200).json({
+        results: 0,
+        games: [],
       });
 
     res.status(200).json({
@@ -213,7 +221,7 @@ export const addGame = async (req, res) => {
       "INSERT INTO games (developer_id, title) VALUES (?,?)",
       [idUser, title]
     );
-    
+
     if (result.affectedRows == 1) {
       res.status(201).json({ message: "Juego creado con éxito" });
     } else {

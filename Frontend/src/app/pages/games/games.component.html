@@ -1,13 +1,15 @@
-<div class="lg:flex">
-  <aside class="lg:w-80">
+<div class="lg:grid lg:grid-cols-[16rem_1fr]">
+  <aside class="">
     <form action="" class="" [formGroup]="filterForm" (submit)="onSubmit()">
-      <div class="flex justify-around lg:flex-col">
+      <div class="flex justify-around lg:flex-col bg-primary lg:pb-2">
         <div class="cursor-pointer px-5">
           <div
             class="flex items-center justify-between"
             (click)="openFilter('categories')"
           >
-            <p class="py-2 text-xl mr-2">Categorias</p>
+            <p class="py-2 text-xl mr-2">
+              {{ "games.filters.categories" | translate }}
+            </p>
             <i
               class="fa-solid fa-chevron-right text-md lg:text-xl"
               [ngClass]="{ 'fa-rotate-90': isCategoriesFilterOpen }"
@@ -15,11 +17,11 @@
           </div>
 
           <div
-            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] w-10/12 top-[10.6rem] lg:relative lg:w-auto lg:top-0"
+            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] w-10/12 top-[10.3rem] lg:relative lg:w-auto lg:top-0"
             *ngIf="isCategoriesFilterOpen"
           >
             <div
-              class="grid grid-cols-3 items-center lg:grid-cols-2 lg:pl-2"
+              class="grid grid-cols-3 items-center lg:grid-cols-2 lg:px-2 lg:text-sm"
               formArrayName="categories"
             >
               <div
@@ -29,13 +31,14 @@
                 <input
                   type="checkbox"
                   [formControlName]="i"
-                  [id]="'cat' + i"
+                  [id]="'cat' + category.id"
                   class="cursor-pointer hover:font-bold"
-                /><label
-                  [for]="'cat' + i"
+                />
+                <label
+                  [for]="'cat' + category.id"
                   class="cursor-pointer hover:font-bold"
-                  >{{ category }}</label
-                >
+                  >{{ `games.categories.${category.name}` | translate }}
+                </label>
               </div>
             </div>
           </div>
@@ -46,14 +49,16 @@
             class="flex items-center justify-between"
             (click)="openFilter('rating')"
           >
-            <p class="py-2 text-xl mr-2">Valoracion</p>
+            <p class="py-2 text-xl mr-2">
+              {{ "games.filters.rating" | translate }}
+            </p>
             <i
               class="fa-solid fa-chevron-right text-md lg:text-xl"
               [ngClass]="{ 'fa-rotate-90': isRatingFilterOpen }"
             ></i>
           </div>
           <div
-            class="absolute flex justify-center bg-white text-black px-10 py-2 rounded top-[10.6rem] left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0"
+            class="absolute shadow-lg flex justify-center bg-white text-black px-10 py-2 rounded top-[10.3rem] left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0"
             *ngIf="isRatingFilterOpen"
           >
             <input
@@ -62,6 +67,7 @@
               max="5"
               step="0.1"
               formControlName="rating"
+              class=""
             />
             <input
               type="range"
@@ -79,18 +85,22 @@
             class="flex items-center justify-between"
             (click)="openFilter('time')"
           >
-            <p class="py-2 text-xl mr-2">Antigüedad</p>
+            <p class="py-2 text-xl mr-2">
+              {{ "games.filters.date.name" | translate }}
+            </p>
             <i
               class="fa-solid fa-chevron-right text-md lg:text-xl"
               [ngClass]="{ 'fa-rotate-90': isTimeFilterOpen }"
             ></i>
           </div>
           <div
-            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0 w-10/12 top-[10.6rem]"
+            class="absolute bg-white text-black px-3 py-2 rounded left-[50%] translate-x-[-50%] lg:relative lg:w-auto lg:top-0 w-10/12 top-[10.3rem]"
             *ngIf="isTimeFilterOpen"
           >
-            <div class="grid grid-cols-4 text-xl lg:grid-cols-1">
-              <div class="flex justify-center items-center">
+            <div class="grid grid-cols-4 lg:grid-cols-1 lg:gap-1">
+              <div
+                class="flex justify-center items-center whitespace-nowrap lg:justify-start"
+              >
                 <input
                   type="radio"
                   name="time"
@@ -99,12 +109,14 @@
                   id="week"
                   class="cursor-pointer hover:font-bold"
                 />
-                <label for="week" class="px-5 cursor-pointer hover:font-bold"
-                  ><small>A week ago</small></label
-                >
+                <label for="week" class="px-5 cursor-pointer hover:font-bold">
+                  <small>{{ "games.filters.date.week" | translate }}</small>
+                </label>
               </div>
 
-              <div class="flex justify-center items-center">
+              <div
+                class="flex justify-center items-center whitespace-nowrap lg:justify-start"
+              >
                 <input
                   type="radio"
                   name="time"
@@ -114,10 +126,14 @@
                   class="cursor-pointer hover:font-bold"
                 />
                 <label for="month" class="px-5 cursor-pointer hover:font-bold"
-                  ><small>A month ago</small></label
+                  ><small>{{
+                    "games.filters.date.month" | translate
+                  }}</small></label
                 >
               </div>
-              <div class="flex justify-center items-center">
+              <div
+                class="flex justify-center items-center whitespace-nowrap lg:justify-start"
+              >
                 <input
                   type="radio"
                   name="time"
@@ -127,14 +143,17 @@
                   class="cursor-pointer hover:font-bold"
                 />
                 <label for="year" class="px-5 cursor-pointer hover:font-bold"
-                  ><small>A year ago</small></label
+                  ><small>{{
+                    "games.filters.date.year" | translate
+                  }}</small></label
                 >
               </div>
               <button
+                type="button"
                 class="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white"
                 (click)="resetTimeInputValue()"
               >
-                Quitar seleccion
+                {{ "games.filters.date.reset" | translate }}
               </button>
             </div>
           </div>
@@ -143,10 +162,94 @@
       <button
         class="bg-blue-500 w-full py-2 transition ease-in duration-50 hover:bg-blue-700 text-white"
       >
-        Filtrar
+        {{ "games.filters.filter" | translate }}
       </button>
+      <div
+        class="hidden lg:block bg-primary fixed left-0 top-0 w-[16rem] h-screen -z-10"
+      ></div>
     </form>
   </aside>
 
-  <main>aaaaaaaaaaaaaaa</main>
+  <main>
+    <div class="bg-primary border border-accent py-2">
+      <form
+        action=""
+        class="flex justify-center gap-10"
+        (submit)="searchingGame()"
+      >
+        <div class="w-9/12 flex justify-center">
+          <input
+            class="rounded-l-full py-2 pl-5 text-black w-4/6"
+            type="text"
+            [placeholder]="'games.searcher.placeholder' | translate"
+            id="search-input"
+          />
+          <button
+            type="submit"
+            class="bg-blue-500 px-4 rounded-r-full transition ease-in duration-50 hover:bg-blue-700 text-white"
+          >
+            <i class="fa-solid fa-magnifying-glass mr-1"></i>
+          </button>
+        </div>
+        <button
+          type="button"
+          class="bg-blue-500 py-2 px-4 rounded transition ease-in duration-50 hover:bg-blue-700 text-white"
+          [title]="'games.searcher.randomTitle' | translate"
+          (click)="getRandomGames()"
+        >
+          {{ "games.searcher.random" | translate }}
+        </button>
+      </form>
+    </div>
+    <div class="bg-primary border border-accent py-2 text-center">
+      <p class="text-2xl text-white/40">
+        {{ "games.searcher.results" | translate }}: {{ gamesResult }}
+      </p>
+    </div>
+
+    <div *ngIf="allGames" class="flex flex-wrap justify-center gap-5 p-5">
+      @if (gamesResult !== 0) {
+      <div class="" *ngFor="let game of paginationGames">
+        <div
+          class="text-center cursor-pointer min-w-40 max-w-56"
+          [id]="game.id"
+        >
+          <img
+            [src]="'assets/images/covers/' + game.cover"
+            [alt]="game.title + '.png'"
+            class="h-40 w-full object-cover"
+          />
+          <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
+        </div>
+      </div>
+      }@else {
+      <p class="text-2xl text-white/40 uppercase h-36">No hay resultados</p>
+      }
+    </div>
+    <!-- Pagination -->
+    <div
+      *ngIf="gamesResult !== 0"
+      class="flex justify-center items-center space-x-10 mb-6"
+    >
+      <button
+        (click)="changePage('back')"
+        class=""
+        [disabled]="isAtStart"
+        [class.opacity-10]="isAtStart"
+      >
+        <i class="fa-solid fa-circle-left text-4xl text-white"></i>
+      </button>
+
+      <p class="">Pagina {{ pageNumber + 1 }} de {{ totalPages }}</p>
+
+      <button
+        (click)="changePage('next')"
+        class=""
+        [disabled]="isAtEnd"
+        [class.opacity-10]="isAtEnd"
+      >
+        <i class="fa-solid fa-circle-right text-4xl text-white"></i>
+      </button>
+    </div>
+  </main>
 </div>

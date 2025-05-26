@@ -1,7 +1,7 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, deleteGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, getSearchedGames, publicGame, updateGameRatings } from '../controllers/games.controllers.js';
+import { addGame, deleteGame, getAllGames, getAllUserGames, getGame, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, publicGame, updateGameRatings } from '../controllers/games.controllers.js';
 import { autenticarToken } from '../controllers/auth.controllers.js';
 import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
@@ -17,7 +17,7 @@ router.get('/api/juegos/random', getRandomGames);
 // get all by filter (category, rating, time) + count
 router.get('/api/juegos/filtros', validateGamesByFilter, getGamesByFilter);
 // get all by include (buscador)
-router.get('/api/juegos/buscador', getSearchedGames);
+// router.get('/api/juegos/buscador', getSearchedGames);
 // get games Limit 10, order Rating (si hay empate, random)
 router.get('/api/juegos/valoracion', getMostRatedGamesLimit);
 // get games Limit 10, order Upload_Date

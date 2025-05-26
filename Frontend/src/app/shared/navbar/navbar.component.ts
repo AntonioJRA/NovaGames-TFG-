@@ -38,11 +38,11 @@ export class NavbarComponent implements OnInit {
     public userServ: UsersService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
     window.addEventListener('resize', this.onDesktopToMobile.bind(this));
-    this.onMobileToDesktop()
-    this.onDesktopToMobile()
+    this.onMobileToDesktop();
+    this.onDesktopToMobile();
 
     this.sessionToken = localStorage.getItem('user_session') || '';
 
@@ -55,6 +55,7 @@ export class NavbarComponent implements OnInit {
       this.showScroll();
     }
   }
+  
   onDesktopToMobile() {
     if (window.innerWidth < 1024 && this.isProfileOpen) {
       this.isProfileOpen = false;
@@ -66,8 +67,12 @@ export class NavbarComponent implements OnInit {
     if (this.sessionToken) {
       this.userServ.getUser(this.sessionToken).subscribe({
         next: (data) => {
-          this.userData = data;
-          this.isUserLogged = true;
+          if (data) {
+            this.userData = data;
+            this.isUserLogged = true;
+          } else {
+            localStorage.removeItem('user_session')
+          }
         },
         error: (err) => {
           console.log(err);

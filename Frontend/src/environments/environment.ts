@@ -13,5 +13,12 @@ export const environment = {
       login: '/api/login',
       register: '/api/register',
     },
+    games: {
+      getAllGames: '/api/juegos',
+      getGamesByFilter: '/api/juegos/filtros',
+      getCategories: '/api/categorias',
+      getContentBlocks: '/api/seccion-juego/contenido',
+      getRandomGames: '/api/juegos/random'
+    }
   },
 };

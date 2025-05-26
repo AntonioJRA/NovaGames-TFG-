@@ -4,7 +4,7 @@ import { LogoHeaderComponent } from '../../shared/logo-header/logo-header.compon
 import { ButtonComponent } from '../../shared/button/button.component';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   FormBuilder,
   FormControl,
@@ -15,46 +15,73 @@ import {
 } from '@angular/forms';
 import { ChangeLanguageComponent } from '../../shared/change-language/change-language.component';
 import { filter } from 'rxjs';
+import { GamesService } from '../../services/games.service';
+import { Game } from '../../models/game/game';
+import { CategoriesService } from '../../services/categories.service';
+import { Category } from '../../models/category/category';
 
 @Component({
   selector: 'app-games',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './games.component.html',
   styles: ``,
 })
 export class GamesComponent {
-  aCategories: string[] = [
-    'Acción',
-    'Aventura',
-    'Rol',
-    'Estrategia',
-    'Simulación',
-    'Deportes',
-    'Carreras',
-    'Lucha',
-    'Terror',
-    'Plataformas',
-    'Puzzle',
-    'Multijugador masivo (MMO)',
-    'Shooter',
-    'Sandbox',
-    'Indie',
-  ];
-  selectedCategories: string[] = [];
+  // Datos Service
+  aCategories: Category[] = [];
+  allGames: Game[] = [];
+  gamesResult!: number;
+  // Pagination
+  GAMES_PER_PAGE: number = 30;
+  paginationGames!: Game[];
+  pageNumber: number = 0;
+  totalPages: number = 1;
+  // Filters
+  selectedCategories!: any[];
   valor: number = 2.5; // Bola en el centro (entre 0 y 5)
   filterForm!: FormGroup;
+  searchForm!: FormGroup;
   isCategoriesFilterOpen: boolean = false;
   isRatingFilterOpen: boolean = false;
   isTimeFilterOpen: boolean = false;
+  // Screen Size
   isMobileScreen!: boolean;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private gamesServ: GamesService,
+    private categoriesServ: CategoriesService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
     this.onMobileToDesktop();
-    this.filterFormValidate();
-    this.syncRatingInputs();
+
+    this.filterFormInit();
+
+    this.getAllGames();
+    this.getCategories();
+  }
+
+  // RESIZE
+  onMobileToDesktop() {
+    if (window.innerWidth > 1024) {
+      this.isMobileScreen = false;
+    } else if (window.innerWidth > 1024) {
+      this.closeAllFilters();
+    } else {
+      this.isMobileScreen = true;
+    }
+  }
+
+  // FILTERS
+  filterFormInit() {
+    this.filterForm = this.fb.group({
+      categories: this.fb.array([]),
+      rating: [0],
+      time: [null],
+    });
   }
 
   filterFormValidate() {
@@ -65,6 +92,7 @@ export class GamesComponent {
       rating: [0],
       time: [null],
     });
+    this.syncRatingInputs();
   }
 
   syncRatingInputs() {
@@ -77,10 +105,14 @@ export class GamesComponent {
     this.filterForm.get('time')?.setValue(null);
   }
 
-  onMobileToDesktop() {
-    window.innerWidth > 1024
-      ? (this.isMobileScreen = false)
-      : (this.isMobileScreen = true);
+  calculateTotalPages() {
+    this.totalPages = Math.ceil(this.allGames.length / this.GAMES_PER_PAGE);
+  }
+
+  closeAllFilters() {
+    this.isCategoriesFilterOpen = false;
+    this.isRatingFilterOpen = false;
+    this.isTimeFilterOpen = false;
   }
 
   openFilter(filter: 'categories' | 'rating' | 'time') {
@@ -115,25 +147,130 @@ export class GamesComponent {
   }
 
   onSubmit() {
-    this.selectedCategories = this.filterForm.value.categories.reduce(
-      (arr: string[], checked: boolean, index: number) => {
-        if (checked) arr.push(this.aCategories[index]);
-        return arr;
-      },
-      []
-    );
-    // cerramos los filtros
-    this.isCategoriesFilterOpen = false;
-    this.isRatingFilterOpen = false;
-    this.isTimeFilterOpen = false;
+    const formValues = this.filterForm.value;
+
+    // Filtramos solo las categorías marcadas
+    this.selectedCategories = this.aCategories
+      .filter((_, i) => formValues.categories[i])
+      .map((cat) => cat.id);
 
     const data = {
-      categories: this.selectedCategories,
-      rating: this.filterForm.value.rating,
-      time: this.filterForm.value.time,
+      categories: this.selectedCategories.length
+        ? this.selectedCategories.join(',')
+        : undefined,
+      rating: formValues.rating?.toString() || undefined,
+      time: formValues.time?.toString() || undefined,
     };
 
+    // reseteamos los filtros
+    this.closeAllFilters();
     this.filterForm.reset();
-    console.log(data);
+
+    this.getGamesByFilter(data);
+  }
+
+  // SEARCH
+  searchingGame() {
+    const inputValue = (
+      document.querySelector('#search-input') as HTMLInputElement
+    )?.value;
+
+    this.paginationGames = this.allGames.filter((game) =>
+      game.title?.toLowerCase().includes(inputValue)
+    );
+
+    this.gamesResult = this.paginationGames.length;
+    this.pageNumber = 0;
+  }
+
+  // PAGINATION
+  get isAtStart(): boolean {
+    return this.pageNumber === 0;
+  }
+
+  get isAtEnd(): boolean {
+    return (
+      (this.pageNumber + 1) * this.GAMES_PER_PAGE >=
+      (this.allGames?.length || 0)
+    );
+  }
+
+  changePage(direction: 'next' | 'back') {
+    direction === 'next' ? this.pageNumber++ : this.pageNumber--;
+
+    this.updatePaginationGames();
+  }
+
+  updatePaginationGames() {
+    const start = this.pageNumber * this.GAMES_PER_PAGE;
+    const end = start + this.GAMES_PER_PAGE;
+    this.paginationGames = this.allGames.slice(start, end);
+  }
+
+  // SERVICES
+  getAllGames() {
+    this.gamesServ.getAllGames().subscribe({
+      next: (data) => {
+        this.allGames = data.games;
+        this.paginationGames = data.games.slice(0, this.GAMES_PER_PAGE);
+        this.gamesResult = data.results;
+        this.calculateTotalPages();
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
+  }
+
+  getGamesByFilter(filters: {
+    categories?: string;
+    rating?: string;
+    time?: string;
+  }) {
+    this.gamesServ.getGamesByFilter(filters).subscribe({
+      next: (data) => {
+        this.allGames = data.games;
+        this.paginationGames = data.games.slice(0, this.GAMES_PER_PAGE);
+        this.gamesResult = data.results;
+        this.pageNumber = 0;
+        this.calculateTotalPages();
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
+  }
+
+  getCategories() {
+    this.categoriesServ.getCategories().subscribe({
+      next: (data) => {
+        this.aCategories = data.map((cat: any) => ({
+          ...cat,
+          translatedName: this.translate.instant(
+            `games.categories.${cat.name}`
+          ),
+        }));
+
+        this.filterFormValidate();
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
+  }
+
+  getRandomGames() {
+    this.gamesServ.getRandomGames().subscribe({
+      next: (data) => {
+        this.allGames = data;
+        this.paginationGames = data.slice(0, this.GAMES_PER_PAGE);
+        this.gamesResult = data.length;
+        this.pageNumber = 0;
+        this.calculateTotalPages();
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
   }
 }

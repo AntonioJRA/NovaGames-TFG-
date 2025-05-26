@@ -39,6 +39,13 @@
       >
         {{ "navbar.uploadGame" | translate }}
       </a>
+      <a
+        [routerLink]="'/game-section/1'"
+        routerLinkActive="bg-accent"
+        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
+      >
+        game section
+      </a>
     </nav>
     <!-- Idiomas y login -->
     <div class="hidden lg:flex items-center space-x-4">
@@ -54,7 +61,7 @@
       } @else {
       <div class="flex justify-center items-center relative">
         <div
-          class="flex justify-center items-center space-x-2 cursor-pointer py-2 px-4 rounded-xl hover:bg-accent"
+          class="flex justify-center items-center space-x-2 cursor-pointer py-2 px-4 rounded-xl hover:bg-accent z-20"
           (click)="toggleProfile()"
         >
           <figure class="">
@@ -76,7 +83,7 @@
         </div>
         @if (isProfileOpen) {
         <div
-          class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2"
+          class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2 z-10"
         >
           <p
             class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
@@ -108,7 +115,7 @@
         'translate-x-0': isMenuOpen,
         '-translate-x-full': !isMenuOpen
       }"
-      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50 lg:hidden"
+      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50 lg:hidden z-40"
       (click)="toggleMenu()"
     ></div>
     <div
@@ -116,7 +123,7 @@
         'translate-x-0': isMenuOpen,
         '-translate-x-full': !isMenuOpen
       }"
-      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden"
+      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden z-50"
     >
       <div
         class="flex flex-col items-center space-y-2 bg-primary border-b border-surface px-6 pb-6 pt-4"
