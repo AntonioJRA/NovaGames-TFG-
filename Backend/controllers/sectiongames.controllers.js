@@ -109,15 +109,7 @@ export const getContentBlocks = async (req, res) => {
     if (result.length === 0)
       return res.status(200).json({ message: "La seccion está vacía o no existe el juego" });
 
-    // Agrupar por block_number
-    const grouped = result.reduce((acc, block) => {
-      const key = block.block_number;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(block);
-      return acc;
-    }, {});
-
-    res.status(200).json(grouped);
+    return res.status(200).json(result);
   } catch (error) {
     res
       .status(500)

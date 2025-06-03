@@ -11,7 +11,7 @@
   },
   "home": {
     "popularGames": "Juegos Populares",
-    "precentGames": "Juegos Recientes"
+    "recentGames": "Juegos Recientes"
   },
   "auth": {
     "login": {
@@ -138,5 +138,16 @@
       "fitness_exergaming": "Fitness / Ejergaming",
       "social_casual": "Social / Casual"
     }
+  },
+  "gameSection": {
+    "rating": {
+      "name": "Valorar",
+      "alert": "¡Voto subido con éxito!"
+    },
+    "updateRating": {
+      "name": "Cambiar voto",
+      "alert": "¡Voto actualizado con éxito!"
+    },
+    "downloadURL": "URL de descarga"
   }
 }

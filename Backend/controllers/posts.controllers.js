@@ -1,13 +1,13 @@
 import { pool } from "../db.js";
 
 export const getAllPosts = async (req, res) => {
-  const {idGame} = req.body
+  const {id} = req.params
   try {
     const [result] = await pool.query(
       `
-      SELECT * FROM posts WHERE game_id = ? ORDER BY post_date ASC
+      SELECT * FROM posts WHERE game_id = ? ORDER BY post_date DESC
       `
-      ,[idGame]
+      ,[id]
     );
 
     res.status(200).json(result);
@@ -19,15 +19,16 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
-  const {idGame} = req.body
   const {id} = req.params
 
   try {
     const [result] = await pool.query(
       `
-      SELECT * FROM posts WHERE game_id = ? AND id = ?
+      SELECT p.*, g.title FROM posts AS p 
+      JOIN games as g
+      WHERE p.id = ? && p.game_id = g.id
       `
-      ,[idGame,id]
+      ,[id]
     );
 
     if(result.length === 0) return res.status(200).json({message:'No existe la publicación'});

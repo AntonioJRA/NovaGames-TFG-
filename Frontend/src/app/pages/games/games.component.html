@@ -62,12 +62,12 @@
             *ngIf="isRatingFilterOpen"
           >
             <input
+            class="w-12"
               type="number"
               min="0"
               max="5"
               step="0.1"
               formControlName="rating"
-              class=""
             />
             <input
               type="range"
@@ -213,6 +213,7 @@
         <div
           class="text-center cursor-pointer min-w-40 max-w-56"
           [id]="game.id"
+           [routerLink]="'/game-section/'+ game.id"
         >
           <img
             [src]="'assets/images/covers/' + game.cover"

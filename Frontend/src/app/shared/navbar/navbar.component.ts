@@ -49,13 +49,17 @@ export class NavbarComponent implements OnInit {
     this.checkToken();
   }
 
+  get isUploadGameActive(): boolean {
+    return this.router.url === '/upload-game';
+  }
+
   onMobileToDesktop() {
     if (window.innerWidth > 1024 && this.isMenuOpen) {
       this.isMenuOpen = false;
       this.showScroll();
     }
   }
-  
+
   onDesktopToMobile() {
     if (window.innerWidth < 1024 && this.isProfileOpen) {
       this.isProfileOpen = false;
@@ -71,7 +75,7 @@ export class NavbarComponent implements OnInit {
             this.userData = data;
             this.isUserLogged = true;
           } else {
-            localStorage.removeItem('user_session')
+            localStorage.removeItem('user_session');
           }
         },
         error: (err) => {
@@ -123,5 +127,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/']).then(() => {
       window.location.reload();
     });
+  }
+  navigateUploadGame() {
+    this.sessionToken
+      ? this.router.navigate(['/upload-game'])
+      : this.router.navigate(['/login']);
   }
 }

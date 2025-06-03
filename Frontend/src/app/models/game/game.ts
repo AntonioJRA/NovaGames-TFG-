@@ -2,6 +2,7 @@ export interface Game {
   id?: number;
   developer_id?: number;
   title?: string;
+  description?: string;
   upload_date?: Date;
   download_url?: string;
   downloads?: number;
@@ -15,4 +16,10 @@ export interface Game {
 export interface GameResponse {
   results: number;
   games: Game[];
+}
+
+export interface GameRating {
+  game_id?: number;
+  user_id?: number;
+  rating?: number;
 }

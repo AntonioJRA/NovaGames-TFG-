@@ -8,6 +8,7 @@ export const environment = {
     getUser: '/api/usuarios/usuario',
     home: {
       getMostRatedGamesLimit: '/api/juegos/valoracion',
+      getMostRecentGamesLimit: '/api/juegos/recientes',
     },
     auth: {
       login: '/api/login',
@@ -18,7 +19,18 @@ export const environment = {
       getGamesByFilter: '/api/juegos/filtros',
       getCategories: '/api/categorias',
       getContentBlocks: '/api/seccion-juego/contenido',
-      getRandomGames: '/api/juegos/random'
-    }
+      getGame: '/api/juegos',
+      getRandomGames: '/api/juegos/random',
+    },
+    gameSection: {
+      getAllPosts: '/api/publicaciones',
+      getGameRatingByUser: '/api/juegos/rating-usuario',
+      addGameRating: '/api/juegos/subir-rating',
+      updateGameRating: '/api/juegos/actualizar-rating',
+      updateGameDownloads: '/api/juegos/actualizar-descargas',
+    },
+    posts: {
+      getPost: '/api/publicacion',
+    },
   },
 };

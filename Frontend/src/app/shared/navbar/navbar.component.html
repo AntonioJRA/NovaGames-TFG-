@@ -4,7 +4,7 @@
   >
     <div class="py-2 px-4 cursor-pointer" (click)="navToHome()">
       <img
-        class="transition-all duration-300 ease-in-out min-w-52 max-w-52 "
+        class="transition-all duration-300 ease-in-out min-w-52 max-w-52"
         src="assets/images/novagames/logo.png"
         alt="logo"
       />
@@ -16,7 +16,7 @@
     </button>
 
     <!-- Menú principal -->
-    <nav class="hidden lg:flex space-x-2 text-xl ">
+    <nav class="hidden lg:flex space-x-2 text-xl">
       <a
         [routerLink]="'/'"
         routerLinkActive="bg-accent"
@@ -33,18 +33,11 @@
         {{ "navbar.games" | translate }}
       </a>
       <a
-        [routerLink]="'/upload-game'"
-        routerLinkActive="bg-accent"
-        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
+        (click)="navigateUploadGame()"
+        [class.bg-accent]="isUploadGameActive"
+        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20 cursor-pointer"
       >
         {{ "navbar.uploadGame" | translate }}
-      </a>
-      <a
-        [routerLink]="'/game-section/1'"
-        routerLinkActive="bg-accent"
-        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
-      >
-        game section
       </a>
     </nav>
     <!-- Idiomas y login -->

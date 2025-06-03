@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { LogoHeaderComponent } from '../../shared/logo-header/logo-header.component';
 import { ButtonComponent } from '../../shared/button/button.component';
-import { Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
@@ -19,10 +18,22 @@ import { GamesService } from '../../services/games.service';
 import { Game } from '../../models/game/game';
 import { CategoriesService } from '../../services/categories.service';
 import { Category } from '../../models/category/category';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLinkActive,
+  RouterModule,
+} from '@angular/router';
 
 @Component({
   selector: 'app-games',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    RouterModule,
+  ],
   templateUrl: './games.component.html',
   styles: ``,
 })
@@ -197,6 +208,11 @@ export class GamesComponent {
 
   changePage(direction: 'next' | 'back') {
     direction === 'next' ? this.pageNumber++ : this.pageNumber--;
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
 
     this.updatePaginationGames();
   }

@@ -11,19 +11,12 @@ import { ContentBlock } from '../models/content_block/content_block';
 export class ContentBlocksService {
   public http = inject(HttpClient);
 
-  getContentBlocks(
-    id: string | number
-  ): Observable<{ [key: number]: ContentBlock[] }> {
+  getContentBlocks(id: string | number): Observable<ContentBlock[]> {
     return this.http
-      .get<{ [key: number]: ContentBlock[] }>(
+      .get<ContentBlock[]>(
         `${environment.apiUrl}${environment.routes.games.getContentBlocks}/${id}`
       )
-      .pipe(
-        catchError((error) => {
-          console.error('Error loading content blocks', error);
-          return throwError(() => new Error('Error loading content blocks'));
-        })
-      );
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(err: HttpErrorResponse) {

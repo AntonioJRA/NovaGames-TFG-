@@ -41,6 +41,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/game-section/game-section.component').then((c) => c.GameSectionComponent),
   },
+  {
+    path: 'post/:id',
+    loadComponent: () =>
+      import('./pages/post/post.component').then((c) => c.PostComponent),
+  },
+  {
+    path: 'help',
+    loadComponent: () =>
+      import('./pages/help/help.component').then((c) => c.HelpComponent),
+  },
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./pages/about/about.component').then((c) => c.AboutComponent),
+  },
 ];
 
 

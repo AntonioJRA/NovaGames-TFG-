@@ -11,7 +11,7 @@
   },
   "home": {
     "popularGames": "Popular Games",
-    "precentGames": "Recent Games"
+    "recentGames": "Recent Games"
   },
   "auth": {
     "login": {
@@ -139,5 +139,16 @@
       "fitness_exergaming": "Fitness / Exergaming",
       "social_casual": "Social / Casual"
     }
+  },
+  "gameSection": {
+    "rating": {
+      "name": "Rate",
+      "alert": "Vote submitted successfully!"
+    },
+    "updateRating": {
+      "name": "Update rating",
+      "alert": "Vote updated successfully!"
+    },
+    "downloadURL": "Download URL"
   }
 }

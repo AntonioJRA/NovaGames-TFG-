@@ -10,28 +10,81 @@ import { GamesService } from '../../services/games.service';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLinkActive,
+  RouterModule,
+} from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
   aPopularGames!: Game[];
+  aRecentGames!: Game[];
   gamesService = inject(GamesService);
   token!: string;
-  isAtStart = true;
-  isAtEnd = false;
+  // Carousels
+  isAtStartCarousel1: boolean = true;
+  isAtEndCarousel1: boolean = false;
+  isAtStartCarousel2: boolean = true;
+  isAtEndCarousel2: boolean = false;
 
-  @ViewChild('carousel') carousel!: ElementRef;
+  @ViewChild('carousel1') carousel1!: ElementRef;
+  @ViewChild('carousel2') carousel2!: ElementRef;
 
   constructor(public langServie: LanguageService) {}
 
   ngOnInit() {
     this.getMostRatedGamesLimit();
+    this.getMostRecentGamesLimit();
   }
 
+  ngAfterViewInit() {
+    if (this.carousel1) {
+      const el = this.carousel1.nativeElement;
+      el.addEventListener('scroll', () => this.checkScrollPositionCarousel1());
+      this.checkScrollPositionCarousel1();
+    }
+  }
+
+  scrollLeftCarousel1() {
+    this.carousel1.nativeElement.scrollBy({ left: -500, behavior: 'smooth' });
+    setTimeout(() => this.checkScrollPositionCarousel1(), 300);
+  }
+
+  scrollRightCarousel1() {
+    this.carousel1.nativeElement.scrollBy({ left: 500, behavior: 'smooth' });
+    setTimeout(() => this.checkScrollPositionCarousel1(), 300);
+  }
+
+  checkScrollPositionCarousel1() {
+    const el = this.carousel1.nativeElement;
+    this.isAtStartCarousel1 = el.scrollLeft <= 0;
+    this.isAtEndCarousel1 = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+  }
+
+  scrollLeftCarousel2() {
+    this.carousel2.nativeElement.scrollBy({ left: -500, behavior: 'smooth' });
+    setTimeout(() => this.checkScrollPositionCarousel2(), 300);
+  }
+
+  scrollRightCarousel2() {
+    this.carousel2.nativeElement.scrollBy({ left: 500, behavior: 'smooth' });
+    setTimeout(() => this.checkScrollPositionCarousel2(), 300);
+  }
+
+  checkScrollPositionCarousel2() {
+    const el = this.carousel2.nativeElement;
+    this.isAtStartCarousel2 = el.scrollLeft <= 0;
+    this.isAtEndCarousel2 = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+  }
+
+  // SERVICES
   private getMostRatedGamesLimit() {
     this.gamesService.getMostRatedGamesLimit().subscribe({
       next: (data) => {
@@ -43,27 +96,14 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  scrollLeft() {
-    this.carousel.nativeElement.scrollBy({ left: -500, behavior: 'smooth' });
-    setTimeout(() => this.checkScrollPosition(), 300);
-  }
-
-  scrollRight() {
-    this.carousel.nativeElement.scrollBy({ left: 500, behavior: 'smooth' });
-    setTimeout(() => this.checkScrollPosition(), 300);
-  }
-
-  ngAfterViewInit() {
-    if (this.carousel) {
-      const el = this.carousel.nativeElement;
-      el.addEventListener('scroll', () => this.checkScrollPosition());
-      this.checkScrollPosition();
-    }
-  }
-
-  checkScrollPosition() {
-    const el = this.carousel.nativeElement;
-    this.isAtStart = el.scrollLeft <= 0;
-    this.isAtEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+  private getMostRecentGamesLimit() {
+    this.gamesService.getMostRecentGamesLimit().subscribe({
+      next: (data) => {
+        this.aRecentGames = data;
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
   }
 }

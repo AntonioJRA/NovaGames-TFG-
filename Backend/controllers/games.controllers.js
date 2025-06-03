@@ -1,14 +1,81 @@
 import { pool } from "../db.js";
 
-export const updateGameRatings = async (req, res) => {
+export const getGameRatingByUser = async (req, res) => {
+  const idUser = req.user.id;
+  const { id: idGame } = req.query;
+
+  try {
+    if (!idGame) {
+      return res.status(400).json({ message: "Proporciona el idGame" });
+    }
+
+    const [[result]] = await pool.query(
+      "SELECT rating FROM game_ratings WHERE game_id = ? AND user_id = ?",
+      [idGame, idUser]
+    );
+
+    if (!result)
+      return res.status(200).json(null);
+
+    return res.status(200).json(result);
+
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
+export const addGameRating = async (req, res) => {
+  const idUser = req.user.id;
   const { idGame, userRating } = req.body;
   try {
     const [result] = await pool.query(
+      "INSERT INTO game_ratings (game_id, user_id, rating)VALUES (?,?,?)",
+      [idGame, idUser, userRating]
+    );
+
+    const [result2] = await pool.query(
       "UPDATE games SET rating_count = rating_count + 1, rating_sum = rating_sum + ? WHERE id = ?",
       [userRating, idGame]
     );
 
-    if (result.affectedRows == 1) {
+    if (result.affectedRows == 1 && result2.affectedRows == 1) {
+      res.status(200).json({ message: "Ratings actualizado" });
+    } else {
+      res.status(400).json({ message: "Ratings no actualizado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar ratings" });
+  }
+};
+
+export const updateGameRating = async (req, res) => {
+  const idUser = req.user.id;
+  const { idGame, userRating } = req.body;
+
+  try {
+    const [[oldRating]] = await pool.query(
+      "SELECT rating FROM game_ratings WHERE game_id = ? AND user_id = ?",
+      [idGame, idUser]
+    );
+
+    if (!oldRating)
+      res.status(200).json({ message: "No hay voto que actualizar" });
+
+    const resultRating = userRating - Number(oldRating.rating);
+
+    const [result] = await pool.query(
+      "UPDATE game_ratings SET rating = ? WHERE game_id = ? AND user_id = ?",
+      [userRating, idGame, idUser]
+    );
+
+    const [result2] = await pool.query(
+      "UPDATE games SET rating_sum = rating_sum + ? WHERE id = ?",
+      [resultRating, idGame]
+    );
+
+    if (result.affectedRows == 1 && result2.affectedRows == 1) {
       res.status(200).json({ message: "Ratings actualizado" });
     } else {
       res.status(400).json({ message: "Ratings no actualizado" });
@@ -231,6 +298,25 @@ export const addGame = async (req, res) => {
     res.status(500).json({
       message: "Error en el servidor",
     });
+  }
+};
+
+export const updateGameDownloads = async (req, res) => {
+  const { idGame} = req.body;
+
+  try {
+    const [result] = await pool.query(
+      "UPDATE games SET downloads = downloads + 1 WHERE id = ?",
+      [idGame]
+    );
+
+    if (result.affectedRows == 1) {
+      res.status(200).json({ message: "downloads actualizado" });
+    } else {
+      res.status(400).json({ message: "downloads no actualizado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar downloads" });
   }
 };
 
