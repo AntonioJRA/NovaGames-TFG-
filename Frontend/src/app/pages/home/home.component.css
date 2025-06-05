@@ -1,11 +1,41 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.dragging {
-  cursor: grabbing;
-  user-select: none;
+
+.hero-section {
+  position: relative; /* importante para que el ::before quede relativo */
+  background-image: url("/assets/images/novagames/cover.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background-color: rgba(0, 0, 0, 0.2); /* negro con 50% opacidad */
+  z-index: 0;
+}
+
+.outlined-text {
+  text-shadow:
+    -1.5px -1.5px 0 black,
+     1.5px -1.5px 0 black,
+    -1.5px  1.5px 0 black,
+     1.5px  1.5px 0 black;
+}
+.outlined-text-white {
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
+}
+
+

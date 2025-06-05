@@ -1,7 +1,7 @@
 export interface Game {
   id?: number;
   developer_id?: number;
-  title?: string;
+  title: string;
   description?: string;
   upload_date?: Date;
   download_url?: string;
@@ -22,4 +22,10 @@ export interface GameRating {
   game_id?: number;
   user_id?: number;
   rating?: number;
+}
+
+export interface GameCategories {
+  game_id: number;
+  id: number;
+  name: string;
 }

@@ -22,7 +22,7 @@ CREATE TABLE games (
     description TEXT,
     upload_date DATETIME DEFAULT NOW(),
     download_url VARCHAR(255),
-    downloads INT,
+    downloads INT DEFAULT 0,
     cover VARCHAR(255),
     is_open BOOLEAN DEFAULT FALSE,
     rating_count INT DEFAULT 0,

@@ -1,9 +1,32 @@
 import { pool } from "../db.js";
 
+/*
+{
+  "idGame": 120,
+  "game": [
+    {
+      "title": "Luis Super Sta",
+      "download_url": "https://prueba.com",
+      "description": "Esto es una descripcion",
+      "cover": "luisSS.png"
+    }
+  ],
+  "categories": [9],
+  "blocks": [
+    {
+      "image_name": "imagen1.png",
+      "content": "Primer bloque de contenido"
+    },
+    {
+      "image_name": "imagen2.jpg",
+      "content": "Segundo bloque con otro contenido"
+    }
+  ]
+}
+*/
 export const updateSectionGame = async (req, res) => {
   const { idGame, game, categories, blocks } = req.body;
 
-  console.log(req.body);
   if (!idGame) {
     return res.status(400).json({ message: "idGame es requerido" });
   }
@@ -38,12 +61,16 @@ const updateGame = async (idGame, gameData) => {
     fields.push("cover = ?");
     values.push(gameData.cover);
   }
-
-  if (fields.length === 0) {
-    throw new Error("No hay campos para actualizar");
+  if (gameData.description !== undefined) {
+    fields.push("description = ?");
+    values.push(gameData.description);
   }
 
-  values.push(idGame); // Para el WHERE
+  if (fields.length === 0) {
+    return res.status(200).json({ message: "No hay campos que actualizar" });
+  }
+
+  values.push(idGame);
 
   const sql = `UPDATE games SET ${fields.join(", ")} WHERE id = ?`;
 
@@ -79,13 +106,12 @@ const updateGameBlocks = async (idGame, blocks) => {
   if (blocks.length > 0) {
     const values = blocks.map((block) => [
       idGame,
-      block.block_type,
+      block.image_name,
       block.content,
-      block.order_index,
     ]);
 
     const sql = `
-      INSERT INTO content_blocks (game_id, block_type, content, order_index)
+      INSERT INTO content_blocks (game_id, image_name, content)
       VALUES ?
     `;
     await pool.query(sql, [values]);
@@ -102,6 +128,34 @@ export const getContentBlocks = async (req, res) => {
     const [result] = await pool.query(
       `
       SELECT * FROM content_blocks WHERE game_id = ?
+      `,
+      [id]
+    );
+
+    if (result.length === 0)
+      return res.status(200).json({ message: "La seccion está vacía o no existe el juego" });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
+export const getGameCategories = async (req, res) => {
+  const { id } = req.params;
+  try {
+
+    if (!id)
+      return res.status(200).json({ message: "Proporciona el ID del juego" });
+
+    const [result] = await pool.query(
+      `
+      SELECT gc.game_id, c.id, c.name 
+      FROM game_categories as gc
+      JOIN categories AS c ON gc.category_id = c.id
+      WHERE gc.game_id = ?
       `,
       [id]
     );

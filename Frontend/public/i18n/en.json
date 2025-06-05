@@ -2,7 +2,12 @@
   "navbar": {
     "home": "Home",
     "games": "Games",
-    "uploadGame": "Upload Game",
+    "uploadGame": {
+      "name": "Upload Game",
+      "title": "Enter a title for your game",
+      "placeholder": "Galactic War",
+      "button": "Create"
+    },
     "login": "Log In",
     "signUp": "Sign Up",
     "profile": "Profile",
@@ -10,6 +15,12 @@
     "signOut": "Sign Out"
   },
   "home": {
+    "title": "Discover. Create. Share.",
+    "subtitle": "\"Your platform to develop and share video games in community.\"",
+    "description": "NovaGames connects developers and players through creative events like Game Jams, where you can upload your own games, vote, and receive feedback. Join and be part of the future of indie development.",
+    "games": "Uploaded Games",
+    "devs": "Registered Developers",
+    "rates": "Ratings",
     "popularGames": "Popular Games",
     "recentGames": "Recent Games"
   },
@@ -73,7 +84,6 @@
         "year": "Year",
         "reset": "Clear selection"
       },
-
       "filter": "Apply filter"
     },
     "searcher": {
@@ -150,5 +160,45 @@
       "alert": "Vote updated successfully!"
     },
     "downloadURL": "Download URL"
+  },
+  "uploadGame": {
+    "title": {
+      "name": "Title",
+      "error": {
+        "required": "Required field"
+      }
+    },
+    "cover": {
+      "name": "Cover",
+      "error": {
+        "required": "Required field"
+      }
+    },
+    "url": {
+      "name": "Download URL",
+      "placeholder": "https://github.com/",
+      "error": {
+        "required": "Required field",
+        "pattern": "Must be a GitHub link"
+      }
+    },
+    "description": {
+      "name": "Description",
+      "placeholder": "What is your game about? Tell us here",
+      "error": {
+        "required": "Required field"
+      }
+    },
+    "categories": {
+      "name": "Categories",
+      "placeholder": "Search category",
+      "button": "Add",
+      "error": {
+        "notExist": "Invalid category",
+        "repeat": "You already added this category",
+        "required": "Include at least one category"
+      }
+    },
+    "submit": "Publish"
   }
 }

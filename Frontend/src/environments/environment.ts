@@ -9,6 +9,7 @@ export const environment = {
     home: {
       getMostRatedGamesLimit: '/api/juegos/valoracion',
       getMostRecentGamesLimit: '/api/juegos/recientes',
+      addGame: '/api/juegos/crear',
     },
     auth: {
       login: '/api/login',
@@ -28,9 +29,14 @@ export const environment = {
       addGameRating: '/api/juegos/subir-rating',
       updateGameRating: '/api/juegos/actualizar-rating',
       updateGameDownloads: '/api/juegos/actualizar-descargas',
+      getGameCategories: '/api/seccion-juego/categorias'
     },
     posts: {
       getPost: '/api/publicacion',
     },
+    uploadGame: {
+      updateSectionGame: '/api/seccion-juego/guardar',
+    },
+
   },
 };

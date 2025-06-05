@@ -7,8 +7,9 @@ import {
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, map, of, throwError } from 'rxjs';
-import { Game, GameRating, GameResponse } from '../models/game/game';
+import { Game, GameCategories, GameRating, GameResponse } from '../models/game/game';
 import { environment } from '../../environments/environment';
+import { Category } from '../models/category/category';
 
 @Injectable({
   providedIn: 'root',
@@ -134,6 +135,24 @@ export class GamesService {
       .pipe(catchError(this.handleError));
   }
 
+  addGame(
+    token: string,
+    title: string
+  ): Observable<Game> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http
+      .post<Game>(
+        `${environment.apiUrl}${environment.routes.home.addGame}`,
+        { title },
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   updateGameRating(
     token: string,
     idGame: number,
@@ -161,6 +180,14 @@ export class GamesService {
       )
       .pipe(catchError(this.handleError));
   }
+
+  getGameCategories(id: string | number): Observable<GameCategories[]> {
+      return this.http
+        .get<GameCategories[]>(
+          `${environment.apiUrl}${environment.routes.gameSection.getGameCategories}/${id}`
+        )
+        .pipe(catchError(this.handleError));
+    }
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage: string = '';

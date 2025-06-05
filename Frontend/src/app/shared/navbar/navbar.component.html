@@ -1,13 +1,35 @@
 <header>
-  <div
-    class="h-20 flex justify-between items-center px-8 py-4 bg-primary border-b-2 border-surface text-lg text-text"
-  >
+  <!-- UPLOAD GAME MODAL -->
+  <div *ngIf="isUploadGameModalOpen" class="absolute bg-black/40 top-0 left-0 bottom-0 right-0 z-30">
+    <div
+      class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-40 bg-primary w-1/2 h-60 rounded-xl shadow-xl border-2 border-secondary">
+      <div class="relative">
+        <div
+          class="absolute right-10 -translate-y-1/2 bg-primary rounded-full border-4 border-secondary cursor-pointer hover:scale-110 hover:border-accent transition-all ease-in duration-100"
+          (click)="toggleModal()">
+          <div class="h-12 w-12 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-rotate-left text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <form action="" class="flex flex-col items-center justify-center h-full space-y-5" [formGroup]="modalForm"
+        (submit)="modalOnSubmit()">
+        <p class="text-2xl">{{ "navbar.uploadGame.title" | translate }}</p>
+        <input type="text" name="title" id="title" placeholder="{{ 'navbar.uploadGame.placeholder' | translate }} " class="p-3 rounded w-1/2 text-black"
+          formControlName="title">
+        <app-button content="{{ 'navbar.uploadGame.button' | translate }} "
+          extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
+          [disabledClasses]="'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'" type="submit"
+          [disabled]="!modalForm.valid"></app-button>
+      </form>
+    </div>
+  </div>
+
+  <div class="h-20 flex justify-between items-center px-8 py-4 bg-primary border-b-2 border-surface text-lg text-text">
     <div class="py-2 px-4 cursor-pointer" (click)="navToHome()">
-      <img
-        class="transition-all duration-300 ease-in-out min-w-52 max-w-52"
-        src="assets/images/novagames/logo.png"
-        alt="logo"
-      />
+      <img class="transition-all duration-300 ease-in-out min-w-52 max-w-52" src="assets/images/novagames/logo.png"
+        alt="logo" />
     </div>
 
     <!-- Botón Menú Mobile-->
@@ -17,27 +39,16 @@
 
     <!-- Menú principal -->
     <nav class="hidden lg:flex space-x-2 text-xl">
-      <a
-        [routerLink]="'/'"
-        routerLinkActive="bg-accent"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="py-2 px-4 rounded-xl hover:bg-accent/20"
-      >
+      <a [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
+        class="py-2 px-4 rounded-xl hover:bg-accent/20">
         {{ "navbar.home" | translate }}
       </a>
-      <a
-        [routerLink]="'/games'"
-        routerLinkActive="bg-accent"
-        class="py-2 px-4 rounded-xl hover:bg-accent/20"
-      >
+      <a [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
         {{ "navbar.games" | translate }}
       </a>
-      <a
-        (click)="navigateUploadGame()"
-        [class.bg-accent]="isUploadGameActive"
-        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20 cursor-pointer"
-      >
-        {{ "navbar.uploadGame" | translate }}
+      <a (click)="navToUploadGame()" [class.bg-accent]="isUploadGameActive"
+        class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20 cursor-pointer">
+        {{ "navbar.uploadGame.name" | translate }}
       </a>
     </nav>
     <!-- Idiomas y login -->
@@ -53,21 +64,14 @@
       </div>
       } @else {
       <div class="flex justify-center items-center relative">
-        <div
-          class="flex justify-center items-center space-x-2 cursor-pointer py-2 px-4 rounded-xl hover:bg-accent z-20"
-          (click)="toggleProfile()"
-        >
+        <div class="flex justify-center items-center space-x-2 cursor-pointer py-2 px-4 rounded-xl hover:bg-accent z-20"
+          (click)="toggleProfile()">
           <figure class="">
-            <img
-              [src]="'assets/images/profile_images/' + userData.profile_image"
-              alt=""
-              class="h-12 min-w-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent"
-            />
+            <img [src]="'assets/images/profile_images/' + userData.profile_image" alt=""
+              class="h-12 min-w-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent" />
           </figure>
           <div class="flex flex-col leading-6">
-            <p
-              class="whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(0.4rem, 2vw, 1.25rem)]"
-            >
+            <p class="whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(0.4rem, 2vw, 1.25rem)]">
               {{ userData.username }}
             </p>
 
@@ -75,25 +79,14 @@
           </div>
         </div>
         @if (isProfileOpen) {
-        <div
-          class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2 z-10"
-        >
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
-            (click)="navToProfile()"
-          >
+        <div class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2 z-10">
+          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile()">
             {{ "navbar.profile" | translate }}
           </p>
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
-            (click)="navToProfile()"
-          >
+          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile()">
             {{ "navbar.myGames" | translate }}
           </p>
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl"
-            (click)="signOut()"
-          >
+          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="signOut()">
             {{ "navbar.signOut" | translate }}
           </p>
         </div>
@@ -103,24 +96,17 @@
       <app-change-language></app-change-language>
     </div>
     <!-- Menú mobile-->
-    <div
-      [ngClass]="{
+    <div [ngClass]="{
+        'translate-x-0': isMenuOpen,
+        '-translate-x-full': !isMenuOpen
+      }" class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50 lg:hidden z-40"
+      (click)="toggleMenu()"></div>
+    <div [ngClass]="{
         'translate-x-0': isMenuOpen,
         '-translate-x-full': !isMenuOpen
       }"
-      class="transition-all ease-out duration-300 absolute top-20 left-0 w-full h-full bg-black/50 lg:hidden z-40"
-      (click)="toggleMenu()"
-    ></div>
-    <div
-      [ngClass]="{
-        'translate-x-0': isMenuOpen,
-        '-translate-x-full': !isMenuOpen
-      }"
-      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden z-50"
-    >
-      <div
-        class="flex flex-col items-center space-y-2 bg-primary border-b border-surface px-6 pb-6 pt-4"
-      >
+      class="transition-all ease-out duration-300 absolute left-0 top-20 w-60 h-full bg-primary text-text lg:hidden z-50">
+      <div class="flex flex-col items-center space-y-2 bg-primary border-b border-surface px-6 pb-6 pt-4">
         <div class="flex">
           <app-change-language></app-change-language>
         </div>
@@ -136,16 +122,10 @@
         </div>
         } @else {
         <div class="flex flex-col justify-center items-center">
-          <div
-            class="flex flex-col items-center text-center cursor-pointer py-2 px-4"
-            (click)="navToProfile()"
-          >
+          <div class="flex flex-col items-center text-center cursor-pointer py-2 px-4" (click)="navToProfile()">
             <figure class="">
-              <img
-                [src]="'assets/images/profile_images/' + userData.profile_image"
-                alt=""
-                class="h-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent"
-              />
+              <img [src]="'assets/images/profile_images/' + userData.profile_image" alt=""
+                class="h-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent" />
             </figure>
             <div class="flex flex-col leading-4">
               <p class="text-xl">{{ userData.username }}</p>
@@ -154,22 +134,13 @@
           </div>
         </div>
         <div class="flex flex-col w-full">
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
-            (click)="navToProfile()"
-          >
+          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile()">
             {{ "navbar.profile" | translate }}
           </p>
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
-            (click)="navToProfile()"
-          >
+          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile()">
             {{ "navbar.myGames" | translate }}
           </p>
-          <p
-            class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl"
-            (click)="signOut()"
-          >
+          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="signOut()">
             {{ "navbar.signOut" | translate }}
           </p>
         </div>
@@ -177,27 +148,16 @@
       </div>
 
       <nav class="flex flex-col p-6">
-        <a
-          [routerLink]="'/'"
-          routerLinkActive="bg-accent"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="py-2 px-4 rounded-xl hover:bg-accent/20"
-        >
+        <a [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
+          class="py-2 px-4 rounded-xl hover:bg-accent/20">
           {{ "navbar.home" | translate }}
         </a>
-        <a
-          [routerLink]="'/games'"
-          routerLinkActive="bg-accent"
-          class="py-2 px-4 rounded-xl hover:bg-accent/20"
-        >
+        <a [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
           {{ "navbar.games" | translate }}
         </a>
-        <a
-          [routerLink]="'/upload-game'"
-          routerLinkActive="bg-accent"
-          class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
-        >
-          {{ "navbar.uploadGame" | translate }}
+        <a (click)="navToUploadGame()" [class.bg-accent]="isUploadGameActive"
+          class="py-2 px-4 rounded-xl text-nowrap cursor-pointer hover:bg-accent/20">
+          {{ "navbar.uploadGame.name" | translate }}
         </a>
       </nav>
     </div>

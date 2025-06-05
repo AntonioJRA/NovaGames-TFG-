@@ -11,6 +11,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeLanguageComponent } from '../change-language/change-language.component';
 import { UsersService } from '../../services/users.service';
 import { User } from '../../models/user/user';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { ButtonComponent } from '../button/button.component';
+import { GamesService } from '../../services/games.service';
 
 @Component({
   selector: 'app-navbar',
@@ -20,23 +28,33 @@ import { User } from '../../models/user/user';
     TranslatePipe,
     RouterModule,
     ChangeLanguageComponent,
+    ButtonComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './navbar.component.html',
   styles: ``,
 })
 export class NavbarComponent implements OnInit {
+  // Menu
   isMenuOpen: boolean = false;
+  // User
   isProfileOpen: boolean = false;
   isUserLogged: boolean = false;
   userData!: User;
   sessionToken!: string;
+  // Upload Game
+  isUploadGameModalOpen: boolean = false;
+  modalForm!: FormGroup;
+  modalError: boolean = false;
 
   constructor(
     public langServ: LanguageService,
+    public userServ: UsersService,
+    public gameServ: GamesService,
     private router: Router,
     private route: ActivatedRoute,
-    public userServ: UsersService
-  ) {}
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
@@ -47,12 +65,15 @@ export class NavbarComponent implements OnInit {
     this.sessionToken = localStorage.getItem('user_session') || '';
 
     this.checkToken();
+
+    this.modalValidate()
   }
 
   get isUploadGameActive(): boolean {
     return this.router.url === '/upload-game';
   }
 
+  // WINDOW SIZE
   onMobileToDesktop() {
     if (window.innerWidth > 1024 && this.isMenuOpen) {
       this.isMenuOpen = false;
@@ -67,24 +88,7 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  checkToken() {
-    if (this.sessionToken) {
-      this.userServ.getUser(this.sessionToken).subscribe({
-        next: (data) => {
-          if (data) {
-            this.userData = data;
-            this.isUserLogged = true;
-          } else {
-            localStorage.removeItem('user_session');
-          }
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-    }
-  }
-
+  // MENU
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
 
@@ -95,10 +99,58 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  signOut() {
+    localStorage.removeItem('user_session');
+    this.router.navigate(['/']).then(() => {
+      window.location.reload();
+    });
+  }
+
   toggleProfile() {
     this.isProfileOpen = !this.isProfileOpen;
   }
 
+  // MODAL
+  toggleModal() {
+    this.isUploadGameModalOpen = !this.isUploadGameModalOpen;
+    this.toggleMenu()
+
+    if (this.isUploadGameModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  modalValidate() {
+    this.modalForm = this.fb.group({
+      title: ['', [Validators.required]],
+    });
+  }
+
+  modalOnSubmit() {
+    if (this.modalForm.valid) {
+      const formValue = this.modalForm.value;
+      const title = formValue.title
+
+      this.toggleModal()
+      this.showScroll();
+
+      this.router.navigate(['upload-game/123'])
+      // this.gameServ.addGame(this.sessionToken, title ).subscribe({
+      //   next: (data) => {
+      //     this.toggleModal()
+      //     this.showScroll();
+      //     this.router.navigate(['upload-game']);
+      //     console.log(data);
+      //   },
+      //   error: (err) => {
+      //   },
+      // });
+    }
+  }
+
+  // NAVIGATES
   navToHome() {
     this.router.navigate(['']);
     this.showScroll();
@@ -115,6 +167,11 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['profile']);
     this.showScroll();
   }
+  navToUploadGame() {
+    this.sessionToken
+      ? this.toggleModal()
+      : this.router.navigate(['/login']);
+  }
 
   showScroll() {
     if (this.isMenuOpen) {
@@ -122,15 +179,22 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  signOut() {
-    localStorage.removeItem('user_session');
-    this.router.navigate(['/']).then(() => {
-      window.location.reload();
-    });
-  }
-  navigateUploadGame() {
-    this.sessionToken
-      ? this.router.navigate(['/upload-game'])
-      : this.router.navigate(['/login']);
+  // SERVICES
+  checkToken() {
+    if (this.sessionToken) {
+      this.userServ.getUser(this.sessionToken).subscribe({
+        next: (data) => {
+          if (data) {
+            this.userData = data;
+            this.isUserLogged = true;
+          } else {
+            localStorage.removeItem('user_session');
+          }
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+    }
   }
 }

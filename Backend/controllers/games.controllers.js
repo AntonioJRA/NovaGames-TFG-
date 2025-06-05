@@ -256,7 +256,7 @@ export const getGamesByFilter = async (req, res) => {
 export const getMostRatedGamesLimit = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY total_rating DESC, RAND() LIMIT 10"
+      "SELECT * FROM games WHERE is_open=TRUE ORDER BY total_rating DESC, RAND() LIMIT 10"
     );
     res.status(200).json(result);
   } catch (error) {
@@ -270,7 +270,7 @@ export const getMostRatedGamesLimit = async (req, res) => {
 export const getMostRecentGamesLimit = async (req, res) => {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM games ORDER BY upload_date DESC LIMIT 10"
+      "SELECT * FROM games WHERE is_open=TRUE ORDER BY upload_date DESC LIMIT 10"
     );
     res.status(200).json(result);
   } catch (error) {
@@ -284,6 +284,9 @@ export const addGame = async (req, res) => {
   const idUser = req.user.id;
   const { title } = req.body;
   try {
+    if(!title) res.status(400).json({ message: "Inserte un título" });
+    console.log(title);
+
     const [result] = await pool.query(
       "INSERT INTO games (developer_id, title) VALUES (?,?)",
       [idUser, title]

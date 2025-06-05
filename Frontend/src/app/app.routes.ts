@@ -17,7 +17,7 @@ export const routes: Routes = [
       import('./pages/games/games.component').then((c) => c.GamesComponent),
   },
   {
-    path: 'upload-game',
+    path: 'upload-game/:id',
     loadComponent: () =>
       import('./pages/upload-game/upload-game.component').then((c) => c.UploadGameComponent),
   },

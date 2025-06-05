@@ -1,0 +1,8 @@
+.highlight-text {
+  color: white; /* O cualquier color de texto que desees */
+  text-shadow:
+    -2px -2px 0 #1E293B,
+     2px -2px 0 #1E293B,
+    -2px  2px 0 #1E293B,
+     2px  2px 0 #1E293B;
+}

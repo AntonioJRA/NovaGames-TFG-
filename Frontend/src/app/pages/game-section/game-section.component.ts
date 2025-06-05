@@ -3,7 +3,7 @@ import { ContentBlocksService } from '../../services/content-blocks.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ContentBlock } from '../../models/content_block/content_block';
 import { CommonModule } from '@angular/common';
-import { Game } from '../../models/game/game';
+import { Game, GameCategories } from '../../models/game/game';
 import { GamesService } from '../../services/games.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { PostsService } from '../../services/posts.service';
@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
   templateUrl: './game-section.component.html',
   styleUrls: ['./game-section.component.css'],
 })
+
 export class GameSectionComponent implements OnInit {
   isLoading = true;
   contentBlockData!: ContentBlock[];
@@ -25,6 +26,7 @@ export class GameSectionComponent implements OnInit {
   idGame!: string;
   oldUserRating!: number;
   rating: number = 0;
+  gameCategoriesData!: GameCategories[]
 
   constructor(
     private router: Router,
@@ -58,11 +60,25 @@ export class GameSectionComponent implements OnInit {
       this.gameServ.getGame(this.idGame).subscribe({
         next: (data) => {
           this.gameData = data;
-          this.getAllPosts();
+          this.getGameCategories()
         },
         error: (err) => console.error(err),
       });
     }
+  }
+
+  
+  getGameCategories() {
+    this.gameServ.getGameCategories(this.idGame).subscribe({
+      next: (data) => {
+        this.gameCategoriesData = data
+        console.log(this.gameCategoriesData);
+        this.getContentBlocks();
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
   }
 
   getAllPosts() {
@@ -71,7 +87,7 @@ export class GameSectionComponent implements OnInit {
       this.postServ.getAllPosts(this.idGame).subscribe({
         next: (data) => {
           this.postsData = data.slice(0, 5);
-          this.getContentBlocks();
+          
         },
         error: (err) => console.error(err),
       });
@@ -182,4 +198,5 @@ export class GameSectionComponent implements OnInit {
       });
     }
   }
+
 }

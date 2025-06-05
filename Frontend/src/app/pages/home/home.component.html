@@ -1,48 +1,53 @@
-<div class="py-6 px-20 font-bold">
-  <!-- COVER -->
+<!-- COVER -->
+<div class="bg-accent flex flex-col space-y-5 py-6 px-20 relative hero-section min-h-[30rem]">
+  <div class="relative">
+    <h1 class="text-5xl  text-blue-400 outlined-text lg:text-center">{{ "home.title" | translate }}</h1>
+    <p class="text-2xl outlined-text lg:text-center ">{{ "home.subtitle" | translate }}</p>
+    <div class="grid grid-cols-2 justify-center items-center space-x-5 pt-10">
+      <p class="text-2xl text-black font-extrabold outlined-text-white">{{ "home.description" | translate }}</p>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-center py-10 lg:min-h-56">
+        <div class="space-y-2" >
+          <h2 class="text-5xl font-extrabold outlined-text text-red-600 ">+300</h2>
+          <p class="text-xl outlined-text">{{ "home.games" | translate }}</p>
+        </div>
+        <div class="space-y-2" >
+          <h2 class="text-5xl font-extrabold outlined-text text-green-600">+100</h2>
+          <p class="text-xl outlined-text">{{ "home.devs" | translate }}</p>
+        </div>
+        <div class="space-y-2" >
+          <h2 class="text-5xl font-extrabold outlined-text text-blue-600">+1K</h2>
+          <p class="text-xl outlined-text">{{ "home.rates" | translate }}</p>
+        </div>
+      </div>
 
+    </div>
+  </div>
+</div>
+
+<div class="py-6 px-20 font-bold mt-5">
   <!-- POPULAR GAMES CAROUSEL -->
   <div *ngIf="aPopularGames">
     <h1 class="text-4xl mb-4 text-nowrap ml-4">
       {{ "home.popularGames" | translate }}
     </h1>
     <div class="relative">
-      <button
-        (click)="scrollLeftCarousel1()"
-        class="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
-        [class.opacity-10]="isAtStartCarousel1"
-      >
+      <button (click)="scrollLeftCarousel1()" class="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
+        [class.opacity-10]="isAtStartCarousel1">
         <i class="fa-solid fa-circle-left text-4xl text-white"></i>
       </button>
 
-      <div
-        #carousel1
-        class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar"
-      >
-        <div
-          class="border border-surface rounded flex-shrink-0"
-          *ngFor="let game of aPopularGames"
-        >
-          <div
-            class="text-center cursor-pointer"
-            [id]="game.id"
-            [routerLink]="'/game-section/' + game.id"
-          >
-            <img
-              [src]="'assets/images/covers/' + game.cover"
-              [alt]="game.title + '.png'"
-              class="h-40 w-full object-cover"
-            />
+      <div #carousel1 class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar">
+        <div class="border border-surface rounded flex-shrink-0" *ngFor="let game of aPopularGames">
+          <div class="text-center cursor-pointer" [id]="game.id" [routerLink]="'/game-section/' + game.id">
+            <img [src]="'assets/images/general/' + game.cover" [alt]="game.title + '.png'"
+              class="h-40 w-full object-cover" />
             <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
           </div>
         </div>
       </div>
 
-      <button
-        (click)="scrollRightCarousel1()"
-        class="absolute -right-4 top-1/2 -translate-y-1/2 z-10"
-        [class.opacity-10]="isAtEndCarousel1"
-      >
+      <button (click)="scrollRightCarousel1()" class="absolute -right-4 top-1/2 -translate-y-1/2 z-10"
+        [class.opacity-10]="isAtEndCarousel1">
         <i class="fa-solid fa-circle-right text-4xl text-white"></i>
       </button>
     </div>
@@ -54,42 +59,23 @@
       {{ "home.recentGames" | translate }}
     </h1>
     <div class="relative">
-      <button
-        (click)="scrollLeftCarousel2()"
-        class="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
-        [class.opacity-10]="isAtStartCarousel2"
-      >
+      <button (click)="scrollLeftCarousel2()" class="absolute -left-4 top-1/2 -translate-y-1/2 z-10"
+        [class.opacity-10]="isAtStartCarousel2">
         <i class="fa-solid fa-circle-left text-4xl text-white"></i>
       </button>
 
-      <div
-        #carousel2
-        class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar"
-      >
-        <div
-          class="border border-surface rounded flex-shrink-0"
-          *ngFor="let game of aRecentGames"
-        >
-          <div
-            class="text-center cursor-pointer"
-            [id]="game.id"
-            [routerLink]="'/game-section/' + game.id"
-          >
-            <img
-              [src]="'assets/images/covers/' + game.cover"
-              [alt]="game.title + '.png'"
-              class="h-40 w-full object-cover"
-            />
+      <div #carousel2 class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar">
+        <div class="border border-surface rounded flex-shrink-0" *ngFor="let game of aRecentGames">
+          <div class="text-center cursor-pointer" [id]="game.id" [routerLink]="'/game-section/' + game.id">
+            <img [src]="'assets/images/general/' + game.cover" [alt]="game.title + '.png'"
+              class="h-40 w-full object-cover" />
             <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
           </div>
         </div>
       </div>
 
-      <button
-        (click)="scrollRightCarousel2()"
-        class="absolute -right-4 top-1/2 -translate-y-1/2 z-10"
-        [class.opacity-10]="isAtEndCarousel2"
-      >
+      <button (click)="scrollRightCarousel2()" class="absolute -right-4 top-1/2 -translate-y-1/2 z-10"
+        [class.opacity-10]="isAtEndCarousel2">
         <i class="fa-solid fa-circle-right text-4xl text-white"></i>
       </button>
     </div>

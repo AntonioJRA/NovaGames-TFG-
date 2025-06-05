@@ -2,7 +2,12 @@
   "navbar": {
     "home": "Inicio",
     "games": "Juegos",
-    "uploadGame": "Subir Juego",
+    "uploadGame": {
+      "name": "Subir juego",
+      "title": "Introduzca un título para su juego",
+      "placeholder": "Galactic War",
+      "button": "Crear"
+    },
     "login": "Iniciar sesión",
     "signUp": "Registrarse",
     "profile": "Perfil",
@@ -10,6 +15,12 @@
     "signOut": "Cerrar sesión"
   },
   "home": {
+    "title": "Descubre. Crea. Comparte.",
+    "subtitle": "\"Tu plataforma para desarrollar y compartir videojuegos en comunidad.\"",
+    "description": "NovaGames conecta a desarrolladores y jugadores mediante eventos creativos, como las Game Jams, donde puedes subir tus propios juegos, votar y recibir feedback. Únete y forma parte del futuro del desarrollo indie.",
+    "games": "Juegos subidos",
+    "devs": "Desarolladores registrados",
+    "rates": "Valoraciones",
     "popularGames": "Juegos Populares",
     "recentGames": "Juegos Recientes"
   },
@@ -149,5 +160,45 @@
       "alert": "¡Voto actualizado con éxito!"
     },
     "downloadURL": "URL de descarga"
+  },
+  "uploadGame": {
+    "title": {
+      "name": "Título",
+      "error": {
+        "required": "Dato requerido"
+      }
+    },
+    "cover": {
+      "name": "Portada",
+      "error": {
+        "required": "Dato requerido"
+      }
+    },
+    "url": {
+      "name": "URL de descarga",
+      "placeholder": "https://github.com/",
+      "error": {
+        "required": "Dato requerido",
+        "pattern": "Debe ser un enlace github"
+      }
+    },
+    "description": {
+      "name": "Descripción",
+      "placeholder": "¿De qué trata tu juego? Cuéntanos aquí",
+      "error": {
+        "required": "Dato requerido"
+      }
+    },
+    "categories": {
+      "name": "Categorias",
+      "placeholder": "Buscar categoría",
+      "button": "Añadir",
+      "error": {
+        "notExist": "Categoria no válida",
+        "repeat": "Ya añadiste esta categoría",
+        "required": "Incluye al menos una categoría"
+      }
+    },
+    "submit": "Publicar"
   }
 }
