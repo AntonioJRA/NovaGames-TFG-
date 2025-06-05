@@ -160,6 +160,25 @@ export const register = async (req, res) => {
   }
 };
 
+export const developerVerification = async (req, res) => {
+  const id = req.user.id;
+  const { idGame } = req.body;
+  try {
+    const [[result]] = await pool.query(
+      "SELECT developer_id FROM games WHERE id = ? LIMIT 1",
+      [idGame]
+    );
+
+    if (result.developer_id === id) {
+      return res.status(200).json({ message: "Verif" });
+    } else {
+      return res.status(200).json({ message: "No verif" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const refreshToken = (req, res) => {
   const refreshToken = req.cookies.refreshToken; //el refresh token viene en la cookie HTTP-only
   //validar que se envió el refresh token

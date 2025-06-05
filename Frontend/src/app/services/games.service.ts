@@ -72,6 +72,14 @@ export class GamesService {
       .pipe(catchError(this.handleError));
   }
 
+  getLastGame(): Observable<Game> {
+    return this.http
+      .get<Game>(
+        `${environment.apiUrl}${environment.routes.games.getLastGame}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   getMostRatedGamesLimit(): Observable<Game[]> {
     return this.http
       .get<Game[]>(

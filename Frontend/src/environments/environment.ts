@@ -22,6 +22,7 @@ export const environment = {
       getContentBlocks: '/api/seccion-juego/contenido',
       getGame: '/api/juegos',
       getRandomGames: '/api/juegos/random',
+      getLastGame: '/api/juegos/ultimo',
     },
     gameSection: {
       getAllPosts: '/api/publicaciones',
@@ -36,6 +37,7 @@ export const environment = {
     },
     uploadGame: {
       updateSectionGame: '/api/seccion-juego/guardar',
+      developerVerification: '/api/verificar-user',      
     },
 
   },

@@ -39,8 +39,8 @@
       <div #carousel1 class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar">
         <div class="border border-surface rounded flex-shrink-0" *ngFor="let game of aPopularGames">
           <div class="text-center cursor-pointer" [id]="game.id" [routerLink]="'/game-section/' + game.id">
-            <img [src]="'assets/images/general/' + game.cover" [alt]="game.title + '.png'"
-              class="h-40 w-full object-cover" />
+            <img [src]="apiUrl + '/images/' + game.cover" [alt]="game.title + '.png'"
+              class="h-40 w-72 object-cover" />
             <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
           </div>
         </div>
@@ -67,8 +67,8 @@
       <div #carousel2 class="flex flex-row gap-4 overflow-x-auto scroll-smooth no-scrollbar">
         <div class="border border-surface rounded flex-shrink-0" *ngFor="let game of aRecentGames">
           <div class="text-center cursor-pointer" [id]="game.id" [routerLink]="'/game-section/' + game.id">
-            <img [src]="'assets/images/general/' + game.cover" [alt]="game.title + '.png'"
-              class="h-40 w-full object-cover" />
+            <img [src]="apiUrl + '/images/' + game.cover" [alt]="game.title + '.png'"
+              class="h-40 w-72 object-cover" />
             <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
           </div>
         </div>

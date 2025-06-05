@@ -1,131 +1,211 @@
+<div *ngIf="!devVerif" class="">
+  <div class="flex flex-col items-center h-[40rem] justify-center">
+    <div
+      class="text-center bg-white p-6 rounded text-black shadow-xl leading-loose font-semibold"
+    >
+      <p>{{ "uploadGame.userNoVerif" | translate }}</p>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="!isLoading" class="flex">
-    <main class="px-6 pt-6 space-y-6 w-full">
+  <main class="px-6 pt-6 space-y-6 w-full">
+    <form
+      action=""
+      class=""
+      (keydown.enter)="preventSubmit($event)"
+      [formGroup]="uploadForm"
+      (submit)="onSubmit()"
+    >
+      <div
+        class="flex items-center justify-center uppercase font-bold text-xl py-4 bg-primary rounded-t-xl space-x-5"
+      >
+        @if (!isTitleBeingEdited) {
+        <h1 class="">{{ gameTitle }}</h1>
+        <div class="cursor-pointer px-1 py-2" (click)="toggleEdit()">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        } @else {
+        <div class="relative">
+          <input
+            type="text"
+            name="title"
+            id="title"
+            [value]="gameTitle"
+            formControlName="title"
+            class="py-2 px-2 text-primary"
+            placeholder="{{ 'uploadGame.title.name' | translate }}"
+            (keydown.enter)="editTitle()"
+            autocomplete="off"
+          />
+          @if (titleRequired) {
+          <small
+            class="text-white italic self-end font-bold absolute text-nowrap top-1/2 -translate-y-1/2 ml-3"
+          >
+            * {{ "uploadGame.title.error.required" | translate }}
+          </small>
+          }
+        </div>
+        }
+      </div>
 
+      <div class="bg-gray-500 text-primary py-6 px-10 text-xl space-y-5">
+        <div
+          class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0"
+        >
+          <label for="cover" class="highlight-text"
+            >{{ "uploadGame.cover.name" | translate }} *</label
+          >
+          <input
+            type="file"
+            name="cover"
+            id="cover"
+            class="text-white"
+            (change)="uploadFile($event)"
+            accept="image/*"
+          />
+          @if (fileError) {
+          <small class="text-white italic font-bold text-nowrap">
+            * {{ "uploadGame.cover.error.required" | translate }}
+          </small>
+          }
+        </div>
 
-        <form action="" class="" (keydown.enter)="preventSubmit($event)" [formGroup]="uploadForm" (submit)="onSubmit()">
+        <div
+          class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0"
+        >
+          <label for="url" class="highlight-text"
+            >{{ "uploadGame.url.name" | translate }} *</label
+          >
+          <input
+            type="text"
+            name="url"
+            id="url"
+            formControlName="url"
+            class="py-2 px-4 text-xl md:w-[50%]"
+            placeholder="{{ 'uploadGame.url.placeholder' | translate }}"
+            autocomplete="off"
+          />
+          @if (urlRequired) {
+          <small class="text-white italic font-bold text-nowrap">
+            * {{ "uploadGame.url.error.required" | translate }}
+          </small>
+          } @else if(urlPattern){
+          <small class="text-white italic font-bold text-nowrap">
+            * {{ "uploadGame.url.error.pattern" | translate }}
+          </small>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="description" class="highlight-text"
+            >{{ "uploadGame.description.name" | translate }} *</label
+          >
+          <textarea
+            formControlName="description"
+            rows="5"
+            class="w-full p-2 border rounded resize-none text-lg"
+            placeholder="{{ 'uploadGame.description.placeholder' | translate }}"
+            autocomplete="off"
+          ></textarea>
+          @if (descriptionRequired) {
+          <small class="text-white italic font-bold text-nowrap">
+            * {{ "uploadGame.description.error.required" | translate }}
+          </small>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <p class="highlight-text">
+            {{ "uploadGame.categories.name" | translate }} *
+          </p>
+          <!-- selectedCategories -->
+          @if (selectedCategories.length > 0){
+          <div class="flex flex-wrap gap-2">
             <div
-                class="flex items-center justify-center uppercase font-bold text-xl py-4 bg-primary rounded-t-xl space-x-5">
+              class="bg-gray-300 border border-secondary rounded py-1 px-4 cursor-pointer flex space-x-2"
+              *ngFor="let category of selectedCategories"
+            >
+              <p class="">
+                {{ `games.categories.${category.name}` | translate }}
+              </p>
+              <div class="" (click)="deleteCategory(category.name)">
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+          </div>
+          }
 
-                @if (!isTitleBeingEdited) {
-                <h1 class="">{{ gameTitle }}</h1>
-                <div class="cursor-pointer px-1 py-2" (click)="toggleEdit()">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </div>
-                } @else {
-                <div class="relative">
-                    <input type="text" name="title" id="title" [value]="gameTitle" formControlName="title"
-                        class="py-2 px-2 text-primary" placeholder="{{ 'uploadGame.title.name' | translate }}"
-                        (keydown.enter)="editTitle()" autocomplete="off" />
-                    @if (titleRequired) {
-                    <small
-                        class="text-white italic self-end font-bold absolute text-nowrap top-1/2 -translate-y-1/2 ml-3">
-                        * {{ "uploadGame.title.error.required" | translate }}
-                    </small>
-                    }
-                </div>
-                }
+          <div class="w-full">
+            <!-- Category input -->
+            <div class="flex">
+              <input
+                type="text"
+                name="categories"
+                id="categories"
+                formControlName="categories"
+                class="border p-2 flex-grow"
+                placeholder="{{
+                  'uploadGame.categories.placeholder' | translate
+                }}"
+                autocomplete="off"
+                (focus)="inputFocused = true"
+              />
+              <button
+                type="button"
+                class="bg-blue-500 text-white transition ease-in duration-50 hover:bg-blue-700 py-2 px-4 rounded-r"
+                (click)="addCategory()"
+              >
+                {{ "uploadGame.categories.button" | translate }}
+              </button>
             </div>
 
-            <div class=" bg-gray-500 text-primary py-6 px-10 text-xl space-y-5">
+            @if (errNotACategory){
+            <small class="text-white italic"
+              >* {{ "uploadGame.categories.error.notExist" | translate }}</small
+            >
+            } @else if(errRepeatedCategory){
+            <small class="text-white italic"
+              >* {{ "uploadGame.categories.error.repeat" | translate }}</small
+            >
+            } @else if(errNoCategories){
+            <small class="text-white italic"
+              >* {{ "uploadGame.categories.error.required" | translate }}</small
+            >
+            }
+
+            <!-- All Categories -->
+            @if (inputFocused){
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-h-64 overflow-y-auto"
+            >
+              <div class="" *ngFor="let category of filteredCategories">
                 <div
-                    class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 highlight-text">
-                    <label for="cover" clas>{{ "uploadGame.cover.name" | translate }} *</label>
-                    <input type="file" name="cover" id="cover" (change)="uploadFile($event)" accept="image/*" />
-
+                  class="bg-gray-300 border border-secondary hover:bg-blue-500"
+                  (click)="selectCategory(category.translatedName)"
+                >
+                  <p class="py-2 cursor-pointer text-center">
+                    {{ `games.categories.${category.name}` |
+                                        translate }}
+                  </p>
                 </div>
-
-                <div class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0 ">
-                    <label for="url" class="highlight-text">{{ "uploadGame.url.name" | translate }} *</label>
-                    <input type="text" name="url" id="url" formControlName="url" class="py-2 px-4 text-xl md:w-[50%]"
-                        placeholder="{{ 'uploadGame.url.placeholder' | translate }}" autocomplete="off" />
-                    @if (urlRequired) {
-                    <small class="text-white italic font-bold text-nowrap">
-                        * {{ "uploadGame.url.error.required" | translate }}
-                    </small>
-                    } @else if(urlPattern){
-                    <small class="text-white italic font-bold text-nowrap">
-                        * {{ "uploadGame.url.error.pattern" | translate }}
-                    </small>
-                    }
-                </div>
-
-                <div class="space-y-2">
-                    <label for="description" class="highlight-text">{{ "uploadGame.description.name" | translate }}
-                        *</label>
-                    <textarea formControlName="description" rows="5"
-                        class="w-full p-2 border rounded resize-none text-lg"
-                        placeholder="{{ 'uploadGame.description.placeholder' | translate }}"
-                        autocomplete="off"></textarea>
-                    @if (descriptionRequired) {
-                    <small class="text-white italic font-bold text-nowrap">
-                        * {{ "uploadGame.description.error.required" | translate }}
-                    </small>
-                    }
-                </div>
-
-                <div class="space-y-2">
-                    <p class="highlight-text">
-                        {{ "uploadGame.categories.name" | translate }} *
-                    </p>
-                    <!-- selectedCategories -->
-                    @if (selectedCategories.length > 0){
-                    <div class="flex flex-wrap gap-2">
-                        <div class="bg-gray-300 border border-secondary rounded py-1 px-4 cursor-pointer flex space-x-2"
-                            *ngFor="let category of selectedCategories">
-                            <p class="">{{ `games.categories.${category.name}` | translate }}</p>
-                            <div class="" (click)="deleteCategory(category.name)"><i class="fa-solid fa-xmark"></i>
-                            </div>
-                        </div>
-                    </div>
-                    }
-
-                    <div class="w-full">
-                        <!-- Category input -->
-                        <div class="flex">
-                            <input type="text" name="categories" id="categories" formControlName="categories"
-                                class="border p-2 flex-grow"
-                                placeholder="{{ 'uploadGame.categories.placeholder' | translate }}" autocomplete="off"
-                                (focus)="inputFocused = true" />
-                            <button type="button" class="bg-blue-500 py-2 px-4 rounded-r" (click)="addCategory()">
-                                {{ "uploadGame.categories.button" | translate }}</button>
-                        </div>
-
-                        @if (errNotACategory){
-                        <small class="text-white italic">* {{ "uploadGame.categories.error.notExist" | translate }}</small>
-                        } @else if(errRepeatedCategory){
-                        <small class="text-white italic">* {{ "uploadGame.categories.error.repeat" | translate }}</small>
-                        } @else if(errNoCategories){ 
-                        <small class="text-white italic">* {{ "uploadGame.categories.error.required" | translate }}</small>
-                        }
-
-                        <!-- All Categories -->
-                        @if (inputFocused){
-                        <div
-                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-h-64 overflow-y-auto ">
-                            <div class="" *ngFor="let category of filteredCategories">
-                                <div class="bg-gray-300 border border-secondary hover:bg-blue-500"
-                                    (click)="selectCategory(category.translatedName)">
-                                    <p class="py-2 cursor-pointer text-center">{{ `games.categories.${category.name}` |
-                                        translate }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        }
-
-                    </div>
-                </div>
-
-
-                <button type="submit"
-                    class="uppercase bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 py-2">{{
-                    "uploadGame.submit" | translate }}</button>
+              </div>
             </div>
-        </form>
+            }
+          </div>
+        </div>
 
+        <button
+          type="submit"
+          class="uppercase bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 py-2"
+        >
+          {{ "uploadGame.submit" | translate }}
+        </button>
+      </div>
+    </form>
 
-
-        <!-- -------------------------VERSON 2.0------------------------- -->
-        <!-- <div class="">
+    <!-- -------------------------VERSON 2.0------------------------- -->
+    <!-- <div class="">
             <h1 class="text-center uppercase font-bold text-xl py-6 bg-primary rounded-t-xl">
                 {{ gameData.title }}
             </h1>
@@ -143,7 +223,7 @@
             <p class="text-xl">{{ gameData.description }}</p>
         </div> -->
 
-        <!-- <div
+    <!-- <div
         class="flex flex-col space-y-5 lg:flex-row lg:space-y-0"
         *ngIf="contentBlockData"
       >
@@ -168,7 +248,7 @@
         </div>
         }
       </div> -->
-    </main>
+  </main>
 </div>
 
 <!-- DOWNLOAD URL -->

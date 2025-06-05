@@ -16,6 +16,7 @@ import {
   RouterLinkActive,
   RouterModule,
 } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,9 @@ import {
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  // Api URL
+  apiUrl = environment.apiUrl;
+
   aPopularGames!: Game[];
   aRecentGames!: Game[];
   gamesService = inject(GamesService);

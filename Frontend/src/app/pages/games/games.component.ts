@@ -24,6 +24,7 @@ import {
   RouterLinkActive,
   RouterModule,
 } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-games',
@@ -38,6 +39,8 @@ import {
   styles: ``,
 })
 export class GamesComponent {
+  // Api URL
+  apiUrl = environment.apiUrl;
   // Datos Service
   aCategories: Category[] = [];
   allGames: Game[] = [];
@@ -186,12 +189,14 @@ export class GamesComponent {
       document.querySelector('#search-input') as HTMLInputElement
     )?.value;
 
-    this.paginationGames = this.allGames.filter((game) =>
+    this.allGames = this.allGames.filter((game) =>
       game.title?.toLowerCase().includes(inputValue)
     );
 
-    this.gamesResult = this.paginationGames.length;
+    this.paginationGames = this.allGames.slice(0, this.GAMES_PER_PAGE);
+    this.gamesResult = this.allGames.length;
     this.pageNumber = 0;
+    this.calculateTotalPages()
   }
 
   // PAGINATION

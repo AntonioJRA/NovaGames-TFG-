@@ -162,11 +162,6 @@
     "downloadURL": "Download URL"
   },
   "uploadGame": {
-    "userNoVerif": "You do not have permission to edit this game",
-    "alert": {
-      "title": "Game successfully created!",
-      "text": "Confirm to be redirected to the game section"
-    },
     "title": {
       "name": "Title",
       "error": {

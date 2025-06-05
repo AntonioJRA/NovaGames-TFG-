@@ -13,6 +13,7 @@ import { CategoriesService } from '../../services/categories.service';
 import { Category } from '../../models/category/category';
 import { GameUpdate } from '../../models/updateGame/updateGame';
 import { ButtonComponent } from '../../shared/button/button.component';
+
 import {
   FormBuilder,
   FormControl,
@@ -23,10 +24,19 @@ import {
 } from '@angular/forms';
 import { filter } from 'rxjs';
 import { UpdateGameService } from '../../services/update-games.service';
+import { UploadImageService } from '../../services/upload-image.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-upload-game',
-  imports: [CommonModule, TranslatePipe, RouterModule, ReactiveFormsModule, FormsModule, ButtonComponent],
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ButtonComponent,
+  ],
   templateUrl: './upload-game.component.html',
   styleUrls: ['./upload-game.component.css'],
 })
@@ -35,14 +45,15 @@ export class UploadGameComponent {
   isLoading = true;
   // User token
   sessionToken!: string;
+  devVerif: boolean = true;
   // Game Data
   idGame!: string;
   gameData!: Game;
   contentBlockData!: ContentBlock[];
-  gameCategoriesData!: GameCategories[]
+  gameCategoriesData!: GameCategories[];
   aCategories: Category[] = [];
   // Actual Data
-  data!: GameUpdate
+  data!: GameUpdate;
   title!: string;
   // UPLOAD FORM
   uploadForm!: FormGroup;
@@ -52,16 +63,17 @@ export class UploadGameComponent {
   // File
   selectedFile: File | null = null;
   fileError: boolean = false;
+  fileName!: string;
   // Categories
   selectedCategories: Category[] = [];
   filteredCategories: Category[] = [];
-  errNotACategory: boolean = false
-  errRepeatedCategory: boolean = false
-  errNoCategories: boolean = false
+  errNotACategory: boolean = false;
+  errRepeatedCategory: boolean = false;
+  errNoCategories: boolean = false;
   inputValue!: string;
   inputFocused: boolean = false;
   // Content Blocks
-  numberOfBlocks: number = 0
+  numberOfBlocks: number = 0;
 
   constructor(
     private router: Router,
@@ -72,26 +84,37 @@ export class UploadGameComponent {
     private translate: TranslateService,
     private categoriesServ: CategoriesService,
     private updateServ: UpdateGameService,
-    private fb: FormBuilder,
-  ) { }
+    private uploadImageServ: UploadImageService,
+    public authServ: AuthService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.sessionToken = localStorage.getItem('user_session') || '';
     this.idGame = this.route.snapshot.paramMap.get('id') || '';
-    this.getGame();
+    this.developerVerification();
   }
 
   uploadFormValidate() {
     this.uploadForm = this.fb.group({
       title: [this.gameData.title || '', [Validators.required]],
-      url: ['', [Validators.required, Validators.pattern(/^https:\/\/github\.com\/.+/),]],
-      description: ['', [Validators.required]],
-      categories: ['']
+      url: [
+        this.gameData.download_url || '',
+        [Validators.required, Validators.pattern(/^https:\/\/github\.com\/.+/)],
+      ],
+      description: [this.gameData.description || '', [Validators.required]],
+      categories: [''],
     });
 
-    this.uploadForm.get('categories')?.valueChanges.subscribe(value => {
+    this.uploadForm.get('categories')?.valueChanges.subscribe((value) => {
       this.onCategoryInput(value);
     });
+
+    if (this.gameCategoriesData.length > 0) {
+      this.selectedCategories = this.gameCategoriesData
+        .map((gameCat) => this.aCategories.find((cat) => cat.id === gameCat.id))
+        .filter((cat): cat is Category => !!cat);
+    }
 
     this.isLoading = false;
   }
@@ -109,6 +132,7 @@ export class UploadGameComponent {
       this.uploadForm.get('url')?.touched
     );
   }
+
   get urlPattern() {
     return (
       this.uploadForm.get('url')?.errors?.['pattern'] &&
@@ -129,12 +153,12 @@ export class UploadGameComponent {
   }
 
   toggleEdit() {
-    this.isTitleBeingEdited = !this.isTitleBeingEdited
+    this.isTitleBeingEdited = !this.isTitleBeingEdited;
   }
 
   editTitle() {
     this.gameTitle = this.uploadForm.get('title')?.value;
-    this.toggleEdit()
+    this.toggleEdit();
   }
 
   uploadFile(event: Event): void {
@@ -157,75 +181,101 @@ export class UploadGameComponent {
   }
 
   onCategoryInput(value: string) {
-    this.inputValue = value
+    this.inputValue = value;
 
-    this.filteredCategories = this.aCategories.filter(cat =>
+    this.filteredCategories = this.aCategories.filter((cat) =>
       cat.translatedName?.toLowerCase().includes(value.toLowerCase())
     );
   }
 
   addCategory() {
-    const value = this.uploadForm.get('categories')?.value
+    const value = this.uploadForm.get('categories')?.value;
 
-    const category = this.aCategories.find(c => c.translatedName.toLowerCase() === value.toLowerCase());
+    const category = this.aCategories.find(
+      (c) => c.translatedName.toLowerCase() === value.toLowerCase()
+    );
 
     if (category) {
-      if (!this.selectedCategories.find(cat => cat.translatedName === value)) {
+      if (
+        !this.selectedCategories.find((cat) => cat.translatedName === value)
+      ) {
         this.uploadForm.get('categories')?.setValue('');
-        this.selectedCategories.push(category)
-        this.errRepeatedCategory = false
-        this.errNoCategories = false
+        this.selectedCategories.push(category);
+        this.errRepeatedCategory = false;
+        this.errNoCategories = false;
       } else {
-        this.errRepeatedCategory = true
+        this.errRepeatedCategory = true;
       }
-      this.errNotACategory = false
+      this.errNotACategory = false;
     } else {
-      this.errNotACategory = true
+      this.errNotACategory = true;
     }
   }
 
   deleteCategory(name: string) {
-    this.selectedCategories = this.selectedCategories.filter(c => c.name !== name);
+    this.selectedCategories = this.selectedCategories.filter(
+      (c) => c.name !== name
+    );
   }
 
   selectCategory(name: string) {
     this.uploadForm.get('categories')?.setValue(name);
   }
 
-  areThereCategoriesSelected() {
+  categoriesRequired() {
     if (this.selectedCategories && this.selectedCategories.length > 0) {
-      this.errNoCategories = false
-      return true
+      this.errNoCategories = false;
+      return true;
     } else {
-      this.errNotACategory = false
-      this.errRepeatedCategory = false
-      this.errNoCategories = true
+      this.errNotACategory = false;
+      this.errRepeatedCategory = false;
+      this.errNoCategories = true;
 
-      return false
+      return false;
+    }
+  }
+
+  coverRequired() {
+    if (this.selectedFile) {
+      this.fileError = false;
+      return true;
+    } else {
+      this.fileError = true;
+      return false;
     }
   }
 
   onSubmit() {
-    if (this.areThereCategoriesSelected() && this.uploadForm.valid) {
-      const gameCategories = this.selectedCategories.map(cat => cat.id);
+    const categoriesValid = this.categoriesRequired();
+    const coverValid = this.coverRequired();
 
-      const data = {
-        "idGame": Number(this.idGame),
-        "game": [
-          {
-            "title": this.gameTitle,
-            "download_url": this.uploadForm.value.url,
-            "description": this.uploadForm.value.description,
-            "cover": "gamecover.png"
-          }
-        ],
-        "categories": gameCategories,
-        "blocks": []
-      }
+    if (
+      categoriesValid &&
+      coverValid &&
+      this.uploadForm.valid &&
+      this.selectedFile
+    ) {
+      const gameCategories = this.selectedCategories.map((cat) => cat.id);
 
-      console.log(data);
+      this.uploadImage();
 
-      this.updateSectionGame(data)
+      setTimeout(() => {
+        const data = {
+          idGame: Number(this.idGame),
+          game: [
+            {
+              title: this.gameTitle,
+              download_url: this.uploadForm.value.url,
+              description: this.uploadForm.value.description,
+              cover: this.fileName,
+            },
+          ],
+          categories: gameCategories,
+          blocks: [],
+        };
+
+        this.updateSectionGame(data);
+      }, 1000);
     }
   }
 
@@ -235,7 +285,7 @@ export class UploadGameComponent {
     "game": [
       {
         "title": "Luis Super Sta",
-        "download_url": "https://prueba.com",
+        "download_url": "https://github.com/AntonioJRA/NovaGames",
         "description": "Esto es una descripcion",
         "cover": "luisSS.png"
       }
@@ -253,57 +303,32 @@ export class UploadGameComponent {
     ]
   }
   */
-  createObjectData() {
-    // const gameData = {
-    //   download_url: this.gameData.download_url,
-    //   cover: this.gameData.cover,
-    //   title: this.gameData.title,
-    // };
-
-    // const filteredGame = Object.fromEntries(
-    //   Object.entries(gameData).filter(([_, value]) => value != null)
-    // );
-
-    // const categoriesData = this.gameCategoriesData.map(c => c.id);
-
-    // const filteredCategories = Array.isArray(categoriesData) && categoriesData.length > 0
-    //   ? categoriesData
-    //   : undefined;
-
-    // this.data = {
-    //   idGame: Number(this.idGame),
-    //   game: [filteredGame]
-    // };
-
-    // if(filteredCategories) {
-    //   this.data = {
-    //     ...this.data,
-    //     categories: filteredCategories
-    //   }
-    // }
-
-    // const filteredBlocks = this.contentBlockData;
-
-    // if(filteredBlocks) {
-    //   this.data = {
-    //     ...this.data,
-    //     blocks: filteredBlocks
-    //   }
-    // }
-
-    this.isLoading = false;
-  }
-
-
 
   // SERVICES
+
+  developerVerification() {
+    if (this.sessionToken) {
+      this.authServ
+        .developerVerification(this.sessionToken, Number(this.idGame))
+        .subscribe({
+          next: (data) => {
+            if (data.message === 'Verif') {
+              this.getGame();
+            } else {
+              this.devVerif = false;
+            }
+          },
+          error: (err) => console.error(err),
+        });
+    }
+  }
   getGame() {
     if (this.idGame) {
       this.gameServ.getGame(this.idGame).subscribe({
         next: (data) => {
           this.gameData = data;
-          this.gameTitle = this.gameData.title
-          this.getContentBlocks()
+          this.gameTitle = this.gameData.title;
+          this.getContentBlocks();
         },
         error: (err) => console.error(err),
       });
@@ -317,7 +342,7 @@ export class UploadGameComponent {
           if (data.length > 0) {
             this.contentBlockData = data;
           }
-          this.getGameCategories()
+          this.getGameCategories();
         },
         error: (err) => console.error(err),
       });
@@ -327,8 +352,11 @@ export class UploadGameComponent {
   getGameCategories() {
     this.gameServ.getGameCategories(this.idGame).subscribe({
       next: (data) => {
-        this.gameCategoriesData = data
-        this.getCategories()
+        if (!Array.isArray(data)) {
+          this.gameCategoriesData = [];
+        }
+        this.gameCategoriesData = data;
+        this.getCategories();
       },
       error: (err) => {
         console.log(err.message);
@@ -345,8 +373,8 @@ export class UploadGameComponent {
             `games.categories.${cat.name}`
           ),
         }));
-        this.filteredCategories = this.aCategories
-        this.uploadFormValidate()
+        this.filteredCategories = this.aCategories;
+        this.uploadFormValidate();
         // this.createObjectData()
       },
       error: (err) => {
@@ -358,11 +386,78 @@ export class UploadGameComponent {
   updateSectionGame(data: GameUpdate) {
     this.updateServ.updateSectionGame(data).subscribe({
       next: (data) => {
-
+        this.translate
+          .get(['uploadGame.alert.title','uploadGame.alert.text'])
+          .subscribe((translations) => {
+            Swal.fire({
+              icon: 'success',
+              title: translations['uploadGame.alert.title'],
+              text: translations['uploadGame.alert.text'],
+              showConfirmButton: true,
+            }).then(() => {
+              this.router.navigate([`/game-section/${this.idGame}`]);
+            });
+          });
       },
       error: (err) => {
         console.log(err.message);
       },
     });
   }
+
+  uploadImage() {
+    if (this.selectedFile) {
+      this.uploadImageServ
+        .postImageToServer(this.sessionToken, this.selectedFile)
+        .subscribe({
+          next: (response) => {
+            this.fileName = response.filename;
+          },
+          error: (err) => {
+            console.error('Error subiendo la imagen:', err);
+          },
+        });
+    }
+  }
 }
+
+// createObjectData() {
+//   const gameData = {
+//     download_url: this.gameData.download_url,
+//     cover: this.gameData.cover,
+//     title: this.gameData.title,
+//   };
+
+//   const filteredGame = Object.fromEntries(
+//     Object.entries(gameData).filter(([_, value]) => value != null)
+//   );
+
+//   const categoriesData = this.gameCategoriesData.map(c => c.id);
+
+//   const filteredCategories = Array.isArray(categoriesData) && categoriesData.length > 0
+//     ? categoriesData
+//     : undefined;
+
+//   this.data = {
+//     idGame: Number(this.idGame),
+//     game: [filteredGame]
+//   };
+
+//   if(filteredCategories) {
+//     this.data = {
+//       ...this.data,
+//       categories: filteredCategories
+//     }
+//   }
+
+//   const filteredBlocks = this.contentBlockData;
+
+//   if(filteredBlocks) {
+//     this.data = {
+//       ...this.data,
+//       blocks: filteredBlocks
+//     }
+//   }
+
+//   this.isLoading = false;
+// }

@@ -20,9 +20,13 @@ export class AuthService {
     });
 
     return this.http
-      .post<any>(`${environment.apiUrl}${environment.routes.auth.login}`, userData, {
-        headers,
-      })
+      .post<any>(
+        `${environment.apiUrl}${environment.routes.auth.login}`,
+        userData,
+        {
+          headers,
+        }
+      )
       .pipe(catchError(this.handleError));
   }
 
@@ -42,6 +46,20 @@ export class AuthService {
       .post<any>(
         `${environment.apiUrl}${environment.routes.auth.register}`,
         userData,
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  developerVerification(token: string, idGame: number): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http
+      .post<any>(
+        `${environment.apiUrl}${environment.routes.uploadGame.developerVerification}`,
+        { idGame },
         { headers }
       )
       .pipe(catchError(this.handleError));

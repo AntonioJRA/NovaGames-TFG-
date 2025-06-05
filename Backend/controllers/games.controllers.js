@@ -14,11 +14,9 @@ export const getGameRatingByUser = async (req, res) => {
       [idGame, idUser]
     );
 
-    if (!result)
-      return res.status(200).json(null);
+    if (!result) return res.status(200).json(null);
 
     return res.status(200).json(result);
-
   } catch (error) {
     res
       .status(500)
@@ -101,6 +99,20 @@ export const getAllUserGames = async (req, res) => {
   }
 };
 
+export const getLastGame = async (req, res) => {
+  try {
+    const [[result]] = await pool.query(
+      "SELECT * FROM games ORDER BY id DESC LIMIT 1"
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
 export const getAllGames = async (req, res) => {
   try {
     const [result] = await pool.query(
@@ -156,7 +168,9 @@ export const getGame = async (req, res) => {
     const [[result]] = await pool.query("SELECT * FROM games WHERE id = ?", [
       id,
     ]);
-    if (!result) res.status(200).json("No existe el juego");
+    
+    if (!result) return res.status(200).json({ message: "No existe el juego" });
+
     res.status(200).json(result);
   } catch (error) {
     res
@@ -284,8 +298,7 @@ export const addGame = async (req, res) => {
   const idUser = req.user.id;
   const { title } = req.body;
   try {
-    if(!title) res.status(400).json({ message: "Inserte un título" });
-    console.log(title);
+    if (!title) res.status(400).json({ message: "Inserte un título" });
 
     const [result] = await pool.query(
       "INSERT INTO games (developer_id, title) VALUES (?,?)",
@@ -305,7 +318,7 @@ export const addGame = async (req, res) => {
 };
 
 export const updateGameDownloads = async (req, res) => {
-  const { idGame} = req.body;
+  const { idGame } = req.body;
 
   try {
     const [result] = await pool.query(

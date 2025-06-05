@@ -1,7 +1,7 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, addGameRating, deleteGame, getAllGames, getAllUserGames, getGame, getGameRatingByUser, getGamesByFilter, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, publicGame, updateGameDownloads, updateGameRating } from '../controllers/games.controllers.js';
+import { addGame, addGameRating, deleteGame, getAllGames, getAllUserGames, getGame, getGameRatingByUser, getGamesByFilter, getLastGame, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, publicGame, updateGameDownloads, updateGameRating } from '../controllers/games.controllers.js';
 import { autenticarToken } from '../controllers/auth.controllers.js';
 import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
@@ -10,6 +10,8 @@ const router = Router();
 
 // get all + count
 router.get('/api/juegos', getAllGames);
+// get last gane
+router.get('/api/juegos/ultimo', getLastGame);
 // get all by user
 router.get('/api/juegos/usuario', autenticarToken, getAllUserGames);
 // get random limit 30

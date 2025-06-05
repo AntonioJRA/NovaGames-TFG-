@@ -216,9 +216,9 @@
            [routerLink]="'/game-section/'+ game.id"
         >
           <img
-            [src]="'assets/images/general/' + game.cover"
+            [src]="apiUrl + '/images/' + game.cover"
             [alt]="game.title + '.png'"
-            class="h-40 w-full object-cover"
+            class="h-40 w-60 object-cover"
           />
           <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
         </div>

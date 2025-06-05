@@ -162,11 +162,6 @@
     "downloadURL": "URL de descarga"
   },
   "uploadGame": {
-    "userNoVerif": "No tienes permisos para editar este juego",
-    "alert": {
-      "title": "¡Juego creado con éxito!",
-      "text": "Confirme para redirigir a la sección del juego"
-    },
     "title": {
       "name": "Título",
       "error": {

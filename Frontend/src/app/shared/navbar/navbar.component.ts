@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
@@ -66,7 +66,7 @@ export class NavbarComponent implements OnInit {
 
     this.checkToken();
 
-    this.modalValidate()
+    this.modalValidate();
   }
 
   get isUploadGameActive(): boolean {
@@ -113,7 +113,7 @@ export class NavbarComponent implements OnInit {
   // MODAL
   toggleModal() {
     this.isUploadGameModalOpen = !this.isUploadGameModalOpen;
-    this.toggleMenu()
+    this.toggleMenu();
 
     if (this.isUploadGameModalOpen) {
       document.body.style.overflow = 'hidden';
@@ -131,22 +131,9 @@ export class NavbarComponent implements OnInit {
   modalOnSubmit() {
     if (this.modalForm.valid) {
       const formValue = this.modalForm.value;
-      const title = formValue.title
+      const title = formValue.title;
 
-      this.toggleModal()
-      this.showScroll();
-
-      this.router.navigate(['upload-game/123'])
-      // this.gameServ.addGame(this.sessionToken, title ).subscribe({
-      //   next: (data) => {
-      //     this.toggleModal()
-      //     this.showScroll();
-      //     this.router.navigate(['upload-game']);
-      //     console.log(data);
-      //   },
-      //   error: (err) => {
-      //   },
-      // });
+      this.addGame(title);
     }
   }
 
@@ -168,9 +155,7 @@ export class NavbarComponent implements OnInit {
     this.showScroll();
   }
   navToUploadGame() {
-    this.sessionToken
-      ? this.toggleModal()
-      : this.router.navigate(['/login']);
+    this.sessionToken ? this.toggleModal() : this.router.navigate(['/login']);
   }
 
   showScroll() {
@@ -196,5 +181,25 @@ export class NavbarComponent implements OnInit {
         },
       });
     }
+  }
+
+  addGame(title: string) {
+    this.gameServ.addGame(this.sessionToken, title).subscribe({
+      next: (data) => {
+        this.toggleModal();
+        this.showScroll();
+        this.getLastGame();
+      },
+      error: (err) => {},
+    });
+  }
+
+  getLastGame() {
+    this.gameServ.getLastGame().subscribe({
+      next: (data) => {
+        this.router.navigate([`upload-game/${data.id}`]);
+      },
+      error: (err) => {},
+    });
   }
 }
