@@ -70,7 +70,15 @@
   },
   "profile": {
     "myProfile": "Perfil",
-    "myGames": "Mis juegos",
+    "myGames": {
+      "name": "Mis juegos",
+      "alert": {
+        "delete": {
+          "title": "",
+          "text": ""
+        }
+      }
+    },
     "adminPanel": "Panel de administrador"
   },
   "games": {
@@ -151,6 +159,7 @@
     }
   },
   "gameSection": {
+    "editSection": "Editar sección",
     "rating": {
       "name": "Valorar",
       "alert": "¡Voto subido con éxito!"
@@ -177,6 +186,10 @@
       "name": "Portada",
       "error": {
         "required": "Dato requerido"
+      },
+      "button": {
+        "change": "Cambiar",
+        "cancel": "Cancelar"
       }
     },
     "url": {

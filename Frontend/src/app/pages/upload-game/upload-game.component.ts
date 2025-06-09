@@ -26,6 +26,7 @@ import { filter } from 'rxjs';
 import { UpdateGameService } from '../../services/update-games.service';
 import { UploadImageService } from '../../services/upload-image.service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-upload-game',
@@ -34,13 +35,14 @@ import { AuthService } from '../../services/auth.service';
     TranslatePipe,
     RouterModule,
     ReactiveFormsModule,
-    FormsModule,
-    ButtonComponent,
+    FormsModule
   ],
   templateUrl: './upload-game.component.html',
   styleUrls: ['./upload-game.component.css'],
 })
 export class UploadGameComponent {
+  // Api URL
+  apiUrl = environment.apiUrl;
   // Loading
   isLoading = true;
   // User token
@@ -64,6 +66,8 @@ export class UploadGameComponent {
   selectedFile: File | null = null;
   fileError: boolean = false;
   fileName!: string;
+  changeCover: boolean = false;
+  hadCover!: any;
   // Categories
   selectedCategories: Category[] = [];
   filteredCategories: Category[] = [];
@@ -90,9 +94,14 @@ export class UploadGameComponent {
   ) {}
 
   ngOnInit(): void {
+    document.body.style.overflow = 'auto';
     this.sessionToken = localStorage.getItem('user_session') || '';
     this.idGame = this.route.snapshot.paramMap.get('id') || '';
     this.developerVerification();
+
+    this.translate.onLangChange.subscribe(() => {
+      this.translateCategories(); // Vuelve a traducir al cambiar idioma
+    });
   }
 
   uploadFormValidate() {
@@ -166,7 +175,7 @@ export class UploadGameComponent {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
 
-      // Validación personalizada, por ejemplo: solo imágenes
+      // Solo permite imagenes
       if (!file.type.startsWith('image/')) {
         this.fileError = true;
         this.selectedFile = null;
@@ -236,7 +245,7 @@ export class UploadGameComponent {
   }
 
   coverRequired() {
-    if (this.selectedFile) {
+    if (this.selectedFile || (this.hadCover && !this.changeCover)) {
       this.fileError = false;
       return true;
     } else {
@@ -246,6 +255,8 @@ export class UploadGameComponent {
   }
 
   onSubmit() {
+    this.hadCover = this.gameData.cover;
+
     const categoriesValid = this.categoriesRequired();
     const coverValid = this.coverRequired();
 
@@ -253,13 +264,19 @@ export class UploadGameComponent {
       categoriesValid &&
       coverValid &&
       this.uploadForm.valid &&
-      this.selectedFile
+      (this.selectedFile || (this.hadCover && !this.changeCover))
     ) {
       const gameCategories = this.selectedCategories.map((cat) => cat.id);
 
-      this.uploadImage();
+      if (!this.gameData.cover || (this.gameData.cover && this.changeCover)) {
+        this.uploadImage();
+      }
 
       setTimeout(() => {
+        if (!this.changeCover && this.gameData.cover) {
+          this.fileName = this.gameData.cover;
+        }
+
         const data = {
           idGame: Number(this.idGame),
           game: [
@@ -322,6 +339,7 @@ export class UploadGameComponent {
         });
     }
   }
+
   getGame() {
     if (this.idGame) {
       this.gameServ.getGame(this.idGame).subscribe({
@@ -367,12 +385,8 @@ export class UploadGameComponent {
   getCategories() {
     this.categoriesServ.getCategories().subscribe({
       next: (data) => {
-        this.aCategories = data.map((cat: any) => ({
-          ...cat,
-          translatedName: this.translate.instant(
-            `games.categories.${cat.name}`
-          ),
-        }));
+        this.aCategories = data;
+        this.translateCategories();
         this.filteredCategories = this.aCategories;
         this.uploadFormValidate();
         // this.createObjectData()
@@ -383,11 +397,19 @@ export class UploadGameComponent {
     });
   }
 
+  translateCategories() {
+    this.aCategories.forEach((cat) => {
+      cat.translatedName = this.translate.instant(
+        `games.categories.${cat.name}`
+      );
+    });
+  }
+
   updateSectionGame(data: GameUpdate) {
     this.updateServ.updateSectionGame(data).subscribe({
       next: (data) => {
         this.translate
-          .get(['uploadGame.alert.title','uploadGame.alert.text'])
+          .get(['uploadGame.alert.title', 'uploadGame.alert.text'])
           .subscribe((translations) => {
             Swal.fire({
               icon: 'success',

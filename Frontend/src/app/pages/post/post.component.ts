@@ -25,6 +25,7 @@ export class PostComponent implements OnInit {
     private gameServ: GamesService
   ) {}
   ngOnInit(): void {
+    document.body.style.overflow = 'auto';
     this.getPost()
   }
 

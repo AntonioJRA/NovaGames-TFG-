@@ -51,11 +51,20 @@
 
       <div class="bg-gray-500 text-primary py-6 px-10 text-xl space-y-5">
         <div
-          class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0"
+          class="flex flex-col overflow-hidden relative space-y-2 lg:items-center lg:flex-row lg:space-x-4 lg:space-y-0"
         >
-          <label for="cover" class="highlight-text"
+          <label for="cover" class="highlight-text mr-[5.2rem]"
             >{{ "uploadGame.cover.name" | translate }} *</label
           >
+          @if(gameData.cover && !changeCover){
+          <figure class="self-center">
+            <img
+              [src]="apiUrl + '/images/' + gameData.cover"
+              alt=""
+              class="max-h-[20rem] object-contain"
+            />
+          </figure>
+          } @else {
           <input
             type="file"
             name="cover"
@@ -64,7 +73,17 @@
             (change)="uploadFile($event)"
             accept="image/*"
           />
-          @if (fileError) {
+          } @if (gameData.cover) {
+          <button
+            type="button"
+            class="bg-blue-500  text-white transition ease-in duration-50 hover:bg-blue-700 py-2 px-4 rounded self-center"
+            (click)="changeCover = !changeCover"
+          >
+            <!-- {{ "uploadGame.categories.button" | translate }} -->
+            @if (!changeCover) { {{ `uploadGame.cover.button.change` | translate }} } @else { {{ `uploadGame.cover.button.cancel` | translate }} }
+          </button>
+          }
+           @if (fileError) {
           <small class="text-white italic font-bold text-nowrap">
             * {{ "uploadGame.cover.error.required" | translate }}
           </small>
@@ -72,7 +91,7 @@
         </div>
 
         <div
-          class="flex flex-col md:items-center space-y-2 md:flex-row md:space-x-4 md:space-y-0"
+          class="flex flex-col overflow-hidden relative space-y-2 lg:flex-row lg:space-x-4 lg:space-y-0"
         >
           <label for="url" class="highlight-text"
             >{{ "uploadGame.url.name" | translate }} *</label

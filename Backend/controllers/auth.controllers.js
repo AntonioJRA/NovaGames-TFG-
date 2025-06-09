@@ -133,7 +133,7 @@ export const register = async (req, res) => {
 
       if (lang === "es") {
         emailHTML = `
-            <h2>¡Bienbenid@ a NovaGames!</h2>
+            <h2>¡Bienvenid@ a NovaGames!</h2>
             <p>Para activar tu cuenta, haz click en el siguiente enlace:</p>
             <a href="${activarLink}">Activar cuenta</a>`;
       } else {

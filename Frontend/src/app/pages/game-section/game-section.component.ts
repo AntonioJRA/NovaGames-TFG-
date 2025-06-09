@@ -10,6 +10,7 @@ import { PostsService } from '../../services/posts.service';
 import { Post } from '../../models/post/post';
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-game-section',
@@ -26,6 +27,7 @@ export class GameSectionComponent implements OnInit {
   gameData!: Game;
   postsData!: Post[];
   sessionToken!: string;
+  devVerif: boolean = false;
   idGame!: string;
   oldUserRating!: number;
   rating: number = 0;
@@ -37,13 +39,16 @@ export class GameSectionComponent implements OnInit {
     private contentBlockServ: ContentBlocksService,
     private postServ: PostsService,
     private gameServ: GamesService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public authServ: AuthService
   ) {}
 
   ngOnInit(): void {
+    document.body.style.overflow = 'auto';
     this.sessionToken = localStorage.getItem('user_session') || '';
     this.rating = 0;
     this.getGame();
+    this.developerVerification()
     this.getGameRatingByUser();
   }
 
@@ -56,7 +61,27 @@ export class GameSectionComponent implements OnInit {
     this.rating = this.oldUserRating;
   }
 
+  // NAVIGATION
+  navToEditSection() {
+    this.router.navigate([`/upload-game/${this.idGame}`]);
+  }
+
   // SERVICES
+  developerVerification() {
+    if (this.sessionToken) {
+      this.authServ
+        .developerVerification(this.sessionToken, Number(this.idGame))
+        .subscribe({
+          next: (data) => {
+            if (data.message === 'Verif') {
+              this.devVerif = true;
+            }
+          },
+          error: (err) => console.error(err),
+        });
+    }
+  }
+
   getGame() {
     this.idGame = this.route.snapshot.paramMap.get('id') || '';
     if (this.idGame) {
@@ -74,7 +99,6 @@ export class GameSectionComponent implements OnInit {
     this.gameServ.getGameCategories(this.idGame).subscribe({
       next: (data) => {
         this.gameCategoriesData = data;
-        console.log(this.gameCategoriesData);
         this.getContentBlocks();
       },
       error: (err) => {

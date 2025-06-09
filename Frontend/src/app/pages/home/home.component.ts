@@ -44,6 +44,7 @@ export class HomeComponent implements OnInit {
   constructor(public langServie: LanguageService) {}
 
   ngOnInit() {
+    document.body.style.overflow = 'auto';
     this.getMostRatedGamesLimit();
     this.getMostRecentGamesLimit();
   }

@@ -24,7 +24,7 @@ CREATE TABLE games (
     download_url VARCHAR(255),
     downloads INT DEFAULT 0,
     cover VARCHAR(255),
-    is_open BOOLEAN DEFAULT TRUE,
+    is_open BOOLEAN DEFAULT FALSE,
     rating_count INT DEFAULT 0,
     rating_sum DECIMAL(65,1) DEFAULT 0
 );

@@ -39,11 +39,11 @@
 
     <!-- Menú principal -->
     <nav class="hidden lg:flex space-x-2 text-xl">
-      <a [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
+      <a (click)="isProfileOpen = false" [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
         class="py-2 px-4 rounded-xl hover:bg-accent/20">
         {{ "navbar.home" | translate }}
       </a>
-      <a [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
+      <a (click)="isProfileOpen = false" [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
         {{ "navbar.games" | translate }}
       </a>
       <a (click)="navToUploadGame()" [class.bg-accent]="isUploadGameActive"
@@ -80,10 +80,10 @@
         </div>
         @if (isProfileOpen) {
         <div class="absolute top-[4.4rem] bg-primary w-full py-2 px-2 rounded-b-lg space-y-2 z-10">
-          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile()">
+          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile(`user`)">
             {{ "navbar.profile" | translate }}
           </p>
-          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile()">
+          <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="navToProfile(`games`)">
             {{ "navbar.myGames" | translate }}
           </p>
           <p class="hover:bg-accent cursor-pointer py-2 px-2 rounded-xl" (click)="signOut()">
@@ -122,7 +122,7 @@
         </div>
         } @else {
         <div class="flex flex-col justify-center items-center">
-          <div class="flex flex-col items-center text-center cursor-pointer py-2 px-4" (click)="navToProfile()">
+          <div class="flex flex-col items-center text-center cursor-pointer py-2 px-4" (click)="navToProfile('user')">
             <figure class="">
               <img [src]="'assets/images/profile_images/' + userData.profile_image" alt=""
                 class="h-12 border-4 border-accent rounded-full aspect-square object-cover bg-accent" />
@@ -134,10 +134,10 @@
           </div>
         </div>
         <div class="flex flex-col w-full">
-          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile()">
+          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile('user')">
             {{ "navbar.profile" | translate }}
           </p>
-          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile()">
+          <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="navToProfile('games')">
             {{ "navbar.myGames" | translate }}
           </p>
           <p class="hover:bg-accent cursor-pointer py-2 px-4 rounded-xl" (click)="signOut()">
@@ -148,11 +148,11 @@
       </div>
 
       <nav class="flex flex-col p-6">
-        <a [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
+        <a (click)="toggleMenu()" [routerLink]="'/'" routerLinkActive="bg-accent" [routerLinkActiveOptions]="{ exact: true }"
           class="py-2 px-4 rounded-xl hover:bg-accent/20">
           {{ "navbar.home" | translate }}
         </a>
-        <a [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
+        <a (click)="toggleMenu()" [routerLink]="'/games'" routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl hover:bg-accent/20">
           {{ "navbar.games" | translate }}
         </a>
         <a (click)="navToUploadGame()" [class.bg-accent]="isUploadGameActive"

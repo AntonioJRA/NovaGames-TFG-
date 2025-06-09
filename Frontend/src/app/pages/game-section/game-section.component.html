@@ -2,11 +2,22 @@
   <main class="px-6 pt-6 space-y-6 w-full">
     <div class="relative">
       <div class="w-full">
-        <h1
-          class="text-center uppercase font-bold text-xl py-6 bg-primary rounded-t-xl"
-        >
-          {{ gameData.title }}
-        </h1>
+        <div class="relative">
+          <h1
+            class="text-center uppercase font-bold text-xl py-6 bg-primary rounded-t-xl"
+          >
+            {{ gameData.title }}
+          </h1>
+          @if(devVerif){
+          <button
+            type="button"
+            class="bg-blue-500 text-white transition ease-in duration-50 hover:bg-blue-700 py-2 px-4 rounded absolute top-1/2 -translate-y-1/2 right-4"
+            (click)="navToEditSection()"
+          >
+            {{ `gameSection.editSection` | translate }}
+          </button>
+          }
+        </div>
         <figure class="w-full bg-black">
           <img
             [src]="apiUrl + '/images/' + gameData.cover"
@@ -38,7 +49,9 @@
         *ngFor="let category of gameCategoriesData"
         class="bg-accent py-2 px-4 rounded"
       >
-        <p class="text-nowrap">{{ `games.categories.${category.name}` | translate }}</p>
+        <p class="text-nowrap">
+          {{ `games.categories.${category.name}` | translate }}
+        </p>
       </div>
     </div>
 

@@ -15,6 +15,10 @@ export const environment = {
       login: '/api/login',
       register: '/api/register',
     },
+    profile: {
+      getAllUserGames: '/api/juegos/usuario',
+      deleteGame: '/api/juegos/eliminar'
+    },
     games: {
       getAllGames: '/api/juegos',
       getGamesByFilter: '/api/juegos/filtros',

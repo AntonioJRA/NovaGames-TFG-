@@ -72,7 +72,7 @@ const updateGame = async (idGame, gameData) => {
 
   values.push(idGame);
 
-  const sql = `UPDATE games SET ${fields.join(", ")} WHERE id = ?`;
+  const sql = `UPDATE games SET ${fields.join(", ")}, is_open = TRUE WHERE id = ?`;
 
   const [result] = await pool.query(sql, values);
   return result;

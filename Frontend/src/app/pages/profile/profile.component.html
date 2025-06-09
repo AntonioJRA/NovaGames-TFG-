@@ -2,19 +2,21 @@
 
 <div class="flex">
   <aside
-    class="bg-primary h-screen flex flex-col items-center transition-all w-14 duration-200 ease-in md:w-96"
+    class="bg-primary flex flex-col items-center transition-all w-14 duration-200 ease-in md:w-96 z-10"
   >
+  
     <app-change-language
       extraClasses="flex-col space-x-0 space-y-2 md:flex-row md:space-x-2 md:space-y-0 my-4"
     />
     <nav class="flex flex-col space-y-3 p-2 w-full">
+      
       <div
         class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
         [ngClass]="{
           'bg-accent': isProfileOpen,
           'hover:bg-accent/20': !isProfileOpen
         }"
-        (click)="showSection('profile')"
+        (click)="navToProfile('user')"
       >
         <div class="pl-2 md:pl-2">
           <i class="fa-solid fa-user p-1.5"></i>
@@ -31,7 +33,7 @@
           'bg-accent': isMyGamesOpen,
           'hover:bg-accent/20': !isMyGamesOpen
         }"
-        (click)="showSection('games')"
+        (click)="navToProfile('games')"
       >
         <div class="">
           <i class="fa-solid fa-gamepad p-2 ml-0.5"></i>
@@ -39,7 +41,7 @@
         <div
           class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1"
         >
-          {{ "profile.myGames" | translate }}
+          {{ "profile.myGames.name" | translate }}
         </div>
       </div>
       <div
@@ -48,7 +50,7 @@
           'bg-accent': isAdminPanelOpen,
           'hover:bg-accent/20': !isAdminPanelOpen
         }"
-        (click)="showSection('admin')"
+        (click)="navToProfile('admin')"
       >
         <div class="">
           <i class="fa-solid fa-sliders p-2 ml-1"></i>
@@ -62,7 +64,7 @@
     </nav>
   </aside>
 
-  <main class="pt-4 w-full px-[5%] flex flex-col space-y-4">
+  <main class="pt-4 w-full px-[5%] flex flex-col space-y-4 min-h-screen mb-5">
     <div
       class="bg-accent self-center rounded text-center text-4xl py-6 uppercase w-full h-32 flex justify-center items-center font-bold"
     >
@@ -101,11 +103,65 @@
       </p>
     </div>
     } } @else if (isMyGamesOpen) {
-    <div
-      routerLinkActive="bg-accent"
-      class="py-2 px-4 rounded-xl hover:bg-accent/20"
-    >
-      {{ "profile.myGames" | translate }}
+    <div class="flex justify-center">
+      <input
+        type="text"
+        class="py-2 px-4 w-[80%] rounded"
+        placeholder="Buscar juegos..."
+        (input)="onSearchChange($event)"
+      />
+    </div>
+
+    <div routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl">
+      <div
+        class="grid grid-cols-1 place-items-center gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+      >
+        @for (game of filteredGames; track $index) {
+        <div class="relative text-center min-w-40 max-w-60" [id]="game.id">
+          @if (game.cover) {
+          <img
+            [src]="apiUrl + '/images/' + game.cover"
+            [alt]="game.title + '.png'"
+            class="h-52 w-60 object-cover"
+          />
+          }@else {
+          <div
+            class="h-52 w-60 bg-secondary/80 flex items-center justify-center"
+          >
+            <p class="text-4xl">No cover</p>
+          </div>
+          }
+          <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
+
+          <div class="absolute top-0 left-0 z-20 h-10 w-10 bg-white/40">
+            <i
+              *ngIf="!game.is_open"
+              class="fa-solid fa-lock text-2xl p-2 text-red-700"
+              title="No publicado"
+            ></i>
+            <i
+              *ngIf="game.is_open"
+              class="fa-solid fa-lock-open text-2xl p-2 text-green-700"
+              title="Publicado"
+            ></i>
+          </div>
+          <div class="absolute top-0 right-0 z-20 h-10 w-20 bg-white/40">
+            <div class="flex items-center justify-around p-2">
+              <i
+                (click)="navToEditSection(game.id)"
+                title="Editar"
+                class="fa-solid fa-pen-to-square text-2xl text-blue-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+              ></i>
+              <i
+                (click)="deleteGame(game.id)"
+                title="Eliminar"
+                class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+              ></i>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
     </div>
     } @else if (isAdminPanelOpen) {
     <div

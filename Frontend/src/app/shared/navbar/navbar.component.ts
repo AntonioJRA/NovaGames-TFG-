@@ -141,20 +141,27 @@ export class NavbarComponent implements OnInit {
   navToHome() {
     this.router.navigate(['']);
     this.showScroll();
+    this.toggleProfile();
+    this.toggleMenu()
   }
   navToLogIn() {
     this.router.navigate(['login']);
     this.showScroll();
+     this.toggleProfile();
   }
   navToSignUp() {
     this.router.navigate(['sign-up']);
     this.showScroll();
+     this.toggleProfile();
   }
-  navToProfile() {
-    this.router.navigate(['profile']);
+  navToProfile(section: string) {
+    this.router.navigate([`profile/${section}`]);
     this.showScroll();
+     this.toggleProfile();
+     this.toggleMenu()
   }
   navToUploadGame() {
+    this.toggleProfile()
     this.sessionToken ? this.toggleModal() : this.router.navigate(['/login']);
   }
 

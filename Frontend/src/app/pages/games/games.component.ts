@@ -69,6 +69,7 @@ export class GamesComponent {
   ) {}
 
   ngOnInit() {
+    document.body.style.overflow = 'auto';
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
     this.onMobileToDesktop();
 

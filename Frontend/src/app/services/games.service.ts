@@ -7,7 +7,12 @@ import {
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, map, of, throwError } from 'rxjs';
-import { Game, GameCategories, GameRating, GameResponse } from '../models/game/game';
+import {
+  Game,
+  GameCategories,
+  GameRating,
+  GameResponse,
+} from '../models/game/game';
 import { environment } from '../../environments/environment';
 import { Category } from '../models/category/category';
 
@@ -29,6 +34,19 @@ export class GamesService {
         })),
         catchError(this.handleError)
       );
+  }
+
+  getAllUserGames(token: string): Observable<Game[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http
+      .get<Game[]>(
+        `${environment.apiUrl}${environment.routes.profile.getAllUserGames}`,
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
   }
 
   getGamesByFilter(filters: {
@@ -74,9 +92,7 @@ export class GamesService {
 
   getLastGame(): Observable<Game> {
     return this.http
-      .get<Game>(
-        `${environment.apiUrl}${environment.routes.games.getLastGame}`
-      )
+      .get<Game>(`${environment.apiUrl}${environment.routes.games.getLastGame}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -143,10 +159,7 @@ export class GamesService {
       .pipe(catchError(this.handleError));
   }
 
-  addGame(
-    token: string,
-    title: string
-  ): Observable<Game> {
+  addGame(token: string, title: string): Observable<Game> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -189,13 +202,24 @@ export class GamesService {
       .pipe(catchError(this.handleError));
   }
 
+  deleteGame(idGame: number): Observable<void> {
+  return this.http
+    .delete<void>(
+      `${environment.apiUrl}${environment.routes.profile.deleteGame}/${idGame}`
+    )
+    .pipe(catchError(this.handleError));
+}
+
+
   getGameCategories(id: string | number): Observable<GameCategories[]> {
-      return this.http
-        .get<GameCategories[]>(
-          `${environment.apiUrl}${environment.routes.gameSection.getGameCategories}/${id}`
-        )
-        .pipe(catchError(this.handleError));
-    }
+    return this.http
+      .get<GameCategories[]>(
+        `${environment.apiUrl}${environment.routes.gameSection.getGameCategories}/${id}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage: string = '';

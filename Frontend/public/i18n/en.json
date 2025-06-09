@@ -151,6 +151,7 @@
     }
   },
   "gameSection": {
+    "editSection": "Edit section",
     "rating": {
       "name": "Rate",
       "alert": "Vote submitted successfully!"
@@ -177,6 +178,10 @@
       "name": "Cover",
       "error": {
         "required": "Required field"
+      },
+      "button": {
+        "change": "Change",
+        "cancel": "Cancel"
       }
     },
     "url": {
