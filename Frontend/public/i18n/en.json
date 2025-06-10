@@ -70,8 +70,35 @@
   },
   "profile": {
     "myProfile": "Profile",
-    "myGames": "My Games",
-    "adminPanel": "Admin Panel"
+    "myGames": {
+      "name": "My Games",
+      "placeholder": "Search games...",
+      "alert": {
+        "delete": {
+          "confirmButtonText": "I'm sure",
+          "cancelButtonText": "Better not",
+          "title": "This action is permanent!",
+          "text": "Are you sure you want to delete the game?",
+          "confirm": "Game deleted successfully"
+        }
+      },
+      "titletext": {
+        "open": "Published",
+        "notOpen": "Unpublished",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "adminPanel": {
+      "name": "Admin Panel",
+      "games": "Games",
+      "users": "Users",
+      "placeholder": "Search...",
+      "titletext": {
+        "ban": "Ban",
+        "delete": "Delete"
+      }
+    }
   },
   "games": {
     "filters": {

@@ -16,7 +16,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const id  = req.user.id;
+    const id = req.user.id;
     const [[result]] = await pool.query(
       "SELECT * FROM users WHERE id = ? LIMIT 1",
       [id]
@@ -135,12 +135,13 @@ export const changeUserRole = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { idUser } = req.body;
-    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [idUser]);
+    const [result] = await pool.query("DELETE FROM users WHERE id = ?", [id]);
+    console.log(result);
 
     if (result.affectedRows == 0) {
-      return res.status(400).json({
+      return res.status(404).json({
         message: "El usuario no existe",
       });
     } else {
@@ -237,7 +238,7 @@ export const changePassword = async (req, res) => {
 };
 
 export const getVotesByUser = async (req, res) => {
-  const id  = req.user.id;
+  const id = req.user.id;
   try {
     const [result] = await pool.query(
       `

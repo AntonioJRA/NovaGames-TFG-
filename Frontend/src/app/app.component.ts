@@ -38,11 +38,12 @@ export class AppComponent {
     // Lógica del navbar
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const hiddenRoutes = ['/login', '/sign-up', '/profile'];
+        const hiddenRoutes = ['/login', '/sign-up'];
         const currentUrl = event.urlAfterRedirects;
         this.showNavbar = !(
           hiddenRoutes.includes(currentUrl) ||
-          currentUrl.startsWith('/auth/')
+          currentUrl.startsWith('/auth/') ||
+          currentUrl.startsWith('/profile/')
         );
       }
     });

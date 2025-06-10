@@ -1,8 +1,8 @@
 "use strict"
 
 import { Router } from 'express';
-import { addGame, addGameRating, deleteGame, getAllGames, getAllUserGames, getGame, getGameRatingByUser, getGamesByFilter, getLastGame, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, publicGame, updateGameDownloads, updateGameRating } from '../controllers/games.controllers.js';
-import { autenticarToken } from '../controllers/auth.controllers.js';
+import { addGame, addGameRating, deleteGame, deleteGameByAdmin, getAllGames, getAllGamesWithUserEmail, getAllUserGames, getGame, getGameRatingByUser, getGamesByFilter, getLastGame, getMostRatedGamesLimit, getMostRecentGamesLimit, getRandomGames, publicGame, updateGameDownloads, updateGameRating } from '../controllers/games.controllers.js';
+import { autenticarToken, autorizarRol } from '../controllers/auth.controllers.js';
 import { validateGamesByFilter, validateUpdateRatings } from '../validators/games.validators.js';
 
 
@@ -27,6 +27,8 @@ router.get('/api/juegos/recientes', getMostRecentGamesLimit);
 // get rating by user
 router.get('/api/juegos/rating-usuario', autenticarToken, getGameRatingByUser);
 // get 1 by id
+router.get('/api/juegos/email', getAllGamesWithUserEmail);
+// get 1 by id
 router.get('/api/juegos/:id', getGame);
 // post 1 with title (crear seccion juego)
 router.post('/api/juegos/crear', autenticarToken, addGame);
@@ -40,6 +42,8 @@ router.put('/api/juegos/actualizar-rating', autenticarToken, updateGameRating);
 router.put('/api/juegos/actualizar-descargas', updateGameDownloads);
 // delete 1
 router.delete('/api/juegos/eliminar/:idGame', deleteGame);
+// delete 1 by admin
+router.delete('/api/juegos/eliminar/admin/:idGame', autenticarToken, autorizarRol(['admin']), deleteGameByAdmin);
 
 
 export { router as routesGames };

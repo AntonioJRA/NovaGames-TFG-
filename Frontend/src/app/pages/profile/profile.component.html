@@ -1,175 +1,177 @@
 <app-logo-header />
 
 <div class="flex">
-  <aside
-    class="bg-primary flex flex-col items-center transition-all w-14 duration-200 ease-in md:w-96 z-10"
-  >
-  
-    <app-change-language
-      extraClasses="flex-col space-x-0 space-y-2 md:flex-row md:space-x-2 md:space-y-0 my-4"
-    />
+  <aside class="bg-primary flex flex-col items-center transition-all w-14 duration-200 ease-in md:w-96 z-10">
+
+    <app-change-language extraClasses="flex-col space-x-0 space-y-2 md:flex-row md:space-x-2 md:space-y-0 my-4" />
     <nav class="flex flex-col space-y-3 p-2 w-full">
-      
-      <div
-        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
-        [ngClass]="{
+
+      <div class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full" [ngClass]="{
           'bg-accent': isProfileOpen,
           'hover:bg-accent/20': !isProfileOpen
-        }"
-        (click)="navToProfile('user')"
-      >
+        }" (click)="navToProfile('user')">
         <div class="pl-2 md:pl-2">
           <i class="fa-solid fa-user p-1.5"></i>
         </div>
         <div
-          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-2"
-        >
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-2">
           {{ "profile.myProfile" | translate }}
         </div>
       </div>
-      <div
-        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
-        [ngClass]="{
+      <!-- <div class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full" [ngClass]="{
           'bg-accent': isMyGamesOpen,
           'hover:bg-accent/20': !isMyGamesOpen
-        }"
-        (click)="navToProfile('games')"
-      >
+        }" (click)="navToProfile('games')">
         <div class="">
           <i class="fa-solid fa-gamepad p-2 ml-0.5"></i>
         </div>
         <div
-          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1"
-        >
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1">
           {{ "profile.myGames.name" | translate }}
         </div>
-      </div>
-      <div
-        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full"
-        [ngClass]="{
+      </div> -->
+      <div *ngIf="userRole === 'admin'"
+        class="flex items-center justify-center rounded-xl cursor-pointer h-10 w-10 md:w-full" [ngClass]="{
           'bg-accent': isAdminPanelOpen,
           'hover:bg-accent/20': !isAdminPanelOpen
-        }"
-        (click)="navToProfile('admin')"
-      >
+        }" (click)="navToProfile('admin')">
         <div class="">
           <i class="fa-solid fa-sliders p-2 ml-1"></i>
         </div>
         <div
-          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1.5"
-        >
-          {{ "profile.adminPanel" | translate }}
+          class="block md:w-full md:whitespace-nowrap md:transition-opacity md:duration-300 md:delay-100 md:opacity-100 opacity-0 h-0 md:h-auto overflow-hidden ml-1.5">
+          {{ "profile.adminPanel.name" | translate }}
         </div>
       </div>
     </nav>
   </aside>
 
-  <main class="pt-4 w-full px-[5%] flex flex-col space-y-4 min-h-screen mb-5">
+  <main class="pt-4 w-full px-[5%] flex flex-col space-y-4 min-h-screen mb-10">
     <div
-      class="bg-accent self-center rounded text-center text-4xl py-6 uppercase w-full h-32 flex justify-center items-center font-bold"
-    >
+      class="bg-accent self-center rounded text-center text-4xl py-6 uppercase w-full h-32 flex justify-center items-center font-bold">
       {{ activeSectionKey | translate }}
     </div>
     @if (isProfileOpen) { @if (userData){
-    <div class="flex justify-center items-center mt-4">
-      <figure class="z-10">
-        <img
-          [src]="'assets/images/profile_images/' + userData.profile_image"
-          alt=""
-          class="w-40 border-8 border-accent rounded-full aspect-square object-cover bg-accent"
-        />
-      </figure>
-      <div
-        class="flex justify-between bg-accent -ml-10 space-x-5 w-8/12 rounded-r-xl h-24 pr-10"
-      >
+    <div class="relative flex justify-center items-center mt-4">
+
+      <figure class="relative z-10">
+        <img [src]="apiUrl + '/images/' + userData.profile_image" alt=""
+          class="w-40 border-8 border-accent rounded-full aspect-square object-cover bg-accent" />
         <div
-          class="flex flex-col justify-center text-center w-full leading-2 pl-10"
-        >
-          <p class="ml-3 [text-wrap:balance] text-[clamp(1.5rem,3vw,2rem)]">
+          class="absolute bottom-0 right-0 bg-accent border hover:bg-primary transition-all ease-in duration-100 border-primary h-10 w-10 flex items-center justify-center rounded-xl">
+          <label for="profile-image">
+            <i [title]="'profile.myGames.titletext.edit' | translate"
+              class="fa-solid fa-pen-to-square text-2xl text-white/50  cursor-pointer"></i>
+          </label>
+          <input type="file" name="profile-image" id="profile-image" class="hidden" (change)="uploadFile($event)">
+        </div>
+
+      </figure>
+
+      <div class="relative flex justify-between bg-accent -ml-10 space-x-5 w-8/12 rounded-r-xl h-24 pr-10">
+        <div class=" flex flex-col justify-center text-center w-full leading-2 pl-10">
+          <p class="ml-3 font-bold text-nowrap overflow-hidden text-[clamp(1.5rem,3vw,2rem)] z-10">
             {{ userData.username }}
           </p>
+
+        </div>
+        <div class="absolute right-0 bottom-0 bg-accent flex flex-col items-center text-xl">
+          <p class="opacity-50 px-2 py-1 z-0">{{ userData.email }}</p>
         </div>
       </div>
     </div>
-    <div class="bg-accent flex flex-col items-center text-xl">
-      <h1>Correo</h1>
-      <p class="opacity-50">{{ userData.email }}</p>
-    </div>
-    <div class="bg-accent flex flex-col items-center text-xl">
-      <h1>Fecha de registro</h1>
-
-      <p class="opacity-50">
-        {{ userData.registration_date | date : "long" }}
-      </p>
-    </div>
-    } } @else if (isMyGamesOpen) {
     <div class="flex justify-center">
-      <input
-        type="text"
-        class="py-2 px-4 w-[80%] rounded"
-        placeholder="Buscar juegos..."
-        (input)="onSearchChange($event)"
-      />
+      <input type="text" class="py-2 px-4 w-[80%] rounded text-black"
+        [placeholder]="'profile.myGames.placeholder' | translate" (input)="onSearchChange($event)" />
     </div>
 
     <div routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl">
-      <div
-        class="grid grid-cols-1 place-items-center gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-      >
+      <div class="grid grid-cols-1 place-items-center gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         @for (game of filteredGames; track $index) {
         <div class="relative text-center min-w-40 max-w-60" [id]="game.id">
           @if (game.cover) {
-          <img
-            [src]="apiUrl + '/images/' + game.cover"
-            [alt]="game.title + '.png'"
-            class="h-52 w-60 object-cover"
-          />
+          <img [src]="apiUrl + '/images/' + game.cover" [alt]="game.title + '.png'" class="h-52 w-60 object-cover" />
           }@else {
-          <div
-            class="h-52 w-60 bg-secondary/80 flex items-center justify-center"
-          >
+          <div class="h-52 w-60 bg-secondary/80 flex items-center justify-center">
             <p class="text-4xl">No cover</p>
           </div>
           }
-          <p class="py-3 text-xl bg-accent">{{ game.title }}</p>
+          <p class="py-3 px-3 text-xl bg-accent truncate overflow-hidden whitespace-nowrap">{{ game.title }}</p>
 
-          <div class="absolute top-0 left-0 z-20 h-10 w-10 bg-white/40">
-            <i
-              *ngIf="!game.is_open"
-              class="fa-solid fa-lock text-2xl p-2 text-red-700"
-              title="No publicado"
-            ></i>
-            <i
-              *ngIf="game.is_open"
-              class="fa-solid fa-lock-open text-2xl p-2 text-green-700"
-              title="Publicado"
-            ></i>
+          <div class="absolute top-0 left-0 z-20 h-10 w-10 bg-white/75">
+            <i *ngIf="!game.is_open" class="fa-solid fa-lock text-2xl p-2 text-red-700"
+              [title]="'profile.myGames.titletext.notOpen' | translate"></i>
+            <i *ngIf="game.is_open" class="fa-solid fa-lock-open text-2xl p-2 text-green-700"
+              [title]="'profile.myGames.titletext.open' | translate"></i>
           </div>
-          <div class="absolute top-0 right-0 z-20 h-10 w-20 bg-white/40">
+          <div class="absolute top-0 right-0 z-20 h-10 w-20 bg-white/75">
             <div class="flex items-center justify-around p-2">
-              <i
-                (click)="navToEditSection(game.id)"
-                title="Editar"
-                class="fa-solid fa-pen-to-square text-2xl text-blue-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
-              ></i>
-              <i
-                (click)="deleteGame(game.id)"
-                title="Eliminar"
-                class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
-              ></i>
+              <i (click)="navToEditSection(game.id)" [title]="'profile.myGames.titletext.edit' | translate"
+                class="fa-solid fa-pen-to-square text-2xl text-blue-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
+              <i (click)="deleteGame(game.id, 'self')" [title]="'profile.myGames.titletext.delete' | translate"
+                class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
             </div>
           </div>
         </div>
         }
       </div>
     </div>
+    }
+
     } @else if (isAdminPanelOpen) {
-    <div
-      routerLinkActive="bg-accent"
-      class="py-2 px-4 rounded-xl text-nowrap hover:bg-accent/20"
-    >
-      {{ "profile.adminPanel" | translate }}
+    <div class="flex justify-around bg-primary py-3 px-4 rounded">
+      <h2 class=" py-2 px-4 rounded-xl text-xl cursor-pointer transition-all ease-in duration-100 hover:bg-accent"
+        [ngClass]="{ 'bg-accent/30': !isAdminGamesOpen, 'bg-accent': isAdminGamesOpen }"
+        (click)="switchAdminPanel('games')">{{ "profile.adminPanel.games" | translate }}</h2>
+      <h2 class=" py-2 px-4 rounded-xl text-xl cursor-pointer transition-all ease-in duration-100 hover:bg-accent"
+        [ngClass]="{ 'bg-accent/30': !isAdminUsersOpen, 'bg-accent': isAdminUsersOpen }"
+        (click)="switchAdminPanel('users')">{{ "profile.adminPanel.users" | translate }}</h2>
     </div>
+    <div class="flex justify-center">
+      <input type="text" id="admin-searcher" class="py-2 px-4 w-[80%] rounded text-black"
+        [placeholder]="'profile.adminPanel.placeholder' | translate" (input)="onSearchChangeAdmin($event)" />
+    </div>
+    @if (isAdminGamesOpen) {
+    <div class="bg-white/60 flex flex-col h-screen overflow-y-scroll text-black font-bold rounded">
+      @for (game of adminFilteredGames; track $index) {
+      <div class="flex justify-between border-b border-accent ">
+        <div class="w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent"
+          (click)="navToGameSection(game.id)">
+          <div class="flex justify-between">
+            <p class=""> {{game.title}} </p>
+            <small class="text-primary/75"> {{game.email}} </small>
+          </div>
+        </div>
+
+
+        <div class="flex items-center justify-around px-3 gap-5">
+          <i (click)="deleteGame(game.id, 'admin', game.email)" [title]="'profile.adminPanel.titletext.delete' | translate"
+            class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
+        </div>
+
+      </div>
+      }
+    </div>
+    } @else if (isAdminUsersOpen) {
+    <div class="bg-white/60 flex flex-col h-screen overflow-y-scroll text-black font-bold rounded">
+      @for (user of adminFilteredUsers; track $index) {
+      <div class="flex justify-between border-b border-accent ">
+        <div
+          class="flex justify-between items-center w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent">
+          <p class="">{{ user.username }}</p>
+          <small class="text-primary/75">{{ user.email }}</small>
+        </div>
+        <div class="flex items-center justify-around px-3 gap-5">
+          <i [title]="'profile.adminPanel.titletext.ban' | translate"
+            class="fa-solid fa-ban text-2xl text-yellow-600 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
+          <i [title]="'profile.adminPanel.titletext.delete' | translate"
+            class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
+        </div>
+      </div>
+      }
+    </div>
+    }
+
     }
   </main>
 </div>

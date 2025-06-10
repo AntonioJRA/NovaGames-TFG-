@@ -8,7 +8,7 @@ import { autorizarRol, autenticarToken } from '../controllers/auth.controllers.j
 const router = Router();
 
 // // Obtiene todos los usuarios
-// router.get('/usuarios', getAllUsers);
+router.get('/api/usuarios', getAllUsers);
 // get 1 (user logueado via token)
 router.get('/api/usuarios/usuario', autenticarToken, getUser);
 // get votes by user from active gamejam
@@ -25,8 +25,10 @@ router.patch('/api/usuarios/perfil/editar-perfil', autenticarToken, validateProf
 router.put('/api/usuarios/perfil/cambiar-password', autenticarToken, validateChangePassword, changePassword);
 // update rol (a cualquier rol)
 router.put('/api/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin']), validateChangeUserRole, changeUserRole);
+// ban user
+router.put('/api/usuarios/ban/:id', autenticarToken, autorizarRol(['admin']), changeUserRole);
 // // Permite a los admin banear usuarios
-// router.delete('/usuarios', autenticarToken, autorizarRol(['admin']), validateDeleteUser, deleteUser);
+router.delete('/api/usuarios/eliminar/:id', autenticarToken, autorizarRol(['admin']), deleteUser);
 
 
 export { router as routesUsers };

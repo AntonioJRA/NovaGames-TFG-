@@ -1,4 +1,5 @@
 import { pool } from "../db.js";
+import { sendMail } from "../mailer.js";
 
 export const getGameRatingByUser = async (req, res) => {
   const idUser = req.user.id;
@@ -113,6 +114,21 @@ export const getLastGame = async (req, res) => {
   }
 };
 
+export const getAllGamesWithUserEmail = async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "SELECT g.*, u.email FROM games as g JOIN users as u ON u.id = g.developer_id ORDER BY g.id"
+    );
+
+     res.status(200).json(result);
+
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener juegos", error: error.message });
+  }
+};
+
 export const getAllGames = async (req, res) => {
   try {
     const [result] = await pool.query(
@@ -168,7 +184,7 @@ export const getGame = async (req, res) => {
     const [[result]] = await pool.query("SELECT * FROM games WHERE id = ?", [
       id,
     ]);
-    
+
     if (!result) return res.status(200).json({ message: "No existe el juego" });
 
     res.status(200).json(result);
@@ -345,6 +361,35 @@ export const deleteGame = async (req, res) => {
     ]);
 
     if (result.affectedRows == 1) {
+      res.status(200).json({ message: "Juego eliminado" });
+    } else {
+      res.status(400).json({ message: "Juego no eliminado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar el juego" });
+  }
+};
+
+export const deleteGameByAdmin = async (req, res) => {
+  //extraer los campos
+  const { idGame } = req.params;
+  const { email } = req.body
+  try {
+
+    const [[game]] = await pool.query("SELECT title FROM games WHERE id = ?", [
+      idGame,
+    ]);
+    console.log(game);
+    
+    const [result] = await pool.query("DELETE FROM games WHERE id = ?", [
+      idGame,
+    ]);
+
+    if (result.affectedRows == 1) {
+      
+      let emailHTML = `<p> Por motivos hemos decidido borrar tu juego <b>${game.title}</b></p> `;
+
+      await sendMail(email, "NovaGames Account", emailHTML);
       res.status(200).json({ message: "Juego eliminado" });
     } else {
       res.status(400).json({ message: "Juego no eliminado" });

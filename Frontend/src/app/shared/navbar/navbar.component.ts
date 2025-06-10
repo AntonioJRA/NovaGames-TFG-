@@ -19,6 +19,7 @@ import {
 } from '@angular/forms';
 import { ButtonComponent } from '../button/button.component';
 import { GamesService } from '../../services/games.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -35,6 +36,8 @@ import { GamesService } from '../../services/games.service';
   styles: ``,
 })
 export class NavbarComponent implements OnInit {
+  // Api URL
+  apiUrl = environment.apiUrl;
   // Menu
   isMenuOpen: boolean = false;
   // User
@@ -54,7 +57,7 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     window.addEventListener('resize', this.onMobileToDesktop.bind(this));
@@ -147,18 +150,18 @@ export class NavbarComponent implements OnInit {
   navToLogIn() {
     this.router.navigate(['login']);
     this.showScroll();
-     this.toggleProfile();
+    this.toggleProfile();
   }
   navToSignUp() {
     this.router.navigate(['sign-up']);
     this.showScroll();
-     this.toggleProfile();
+    this.toggleProfile();
   }
   navToProfile(section: string) {
     this.router.navigate([`profile/${section}`]);
     this.showScroll();
-     this.toggleProfile();
-     this.toggleMenu()
+    this.toggleProfile();
+    this.toggleMenu()
   }
   navToUploadGame() {
     this.toggleProfile()
@@ -197,7 +200,7 @@ export class NavbarComponent implements OnInit {
         this.showScroll();
         this.getLastGame();
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
 
@@ -206,7 +209,7 @@ export class NavbarComponent implements OnInit {
       next: (data) => {
         this.router.navigate([`upload-game/${data.id}`]);
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
 }

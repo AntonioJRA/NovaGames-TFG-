@@ -72,14 +72,33 @@
     "myProfile": "Perfil",
     "myGames": {
       "name": "Mis juegos",
+      "placeholder": "Buscar juegos...",
       "alert": {
         "delete": {
-          "title": "",
-          "text": ""
+          "confirmButtonText": "Estoy seguro",
+          "cancelButtonText": "Mejor no",
+          "title": "¡Esta acción será permanente!",
+          "text": "¿Seguro que quieres eliminar el juego?",
+          "confirm": "Juego eliminado correctamente"
         }
+      },
+      "titletext":{
+        "open": "Publicado",
+        "notOpen": "No publicado",
+        "edit": "Editar",
+        "delete": "Eliminar"
       }
     },
-    "adminPanel": "Panel de administrador"
+    "adminPanel": {
+      "name": "Panel de administrador",
+      "games": "Juegos",
+      "users": "Usuarios",
+      "placeholder": "Buscar...",
+      "titletext":{
+        "ban": "Bloquear",
+        "delete": "Eliminar"
+      }
+    }
   },
   "games": {
     "filters": {

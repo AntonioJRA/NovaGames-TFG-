@@ -17,7 +17,12 @@ export const environment = {
     },
     profile: {
       getAllUserGames: '/api/juegos/usuario',
-      deleteGame: '/api/juegos/eliminar'
+      getAllGamesWithUserEmail: '/api/juegos/email',
+      deleteGame: '/api/juegos/eliminar',
+      deleteGameByAdmin: '/api/juegos/eliminar/admin',
+      deleteUser: '/api/usuarios/eliminar',
+      updateProfile: '/api/usuarios/perfil/editar-perfil',
+      getAllUsers: '/api/usuarios'
     },
     games: {
       getAllGames: '/api/juegos',

@@ -36,6 +36,14 @@ export class GamesService {
       );
   }
 
+  getAllGamesWithUserEmail(): Observable<any[]> {
+    return this.http
+      .get<any[]>(
+        `${environment.apiUrl}${environment.routes.profile.getAllGamesWithUserEmail}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   getAllUserGames(token: string): Observable<Game[]> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -203,12 +211,25 @@ export class GamesService {
   }
 
   deleteGame(idGame: number): Observable<void> {
-  return this.http
-    .delete<void>(
-      `${environment.apiUrl}${environment.routes.profile.deleteGame}/${idGame}`
-    )
-    .pipe(catchError(this.handleError));
-}
+    return this.http
+      .delete<void>(
+        `${environment.apiUrl}${environment.routes.profile.deleteGame}/${idGame}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteGameByAdmin(token: string, idGame: number, email: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http
+      .delete<void>(
+        `${environment.apiUrl}${environment.routes.profile.deleteGameByAdmin}/${idGame}`, { headers, body: { email } }
+      )
+      .pipe(catchError(this.handleError));
+  }
 
 
   getGameCategories(id: string | number): Observable<GameCategories[]> {

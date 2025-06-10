@@ -15,7 +15,7 @@ import { User } from '../models/user/user';
 export class UsersService {
   public http = inject(HttpClient);
 
-  getUser(token:string): Observable<User> {
+  getUser(token: string): Observable<User> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -25,6 +25,30 @@ export class UsersService {
       .get<User>(`${environment.apiUrl}${environment.routes.getUser}`, {
         headers,
       })
+      .pipe(catchError(this.handleError));
+  }
+
+  getAllUsers(): Observable<User[]> {
+    return this.http
+      .get<User[]>(`${environment.apiUrl}${environment.routes.profile.getAllUsers}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  updateProfile(token: string, profile_image: string): Observable<User> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http
+      .patch<User>(`${environment.apiUrl}${environment.routes.profile.updateProfile}`, { profile_image }, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteUser(): Observable<void> {
+
+    return this.http
+      .delete<void>(`${environment.apiUrl}${environment.routes.profile.getAllUsers}`)
       .pipe(catchError(this.handleError));
   }
 
