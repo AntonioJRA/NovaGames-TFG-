@@ -1,5 +1,6 @@
 import { pool } from "../db.js";
 import bcrypt from "bcryptjs";
+import { sendMail } from "../mailer.js";
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -48,7 +49,7 @@ export const upgradeUserToDeveloper = async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        message: "El usuario ha ascendido a \"Developer\"",
+        message: 'El usuario ha ascendido a "Developer"',
       });
     }
   } catch (error) {
@@ -73,7 +74,7 @@ export const downgradeDeveloperToUser = async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        message: "El usuario ha descendido a \"User\"",
+        message: 'El usuario ha descendido a "User"',
       });
     }
   } catch (error) {
@@ -86,7 +87,7 @@ export const downgradeDeveloperToUser = async (req, res) => {
 export const updateNovapoints = async (req, res) => {
   try {
     const id = req.user.id;
-    const { rewards } = req.body
+    const { rewards } = req.body;
 
     const [result] = await pool.query(
       "UPDATE users SET novapoints = novapoints + ? WHERE id = ?",
@@ -125,6 +126,74 @@ export const changeUserRole = async (req, res) => {
     } else {
       return res.status(200).json({
         message: "El usuario ha sido actualizado",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const temporalyBanUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET unban_date = DATE_ADD(NOW(), INTERVAL 1 MONTH) WHERE id = ?",
+      [id]
+    );
+
+    const [[user]] = await pool.query(
+      "SELECT unban_date FROM users WHERE id = ? LIMIT 1",
+      [id]
+    );
+
+    const fechaCompleta = user.unban_date;
+    const soloFecha = fechaCompleta.toISOString().split("T")[0];
+    const soloHora = fechaCompleta.toISOString().split("T")[1].split(".")[0];
+
+    if (result.affectedRows > 0) {
+      let emailHTML = `<p>Por motivos hemos decidido bloquear tu cuenta hasta el día <b>${soloFecha}</b> a las <b>${soloHora}</b></p> `;
+
+      await sendMail(email, "NovaGames Account", emailHTML);
+      return res.status(400).json({
+        message: "Usuario baneado con éxito",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Error al banear el usuario",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+    console.log(error);
+  }
+};
+
+export const permanentlyBanUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET is_banned = TRUE WHERE id = ?",
+      [id]
+    );
+
+    if (result.affectedRows > 0) {
+      let emailHTML = `<p>Por motivos hemos decidido bloquear tu cuenta <b>permanentemente</b></p> `;
+
+      await sendMail(email, "NovaGames Account", emailHTML);
+      return res.status(400).json({
+        message: "Usuario baneado con éxito",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Error al banear el usuario",
       });
     }
   } catch (error) {
@@ -248,7 +317,8 @@ export const getVotesByUser = async (req, res) => {
       `,
       [id]
     );
-    if (!result) return res.status(200).json("Actualmente no tienes ningún voto");
+    if (!result)
+      return res.status(200).json("Actualmente no tienes ningún voto");
     res.status(200).json(result);
   } catch (error) {
     res

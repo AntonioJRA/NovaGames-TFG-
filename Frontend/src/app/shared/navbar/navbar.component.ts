@@ -164,7 +164,7 @@ export class NavbarComponent implements OnInit {
     this.toggleMenu()
   }
   navToUploadGame() {
-    this.toggleProfile()
+    if(this.isProfileOpen) this.isProfileOpen = false
     this.sessionToken ? this.toggleModal() : this.router.navigate(['/login']);
   }
 
