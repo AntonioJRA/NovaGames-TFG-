@@ -9,4 +9,6 @@ export interface User {
     verified:boolean,
     verification_token:string,
     novapoints:number,
+    is_banned:boolean,
+    unban_date:Date,
 }

@@ -14,6 +14,7 @@ export const environment = {
     auth: {
       login: '/api/login',
       register: '/api/register',
+      forgotPassword: '/api/forgotPassword',
     },
     profile: {
       getAllUserGames: '/api/juegos/usuario',
@@ -22,7 +23,11 @@ export const environment = {
       deleteGameByAdmin: '/api/juegos/eliminar/admin',
       deleteUser: '/api/usuarios/eliminar',
       updateProfile: '/api/usuarios/perfil/editar-perfil',
-      getAllUsers: '/api/usuarios'
+      getAllUsers: '/api/usuarios',
+      temporalyBanUser: '/api/usuarios/ban',
+      permanentlyBanUser: '/api/usuarios/permaban',
+      temporalyUnbanUser: '/api/usuarios/unban',
+      permanentlyUnbanUser: '/api/usuarios/unpermaban'
     },
     games: {
       getAllGames: '/api/juegos',

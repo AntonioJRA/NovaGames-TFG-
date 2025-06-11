@@ -155,15 +155,45 @@ export const temporalyBanUser = async (req, res) => {
     const soloHora = fechaCompleta.toISOString().split("T")[1].split(".")[0];
 
     if (result.affectedRows > 0) {
-      let emailHTML = `<p>Por motivos hemos decidido bloquear tu cuenta hasta el día <b>${soloFecha}</b> a las <b>${soloHora}</b></p> `;
+      let emailHTML = `<p>Tu cuenta ha sido suspendida por comportamiento inadecuado hasta el día <b>${soloFecha}</b> a las <b>${soloHora}</b></p> `;
 
       await sendMail(email, "NovaGames Account", emailHTML);
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Usuario baneado con éxito",
       });
     } else {
-      return res.status(200).json({
+      return res.status(400).json({
         message: "Error al banear el usuario",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+    console.log(error);
+  }
+};
+
+export const temporalyUnbanUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET unban_date = NULL WHERE id = ? AND unban_date IS NOT NULL",
+      [id]
+    );
+
+    if (result.affectedRows > 0) {
+      let emailHTML = `<p>Hemos desbloqueado el acceso a su cuenta</b></p> `;
+
+      await sendMail(email, "NovaGames Account", emailHTML);
+      return res.status(200).json({
+        message: "Usuario desbaneado con éxito",
+      });
+    } else {
+      return res.status(400).json({
+        message: "El usuario no estaba baneado",
       });
     }
   } catch (error) {
@@ -180,7 +210,7 @@ export const permanentlyBanUser = async (req, res) => {
     const { email } = req.body;
 
     const [result] = await pool.query(
-      "UPDATE users SET is_banned = TRUE WHERE id = ?",
+      "UPDATE users SET is_banned = TRUE, unban_date = NULL WHERE id = ?",
       [id]
     );
 
@@ -188,12 +218,41 @@ export const permanentlyBanUser = async (req, res) => {
       let emailHTML = `<p>Por motivos hemos decidido bloquear tu cuenta <b>permanentemente</b></p> `;
 
       await sendMail(email, "NovaGames Account", emailHTML);
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Usuario baneado con éxito",
       });
     } else {
-      return res.status(200).json({
+      return res.status(400).json({
         message: "Error al banear el usuario",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
+export const permanentlyUnbanUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE users SET is_banned = FALSE WHERE id = ? AND is_banned = TRUE",
+      [id]
+    );
+
+    if (result.affectedRows > 0) {
+      let emailHTML = `<p>Hemos decidivo volver a activar su cuenta</p> `;
+
+      await sendMail(email, "NovaGames Account", emailHTML);
+      return res.status(200).json({
+        message: "Usuario baneado con éxito",
+      });
+    } else {
+      return res.status(400).json({
+        message: "El usuario no estaba baneado",
       });
     }
   } catch (error) {

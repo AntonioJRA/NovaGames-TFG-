@@ -45,10 +45,45 @@ export class UsersService {
       .pipe(catchError(this.handleError));
   }
 
-  deleteUser(): Observable<void> {
+  temporalyBanUser(token: string, id: number, email: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
 
     return this.http
-      .delete<void>(`${environment.apiUrl}${environment.routes.profile.getAllUsers}`)
+      .patch<void>(`${environment.apiUrl}${environment.routes.profile.temporalyBanUser}/${id}`, { email }, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  temporalyUnbanUser(token: string, id: number, email: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http
+      .patch<void>(`${environment.apiUrl}${environment.routes.profile.temporalyUnbanUser}/${id}`, { email }, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  permanentlyBanUser(token: string, id: number, email: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http
+      .patch<void>(`${environment.apiUrl}${environment.routes.profile.permanentlyBanUser}/${id}`, { email }, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  permanentlyUnbanUser(token: string, id: number, email: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http
+      .patch<void>(`${environment.apiUrl}${environment.routes.profile.permanentlyUnbanUser}/${id}`, { email }, { headers })
       .pipe(catchError(this.handleError));
   }
 

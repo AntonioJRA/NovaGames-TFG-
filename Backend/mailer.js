@@ -14,7 +14,7 @@ const transporter=nodemailer.createTransport({
 })
 
 export const sendMail=async(to, subject, htmlContent)=>{
-    console.log(to);
+    // console.log(to);
     try {
         const info = transporter.sendMail({
             from: process.env.EMAIL_USER,
@@ -22,7 +22,7 @@ export const sendMail=async(to, subject, htmlContent)=>{
             subject,
             html: htmlContent
         })
-        console.log(`Correo enviado: ${(await info).messageId}`);
+        // console.log(`Correo enviado: ${(await info).messageId}`);
     } catch (error) {
         console.log(`Correo no enviado: ${error}`);
     }

@@ -34,9 +34,21 @@
       "button": "Acceder",
       "error": "Credenciales incorrectos",
       "notVerified": "Cuenta no verificada",
+      "bannedAccount": "Esta cuenta está actualmente bloqueada",
       "verificationComplete1": "Verificación completada correctamente",
       "verificationComplete2": "¡Prepárate para disfrutar de todo lo que NovaGames tiene para ti!",
-      "goToHome": "Volver a Novagames"
+      "goToHome": "Volver a Novagames",
+      "forgotPassword": {
+        "title": "Introduzca su correo",
+        "placeholder": "Correo electrónico",
+        "button": "Recuperar contraseña",
+        "recoverPassword": {
+          "title": "Hemos enviado código a su correo. Insertelo aquí",
+          "placeholder": "Código",
+          "button": "Confirmar"
+        }
+
+      }
     },
     "signUp": {
       "title": "Crear una cuenta",
@@ -74,15 +86,15 @@
       "name": "Mis juegos",
       "placeholder": "Buscar juegos...",
       "alert": {
+        "confirmButtonText": "Estoy seguro",
+        "cancelButtonText": "Mejor no",
         "delete": {
-          "confirmButtonText": "Estoy seguro",
-          "cancelButtonText": "Mejor no",
           "title": "¡Esta acción será permanente!",
-          "text": "¿Seguro que quieres eliminar el juego?",
+          "text": "¿Seguro que quieres eliminar el juego ",
           "confirm": "Juego eliminado correctamente"
         }
       },
-      "titletext":{
+      "titletext": {
         "open": "Publicado",
         "notOpen": "No publicado",
         "edit": "Editar",
@@ -94,9 +106,35 @@
       "games": "Juegos",
       "users": "Usuarios",
       "placeholder": "Buscar...",
-      "titletext":{
-        "ban": "Bloquear",
-        "delete": "Eliminar"
+      "titletext": {
+        "ban": "Bloquear cuenta",
+        "permaban": "Eliminar cuenta",
+        "unban": "Desbloquear cuenta",
+        "unpermaban": "Reactivar cuenta"
+      },
+      "alert": {
+        "confirmButtonText": "Estoy seguro",
+        "cancelButtonText": "Mejor no",
+        "ban": {
+          "title": "¡Estás a punto de bloquear temporalmente a un usuario!",
+          "text": "¿Seguro que quieres bloquear al usuario ",
+          "confirm": "Usuario bloqueado con éxito"
+        },
+        "unban": {
+          "title": "¡Estás a punto de desbloquear a un usuario!",
+          "text": "¿Seguro que quieres desbloquear al usuario ",
+          "confirm": "Usuario desbloqueado con éxito"
+        },
+        "permaban": {
+          "title": "¡Estás a punto de restringir <p>PERMANENTEMENTE</p> la cuenta de un usuario!",
+          "text": "¿Seguro que quieres restringir al usuario ",
+          "confirm": "Usuario bloqueado con éxito"
+        },
+        "unpermaban": {
+          "title": "¡Estás a punto de volver a activar una cuenta de usuario!",
+          "text": "¿Seguro que quieres reactivar la cuenta de ",
+          "confirm": "Cuenta de usuario activada con éxito"
+        }
       }
     }
   },

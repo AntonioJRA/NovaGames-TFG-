@@ -4,7 +4,7 @@ export const getCategories = async (req, res) => {
   try {
     const [result] = await pool.query(
       `
-      SELECT * FROM categories
+      SELECT * FROM categories ORDER BY name ASC
       `
     );
 

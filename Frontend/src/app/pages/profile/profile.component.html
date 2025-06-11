@@ -108,7 +108,8 @@
             <div class="flex items-center justify-around p-2">
               <i (click)="navToEditSection(game.id)" [title]="'profile.myGames.titletext.edit' | translate"
                 class="fa-solid fa-pen-to-square text-2xl text-blue-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
-              <i (click)="deleteGame(game.id, 'self')" [title]="'profile.myGames.titletext.delete' | translate"
+              <i (click)="deleteGame(game.id, game.title, 'self')"
+                [title]="'profile.myGames.titletext.delete' | translate"
                 class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
             </div>
           </div>
@@ -127,25 +128,26 @@
         [ngClass]="{ 'bg-accent/30': !isAdminUsersOpen, 'bg-accent': isAdminUsersOpen }"
         (click)="switchAdminPanel('users')">{{ "profile.adminPanel.users" | translate }}</h2>
     </div>
+
     <div class="flex justify-center">
       <input type="text" id="admin-searcher" class="py-2 px-4 w-[80%] rounded text-black"
         [placeholder]="'profile.adminPanel.placeholder' | translate" (input)="onSearchChangeAdmin($event)" />
     </div>
+
     @if (isAdminGamesOpen) {
     <div class="bg-white/60 flex flex-col h-screen overflow-y-scroll text-black font-bold rounded">
       @for (game of adminFilteredGames; track $index) {
-      <div class="flex justify-between border-b border-accent ">
-        <div class="w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent"
+      <div class="flex justify-between border-b border-accent">
+        <div
+          class="w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent h-12 flex justify-between items-center"
           (click)="navToGameSection(game.id)">
-          <div class="flex justify-between">
-            <p class=""> {{game.title}} </p>
-            <small class="text-primary/75"> {{game.email}} </small>
-          </div>
+          <p class=""> {{game.title}} </p>
+          <small class="text-primary/75"> {{game.email}} </small>
         </div>
 
-
         <div class="flex items-center justify-around px-3 gap-5">
-          <i (click)="deleteGame(game.id, 'admin', game.email)" [title]="'profile.adminPanel.titletext.delete' | translate"
+          <i (click)="deleteGame(game.id, game.title, 'admin', game.email)"
+            [title]="'profile.adminPanel.titletext.delete' | translate"
             class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
         </div>
 
@@ -155,17 +157,36 @@
     } @else if (isAdminUsersOpen) {
     <div class="bg-white/60 flex flex-col h-screen overflow-y-scroll text-black font-bold rounded">
       @for (user of adminFilteredUsers; track $index) {
-      <div class="flex justify-between border-b border-accent ">
+      <div class="flex justify-between border-b border-accent h-12">
         <div
-          class="flex justify-between items-center w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent">
+          class="flex justify-between items-center w-full py-2 px-4 cursor-pointer transition-all ease-in duration-100 hover:bg-accent"
+          [ngClass]="{'bg-yellow-300/80 hover:bg-yellow-500/90':isUserBanned(user) && !isUserPermaBanned(user), 'bg-red-400 hover:bg-red-600':isUserPermaBanned(user)}">
           <p class="">{{ user.username }}</p>
-          <small class="text-primary/75">{{ user.email }}</small>
+          <div class="flex flex-col items-end">
+            <small class="text-primary/75">{{ user.email }}</small>
+            <small *ngIf="isUserBanned(user)" class="text-primary/75"> {{ user.unban_date | date:'short' }}</small>
+          </div>
         </div>
-        <div class="flex items-center justify-around px-3 gap-5">
-          <i [title]="'profile.adminPanel.titletext.ban' | translate"
-            class="fa-solid fa-ban text-2xl text-yellow-600 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
-          <i [title]="'profile.adminPanel.titletext.delete' | translate"
-            class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"></i>
+
+        <div class="flex items-center justify-around px-3 gap-5 w-32">
+          <!-- Ban icons -->
+          <i *ngIf="!isUserBanned(user) && !isUserPermaBanned(user)" [title]="'profile.adminPanel.titletext.ban' | translate"
+            class="fa-solid fa-ban text-2xl text-yellow-600 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+            (click)="temporalyBanUser(user.id, user.username, user.email)"></i>
+          <i *ngIf="isUserBanned(user) && !isUserPermaBanned(user)"
+            [title]="'profile.adminPanel.titletext.unban' | translate"
+            class="fa-solid fa-rotate-left text-2xl text-yellow-600 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+            (click)="temporalyUnbanUser(user.id, user.username, user.email)"></i>
+          <i *ngIf="isUserPermaBanned(user)"
+            class="fa-solid fa-rotate-left text-2xl text-gray-500"></i>
+
+          <!-- Permaban icons -->
+          <i *ngIf="!isUserPermaBanned(user)" [title]="'profile.adminPanel.titletext.permaban' | translate"
+            class="fa-solid fa-trash text-2xl text-red-700 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+            (click)="permanentlyBanUser(user.id, user.username, user.email)"></i>
+          <i *ngIf="isUserPermaBanned(user)" [title]="'profile.adminPanel.titletext.unpermaban' | translate"
+            class="fa-solid fa-rotate-left text-2xl text-red-600 hover:scale-110 transition-all ease-in duration-100 cursor-pointer"
+            (click)="permanentlyUnbanUser(user.id, user.username, user.email)"></i>
         </div>
       </div>
       }

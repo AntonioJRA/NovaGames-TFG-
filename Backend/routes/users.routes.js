@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { validateChangePassword, validateChangeUserRole, validateDeleteUser, validateProfile, validateUpdateNovapoints } from '../validators/users.validators.js';
-import { temporalyBanUser, changePassword, changeUserRole, deleteUser, downgradeDeveloperToUser, getAllUsers, getUser, getVotesByUser, updateNovapoints, updateProfile, upgradeUserToDeveloper, permanentlyBanUser } from '../controllers/users.controllers.js';
+import { temporalyBanUser, changePassword, changeUserRole, deleteUser, downgradeDeveloperToUser, getAllUsers, getUser, getVotesByUser, updateNovapoints, updateProfile, upgradeUserToDeveloper, permanentlyBanUser, temporalyUnbanUser, permanentlyUnbanUser } from '../controllers/users.controllers.js';
 import { autorizarRol, autenticarToken } from '../controllers/auth.controllers.js';
 
 const router = Router();
@@ -26,11 +26,15 @@ router.put('/api/usuarios/perfil/cambiar-password', autenticarToken, validateCha
 // update rol (a cualquier rol)
 router.put('/api/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin']), validateChangeUserRole, changeUserRole);
 // ban user
-router.put('/api/usuarios/ban/:id', autenticarToken, autorizarRol(['admin']), temporalyBanUser);
+router.patch('/api/usuarios/ban/:id', autenticarToken, autorizarRol(['admin']), temporalyBanUser);
+// unban user
+router.patch('/api/usuarios/unban/:id', autenticarToken, autorizarRol(['admin']), temporalyUnbanUser);
 // permaban user
-router.put('/api/usuarios/permaban/:id', autenticarToken, autorizarRol(['admin']), permanentlyBanUser);
+router.patch('/api/usuarios/permaban/:id', autenticarToken, autorizarRol(['admin']), permanentlyBanUser);
+// unpermaban user
+router.patch('/api/usuarios/unpermaban/:id', autenticarToken, autorizarRol(['admin']), permanentlyUnbanUser);
 // // Permite a los admin banear usuarios
-router.delete('/api/usuarios/eliminar/:id', autenticarToken, autorizarRol(['admin']), deleteUser);
+// router.delete('/api/usuarios/eliminar/:id', autenticarToken, autorizarRol(['admin']), deleteUser);
 
 
 export { router as routesUsers };

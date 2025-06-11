@@ -30,6 +30,22 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
+  forgotPassword(userData: { email: string; }): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.http
+      .post<any>(
+        `${environment.apiUrl}${environment.routes.auth.forgotPassword}`,
+        userData,
+        {
+          headers,
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   register(
     userData: {
       username: string;

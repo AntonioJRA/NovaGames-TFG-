@@ -21,6 +21,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: `wrong credentials` });
     }
 
+    if (result[0].is_banned || result[0].unban_date !== null) {
+      return res.status(401).json({ message: `account banned` });
+    }
+
     //verificar la contraseña con bcrypt
     const validatePass = await bcrypt.compare(password, result[0].password); //al ser la respuesta un array de objetos, hay que indicar que está en la posición 0
 
@@ -76,6 +80,46 @@ export const login = async (req, res) => {
 
     //devolver al usuario el token
     res.status(200).json({ token: token });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los usuarios" });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const [result] = await pool.query(
+      "SELECT * FROM users WHERE email = ? LIMIT 1",
+      [email]
+    );
+
+    //comprobar si el email existe
+    if (result.length == 0) {
+      return res.status(401).json({ message: `email doesn't exists` });
+    }
+
+    // comprobar si está baneado
+    if (result[0].is_banned || result[0].unban_date !== null) {
+      return res.status(401).json({ message: `account banned` });
+    }
+
+    //Verificar que la cuenta esta activada
+    if (!result[0].is_verified) {
+      return res.status(403).json({ message: "account no verif" });
+    }
+
+    const generateCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+
+    let emailHTML = `
+      <p>Introduzca el siguiente código en NovaGames para renovar su contraseña</p>
+      <h3><b> ${generateCode} </b></h3>
+    `;
+
+    await sendMail(email, "NovaGames Recover Your Password", emailHTML);
+
+
+    //devolver al usuario el token
+    return res.status(200).json({ message: "email sended" });
   } catch (error) {
     res.status(500).json({ message: "Error al obtener los usuarios" });
   }

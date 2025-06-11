@@ -16,7 +16,7 @@ import { formatDate } from '@angular/common';
 import { GamesService } from '../../services/games.service';
 import { environment } from '../../../environments/environment';
 import { Game } from '../../models/game/game';
-import Swal from 'sweetalert2';
+import Swal, { SweetAlertIcon, SweetAlertOptions } from 'sweetalert2';
 import { UploadImageService } from '../../services/upload-image.service';
 
 @Component({
@@ -138,6 +138,21 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  isUserBanned(user: User) {
+    const userBanDate = user.unban_date
+    if (userBanDate === null) return false
+
+    const today = new Date()
+    const unbanDate = new Date(userBanDate)
+
+    const isPast = today < unbanDate ? true : false
+    return isPast
+  }
+
+  isUserPermaBanned(user: User) {
+    return user.is_banned
+  }
+
   // NAVIGATE
   navToEditSection(id: number) {
     this.router.navigate([`/upload-game/${id}`]);
@@ -203,24 +218,24 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  deleteGame(id: number, deletedBy: 'self' | 'admin', email?:string,) {
+  deleteGame(id: number, game: string, deletedBy: 'self' | 'admin', email?: string) {
     this.translate
       .get([
         'profile.myGames.alert.delete.title',
         'profile.myGames.alert.delete.text',
         'profile.myGames.alert.delete.confirm',
-        'profile.myGames.alert.delete.confirmButtonText',
-        'profile.myGames.alert.delete.cancelButtonText'
+        'profile.myGames.alert.confirmButtonText',
+        'profile.myGames.alert.cancelButtonText'
       ])
       .subscribe((translations) => {
         Swal.fire({
           icon: 'warning',
           title: translations['profile.myGames.alert.delete.title'],
-          text: translations['profile.myGames.alert.delete.text'],
+          html: `${translations['profile.myGames.alert.delete.text']} <p><b>${game}</b>?</p>`,
           showConfirmButton: true,
-          confirmButtonText: translations['profile.myGames.alert.delete.confirmButtonText'],
+          confirmButtonText: translations['profile.myGames.alert.confirmButtonText'],
           showCancelButton: true,
-          cancelButtonText: translations['profile.myGames.alert.delete.cancelButtonText'],
+          cancelButtonText: translations['profile.myGames.alert.cancelButtonText'],
         }).then((result) => {
           if (result.isConfirmed) {
             if (deletedBy === 'self') {
@@ -243,7 +258,6 @@ export class ProfileComponent implements OnInit {
                 },
               });
             } else if (deletedBy === 'admin' && email) {
-              console.log(email);
               this.gamesServ.deleteGameByAdmin(this.sessionToken, id, email).subscribe({
                 next: (data) => {
                   Swal.fire({
@@ -263,6 +277,182 @@ export class ProfileComponent implements OnInit {
                 },
               });
             }
+          }
+        });
+      });
+  }
+
+  temporalyBanUser(id: number, user: string, email: string) {
+    this.translate
+      .get([
+        'profile.adminPanel.alert.ban.title',
+        'profile.adminPanel.alert.ban.text',
+        'profile.adminPanel.alert.ban.confirm',
+        'profile.adminPanel.alert.confirmButtonText',
+        'profile.adminPanel.alert.cancelButtonText'
+      ])
+      .subscribe((translations) => {
+        Swal.fire({
+          icon: 'warning',
+          title: translations['profile.adminPanel.alert.ban.title'],
+          html: `${translations['profile.adminPanel.alert.ban.text']} <p><b>${user}</b>?</p>`,
+          showConfirmButton: true,
+          confirmButtonText: translations['profile.adminPanel.alert.confirmButtonText'],
+          showCancelButton: true,
+          cancelButtonText: translations['profile.adminPanel.alert.cancelButtonText'],
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.userServ.temporalyBanUser(this.sessionToken, id, email).subscribe({
+              next: (data) => {
+                Swal.fire({
+                  icon: 'success',
+                  title:
+                    translations['profile.adminPanel.alert.ban.confirm'],
+                  showConfirmButton: true,
+                  confirmButtonText: 'OK',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                });
+              },
+              error: (err) => {
+                console.log(err);
+              },
+            });
+
+          }
+        });
+      });
+  }
+
+  temporalyUnbanUser(id: number, user: string, email: string) {
+    this.translate
+      .get([
+        'profile.adminPanel.alert.unban.title',
+        'profile.adminPanel.alert.unban.text',
+        'profile.adminPanel.alert.unban.confirm',
+        'profile.adminPanel.alert.confirmButtonText',
+        'profile.adminPanel.alert.cancelButtonText'
+      ])
+      .subscribe((translations) => {
+        Swal.fire({
+          icon: 'warning',
+          title: translations['profile.adminPanel.alert.unban.title'],
+          html: `${translations['profile.adminPanel.alert.unban.text']} <p><b>${user}</b>?</p>`,
+          showConfirmButton: true,
+          confirmButtonText: translations['profile.adminPanel.alert.confirmButtonText'],
+          showCancelButton: true,
+          cancelButtonText: translations['profile.adminPanel.alert.cancelButtonText'],
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.userServ.temporalyUnbanUser(this.sessionToken, id, email).subscribe({
+              next: (data) => {
+                Swal.fire({
+                  icon: 'success',
+                  title:
+                    translations['profile.adminPanel.alert.unban.confirm'],
+                  showConfirmButton: true,
+                  confirmButtonText: 'OK',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                });
+              },
+              error: (err) => {
+                console.log(err);
+              },
+            });
+
+          }
+        });
+      });
+  }
+
+  permanentlyBanUser(id: number, user: string, email: string) {
+    this.translate
+      .get([
+        'profile.adminPanel.alert.permaban.title',
+        'profile.adminPanel.alert.permaban.text',
+        'profile.adminPanel.alert.permaban.confirm',
+        'profile.adminPanel.alert.confirmButtonText',
+        'profile.adminPanel.alert.cancelButtonText'
+      ])
+      .subscribe((translations) => {
+        Swal.fire({
+          icon: 'warning',
+          title: translations['profile.adminPanel.alert.permaban.title'],
+          html: `${translations['profile.adminPanel.alert.permaban.text']} <b>${user}</b>?`,
+          showConfirmButton: true,
+          confirmButtonText: translations['profile.adminPanel.alert.confirmButtonText'],
+          showCancelButton: true,
+          cancelButtonText: translations['profile.adminPanel.alert.cancelButtonText'],
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.userServ.permanentlyBanUser(this.sessionToken, id, email).subscribe({
+              next: (data) => {
+                Swal.fire({
+                  icon: 'success',
+                  title:
+                    translations['profile.adminPanel.alert.permaban.confirm'],
+                  showConfirmButton: true,
+                  confirmButtonText: 'OK',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                });
+              },
+              error: (err) => {
+                console.log(err);
+              },
+            });
+
+          }
+        });
+      });
+  }
+
+  permanentlyUnbanUser(id: number, user: string, email: string) {
+    this.translate
+      .get([
+        'profile.adminPanel.alert.unpermaban.title',
+        'profile.adminPanel.alert.unpermaban.text',
+        'profile.adminPanel.alert.unpermaban.confirm',
+        'profile.adminPanel.alert.confirmButtonText',
+        'profile.adminPanel.alert.cancelButtonText'
+      ])
+      .subscribe((translations) => {
+        Swal.fire({
+          icon: 'warning',
+          title: translations['profile.adminPanel.alert.unpermaban.title'],
+          html: `${translations['profile.adminPanel.alert.unpermaban.text']} <p><b>${user}</b>?</p>`,
+          showConfirmButton: true,
+          confirmButtonText: translations['profile.adminPanel.alert.confirmButtonText'],
+          showCancelButton: true,
+          cancelButtonText: translations['profile.adminPanel.alert.cancelButtonText'],
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.userServ.permanentlyUnbanUser(this.sessionToken, id, email).subscribe({
+              next: (data) => {
+                Swal.fire({
+                  icon: 'success',
+                  title:
+                    translations['profile.adminPanel.alert.unpermaban.confirm'],
+                  showConfirmButton: true,
+                  confirmButtonText: 'OK',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                });
+              },
+              error: (err) => {
+                console.log(err);
+              },
+            });
+
           }
         });
       });
@@ -310,4 +500,22 @@ export class ProfileComponent implements OnInit {
       });
     }
   }
+
+  // SweetAlert
+  // displayAlert(alertIcon: SweetAlertIcon, translationKeys: string[]) {
+  //   this.translate
+  //     .get(translationKeys)
+  //     .subscribe((translations) => {
+  //       Swal.fire({
+  //         icon: alertIcon,
+  //         title: translations[0],
+  //         text: translations[1],
+  //         showConfirmButton: true,
+  //         confirmButtonText: translations[2],
+  //         showCancelButton: true,
+  //         cancelButtonText: translations[3],
+  //       })
+  //     })
+  // }
+
 }

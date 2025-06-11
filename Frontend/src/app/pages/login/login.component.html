@@ -3,54 +3,30 @@
   <app-change-language></app-change-language>
 </div>
 <div
-  class="flex flex-col items-center space-y-6 justify-center px-24 pt-8 text-black lg:flex-row lg:space-y-0 lg:space-x-16 mb-10"
->
+  class="flex flex-col items-center space-y-6 justify-center px-24 pt-8 text-black lg:flex-row lg:space-y-0 lg:space-x-16 mb-10">
   <!-- LOG IN -->
-  <div
-    class="flex flex-col items-center justify-center bg-white p-6 rounded max-w-[332px]"
-  >
+  <div class="flex flex-col items-center justify-center bg-white p-6 rounded max-w-[332px]">
     <h1 class="flex text-4xl mb-8 max-w-60">
       {{ "auth.login.title" | translate }}
     </h1>
-    <form
-      action=""
-      [formGroup]="logInForm"
-      (submit)="loginOnSubmit()"
-      class="text-lg relative"
-    >
+    <form action="" [formGroup]="logInForm" (submit)="loginOnSubmit()" class="text-lg relative">
       <div class="space-y-2">
         <div class="flex justify-between">
-          <input
-            type="text"
-            name="email"
-            id="login-email"
-            formControlName="loginEmail"
-            class="border border-gray-300 py-2 pl-4 pr-6"
-            placeholder="{{ 'auth.login.email' | translate }}"
-          />
+          <input type="text" name="email" id="login-email" formControlName="loginEmail"
+            class="border border-gray-300 py-2 pl-4 pr-6" placeholder="{{ 'auth.login.email' | translate }}" />
         </div>
         <div class="flex flex-col">
-          <input
-            type="text"
-            name="password"
-            id="login-password"
-            formControlName="loginPassword"
-            class="border border-gray-300 py-2 pl-4 pr-6"
-            placeholder="{{ 'auth.login.password' | translate }}"
-          />
-          <p
-            class="text-sm cursor-pointer hover:underline self-end text-blue-700 mt-1"
-          >
+          <input type="text" name="password" id="login-password" formControlName="loginPassword"
+            class="border border-gray-300 py-2 pl-4 pr-6" placeholder="{{ 'auth.login.password' | translate }}" />
+          <p class="text-sm cursor-pointer hover:underline self-end text-blue-700 mt-1">
             {{ "auth.login.forgot" | translate }}
           </p>
           @if (loginError) {
-          <small class="text-red-500 italic self-start"
-            >* {{ "auth.login.error" | translate }}</small
-          >
-          }  @else if (loginVerifError) {
-            <small class="text-red-500 italic self-start"
-            >* {{ "auth.login.notVerified" | translate }}</small
-          >
+          <small class="text-red-500 italic self-start">* {{ "auth.login.error" | translate }}</small>
+          } @else if (loginVerifError) {
+          <small class="text-red-500 italic self-start">* {{ "auth.login.notVerified" | translate }}</small>
+          } @else if (bannedAccountError) {
+          <small class="text-red-500 italic self-start">* {{ "auth.login.bannedAccount" | translate }}</small>
           }
         </div>
       </div>
@@ -73,15 +49,49 @@
       </div> -->
 
       <div class="">
-        <app-button
-          content="{{ 'auth.login.button' | translate }} "
+        <app-button content="{{ 'auth.login.button' | translate }} "
           extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
           [disabledClasses]="
             'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'
-          "
-          type="submit"
-          [disabled]="!logInForm.valid"
-        ></app-button>
+          " type="submit" [disabled]="!logInForm.valid"></app-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="flex flex-col items-center justify-center bg-white p-6 rounded w-[30rem]">
+    <h1 class="flex text-4xl mb-8 max-w-60 text-center">
+      {{ "auth.login.forgotPassword.title" | translate }}
+    </h1>
+    <form action="" [formGroup]="forgotPasswordForm" (submit)="forgotPasswordOnSubmit()" class="">
+      <div class="flex justify-between">
+        <input type="text" name="email" formControlName="email"
+          class="border border-gray-300 py-2 pl-4 pr-6" placeholder="{{ 'auth.login.email' | translate }}" />
+      </div>
+      <div class="">
+        <app-button content="{{ 'auth.login.forgotPassword.button' | translate }} "
+          extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
+          [disabledClasses]="
+            'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'
+          " type="submit" [disabled]="!forgotPasswordForm.valid"></app-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="flex flex-col items-center justify-center bg-white p-6 rounded w-[30rem]">
+    <h5 class="flex text-xl mb-8 max-w-60 text-center">
+      {{ "auth.login.forgotPassword.recoverPassword.title" | translate }}
+    </h5>
+    <form action="" [formGroup]="recoverPasswordForm" (submit)="recoverPasswordFormOnSubmit()" class="">
+      <div class="flex justify-between">
+        <input type="text" maxlength="6" pattern="[0-9]*" inputmode="numeric" name="email" formControlName="code"
+          class="border border-gray-300 py-2 pl-4 pr-6 text-2xl text-center" placeholder="{{ 'auth.login.forgotPassword.recoverPassword.placeholder' | translate }}" />
+      </div>
+      <div class="">
+        <app-button content="{{ 'auth.login.forgotPassword.recoverPassword.button' | translate }} "
+          extraClasses="bg-blue-500 w-full transition ease-in duration-50 hover:bg-blue-700 text-white mt-5 "
+          [disabledClasses]="
+            'bg-blue-200 text-white w-full mt-5 cursor-not-allowed'
+          " type="submit" [disabled]="!recoverPasswordForm.valid"></app-button>
       </div>
     </form>
   </div>

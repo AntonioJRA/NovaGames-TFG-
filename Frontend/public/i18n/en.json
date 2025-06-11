@@ -34,6 +34,7 @@
       "button": "Enter",
       "error": "Wrong credentials",
       "notVerified": "Account not verified",
+      "bannedAccount": "This account is currently banned",
       "verificationComplete1": "Verification completed successfully",
       "verificationComplete2": "Get ready to enjoy everything NovaGames has to offer!",
       "goToHome": "Return to Novagames"
@@ -69,17 +70,17 @@
     }
   },
   "profile": {
-    "myProfile": "Profile",
+    "myProfile": "My Profile",
     "myGames": {
       "name": "My Games",
       "placeholder": "Search games...",
       "alert": {
+        "confirmButtonText": "I'm sure",
+        "cancelButtonText": "Maybe not",
         "delete": {
-          "confirmButtonText": "I'm sure",
-          "cancelButtonText": "Better not",
-          "title": "This action is permanent!",
-          "text": "Are you sure you want to delete the game?",
-          "confirm": "Game deleted successfully"
+          "title": "This action will be permanent!",
+          "text": "Are you sure you want to delete the game ",
+          "confirm": "Game successfully deleted"
         }
       },
       "titletext": {
@@ -95,8 +96,34 @@
       "users": "Users",
       "placeholder": "Search...",
       "titletext": {
-        "ban": "Ban",
-        "delete": "Delete"
+        "ban": "Block Account",
+        "permaban": "Delete Account",
+        "unban": "Unblock Account",
+        "unpermaban": "Reactivate Account"
+      },
+      "alert": {
+        "confirmButtonText": "I'm sure",
+        "cancelButtonText": "Maybe not",
+        "ban": {
+          "title": "You're about to temporarily block a user!",
+          "text": "Are you sure you want to block the user ",
+          "confirm": "User successfully blocked"
+        },
+        "unban": {
+          "title": "You're about to unblock a user!",
+          "text": "Are you sure you want to unblock the user ",
+          "confirm": "User successfully unblocked"
+        },
+        "permaban": {
+          "title": "You're about to <p>PERMANENTLY</p> restrict a user's account!",
+          "text": "Are you sure you want to restrict the user ",
+          "confirm": "User permanently blocked"
+        },
+        "unpermaban": {
+          "title": "You're about to reactivate a user account!",
+          "text": "Are you sure you want to reactivate the account of ",
+          "confirm": "User account successfully reactivated"
+        }
       }
     }
   },
