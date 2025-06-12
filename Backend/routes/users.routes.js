@@ -22,7 +22,7 @@ router.put('/api/usuarios/actualizar-novapoints', autenticarToken, validateUpdat
 // Permite al usuario modificar su perfil
 router.patch('/api/usuarios/perfil/editar-perfil', autenticarToken, validateProfile, updateProfile);
 // Permite al usuario cambiar su contraseña
-router.put('/api/usuarios/perfil/cambiar-password', autenticarToken, validateChangePassword, changePassword);
+router.patch('/api/usuarios/perfil/cambiar-password', validateChangePassword, changePassword);
 // update rol (a cualquier rol)
 router.put('/api/usuarios/perfil/cambiar-rol', autenticarToken, autorizarRol(['admin']), validateChangeUserRole, changeUserRole);
 // ban user

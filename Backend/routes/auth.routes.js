@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, refreshToken,activarCuenta, autenticarToken, developerVerification, forgotPassword } from "../controllers/auth.controllers.js";
+import { login, register, refreshToken,activarCuenta, autenticarToken, developerVerification, forgotPassword, newPassword } from "../controllers/auth.controllers.js";
 import { validarLogin, validarRegister } from "../validators/auth.validator.js";
 
 const router=new Router();  //para manejar las rutas
@@ -8,6 +8,7 @@ const router=new Router();  //para manejar las rutas
 router.post('/api/login', validarLogin, login);
 router.post('/api/register', validarRegister, register);
 router.post('/api/forgotPassword', forgotPassword);
+router.post('/api/newPassword', newPassword);
 router.post('/api/verificar-user', autenticarToken, developerVerification);
 router.get('/api/refresh-token', autenticarToken, refreshToken);
 router.get('/api/activar/:token', activarCuenta);

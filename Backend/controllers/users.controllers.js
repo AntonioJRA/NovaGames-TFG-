@@ -327,16 +327,16 @@ export const updateProfile = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
+  const { email, password, repeatPassword } = req.body;
+  // const id = req.user.id;
   try {
-    const { password, repeatPassword } = req.body;
-    const id = req.user.id;
 
     if (password && repeatPassword) {
       if (password === repeatPassword) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await pool.query(
-          `UPDATE users SET password = ? WHERE id = ?`,
-          [hashedPassword, id]
+          `UPDATE users SET password = ? WHERE email = ?`,
+          [hashedPassword, email]
         );
 
         if (result.affectedRows == 0) {

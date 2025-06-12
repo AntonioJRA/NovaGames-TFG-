@@ -30,7 +30,7 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-  forgotPassword(userData: { email: string; }): Observable<any> {
+  forgotPassword(userData: { email: string }): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -42,6 +42,18 @@ export class AuthService {
         {
           headers,
         }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  changePassword(
+    data: { email: string, password: string; repeatPassword: string }
+  ): Observable<void> {
+
+    return this.http
+      .patch<void>(
+        `${environment.apiUrl}${environment.routes.auth.changePassword}`,
+        data,
       )
       .pipe(catchError(this.handleError));
   }
@@ -80,17 +92,6 @@ export class AuthService {
       )
       .pipe(catchError(this.handleError));
   }
-
-  /*
-  obtenerDatos(token: string) {
-    const headers = new HttpHeaders({
-      'Authorization': Bearer ${token},
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.get(${this.apiUrl}/datos, { headers });
- }
-  */
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage: string = '';

@@ -37,7 +37,24 @@
       "bannedAccount": "This account is currently banned",
       "verificationComplete1": "Verification completed successfully",
       "verificationComplete2": "Get ready to enjoy everything NovaGames has to offer!",
-      "goToHome": "Return to Novagames"
+      "goToHome": "Return to Novagames",
+      "forgotPassword": {
+        "title": "Enter your email",
+        "placeholder": "Email address",
+        "button": "Recover password",
+        "recoverCode": {
+          "title": "Do not close this window. We have sent a code to your email. Enter it here",
+          "placeholder": "Code",
+          "button": "Confirm",
+          "newPassword": {
+            "title": "Update your password",
+            "placeholder1": "New password",
+            "placeholder2": "Repeat password",
+            "button": "Update password",
+            "alert": "Password successfully updated"
+          }
+        }
+      }
     },
     "signUp": {
       "title": "Sign Up",

@@ -14,7 +14,8 @@ CREATE TABLE users (
     verification_token VARCHAR(255),
     novapoints INT DEFAULT 0,
     is_banned BOOLEAN DEFAULT FALSE,
-	unban_date DATETIME DEFAULT NULL
+	unban_date DATETIME DEFAULT NULL,
+    recover_code INT DEFAULT NULL
 );
 
 CREATE TABLE games (

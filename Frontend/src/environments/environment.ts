@@ -15,6 +15,7 @@ export const environment = {
       login: '/api/login',
       register: '/api/register',
       forgotPassword: '/api/forgotPassword',
+      changePassword: '/api/usuarios/perfil/cambiar-password',
     },
     profile: {
       getAllUserGames: '/api/juegos/usuario',

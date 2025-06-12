@@ -42,12 +42,21 @@
         "title": "Introduzca su correo",
         "placeholder": "Correo electrónico",
         "button": "Recuperar contraseña",
-        "recoverPassword": {
-          "title": "Hemos enviado código a su correo. Insertelo aquí",
+        "recoverCode": {
+          "title": "No cierre esta ventana. Hemos enviado un código a su correo. Insertelo aquí",
           "placeholder": "Código",
-          "button": "Confirmar"
+          "button": "Confirmar",
+          "error": "Código no válido",
+          "newPassword": {
+            "title": "Actualice su contraseña",
+            "placeholder1": "Nueva contraseña",
+            "placeholder2": "Repetir contraseña",
+            "button": "Actualizar contraseña",
+            "patternError": "Debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial",
+            "repeatPasswordError": "Las contraseñas no son iguales",
+            "alert": "Contraseña actualizada con éxito"
+          }
         }
-
       }
     },
     "signUp": {
