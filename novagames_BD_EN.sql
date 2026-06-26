@@ -1,6 +1,7 @@
-DROP DATABASE IF EXISTS novagames;
-CREATE DATABASE novagames;
-USE novagames;
+-- DROP DATABASE IF EXISTS novagames;
+-- CREATE DATABASE novagames;
+-- USE novagames;
+USE novagamesajra_bd;
 
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
