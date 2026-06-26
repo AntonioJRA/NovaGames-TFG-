@@ -33,6 +33,25 @@ It allows users to explore video games, view detailed information, and manage ga
 
 This project was developed as part of the Higher Vocational Training program in Web Application Development (DAW), with the aim of applying full-stack development knowledge and web application architecture concepts.
 
+## Access data to test the application
+
+Basic user:
+   - email: ana@gmail.com
+   - password: Ana123456789?
+
+Administrator:
+   - email: clara@gmail.com
+   - password: Clara123456789?
+
+## Help and application usage
+
+In the footer of the application there is a Help section, where you can find:
+   - An explanatory video about how the platform works
+   - A basic user guide for the application
+
+
+
+
 ## ESPAÑOL 🇪🇸
 NovaGames es una plataforma web de gestión y descubrimiento de videojuegos desarrollada como Trabajo de Fin de Grado (TFG).
 Permite a los usuarios explorar videojuegos, consultar información detallada y gestionar contenido relacionado con juegos mediante una interfaz moderna e intuitiva.
@@ -65,3 +84,19 @@ Permite a los usuarios explorar videojuegos, consultar información detallada y 
 ## Objetivo
 
 Proyecto desarrollado como parte del ciclo formativo de Desarrollo de Aplicaciones Web (DAW), con el objetivo de aplicar conocimientos en desarrollo full-stack y arquitectura de aplicaciones web.
+
+## Datos de acceso para probar la aplicación
+
+Usuario básico: 
+   - email: ana@gmail.com
+   - contraseña: Ana123456789?
+
+Administrador:
+   - email: clara@gmail.com
+   - contraseña: Clara123456789?
+
+## Ayuda y uso de la aplicación
+
+En el pie de página de la aplicación se incluye una sección de Ayuda, donde se puede encontrar:
+ - Vídeo explicativo del funcionamiento de la plataforma
+ - Guía básica de uso de la aplicación

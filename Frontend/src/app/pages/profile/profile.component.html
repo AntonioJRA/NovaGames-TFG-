@@ -65,7 +65,6 @@
           </label>
           <input type="file" name="profile-image" id="profile-image" class="hidden" (change)="uploadFile($event)">
         </div>
-
       </figure>
 
       <div class="relative flex justify-between bg-accent -ml-10 space-x-5 w-8/12 rounded-r-xl h-24 pr-10">
@@ -83,6 +82,11 @@
     <div class="flex justify-center">
       <input type="text" class="py-2 px-4 w-[80%] rounded text-black"
         [placeholder]="'profile.myGames.placeholder' | translate" (input)="onSearchChange($event)" />
+    </div>
+    <div class="relative flex justify-center items-center -ml-10 space-x-5 rounded-r-xl h-24 pr-10">
+      <p class="opacity-50 ml-3 font-bold text-nowrap overflow-hidden text-[clamp(1.5rem,3vw,2rem)] z-10">
+            {{ "profile.myGames.noGamesFound" | translate }}
+      </p>
     </div>
 
     <div routerLinkActive="bg-accent" class="py-2 px-4 rounded-xl">

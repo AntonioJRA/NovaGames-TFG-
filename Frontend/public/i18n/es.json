@@ -94,6 +94,7 @@
     "myGames": {
       "name": "Mis juegos",
       "placeholder": "Buscar juegos...",
+      "noGamesFound": "Aún no has subido ningún juego",
       "alert": {
         "confirmButtonText": "Estoy seguro",
         "cancelButtonText": "Mejor no",

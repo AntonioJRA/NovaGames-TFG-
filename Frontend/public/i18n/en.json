@@ -91,6 +91,7 @@
     "myGames": {
       "name": "My Games",
       "placeholder": "Search games...",
+      "noGamesFound": "You haven't uploaded any games yet.",
       "alert": {
         "confirmButtonText": "I'm sure",
         "cancelButtonText": "Maybe not",

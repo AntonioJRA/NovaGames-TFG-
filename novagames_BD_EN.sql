@@ -256,8 +256,8 @@ DELIMITER ;
 -- USERS
 INSERT INTO users (username, email, password, role, registration_date, is_verified, verification_token) VALUES
 ('Ana Torres', 'ana@gmail.com', '$2a$10$4NOL8uzp5Yy9QYsXuYmaCujfU2ec.vDNBffhV1Ymplh.kfqQw3h0y', 'user', '2025-05-04 00:00:00', true, null), -- Ana123456789?
-('Pedro García', 'pedro@gmail.com', '$2a$10$mvF.RLPcu0YxmPkH5gpFq.j.julpY1di4tBPDOw2xNs4qeL5L6/Vu', 'user', '2022-05-01 00:00:00', false, null), -- Ana123456789?
-('Luis Pérez', 'wailorrox@gmail.com', '$2a$10$Nzfkb8c3ReQM5uk7uXsQ4u5NstRK7xHGZtKgtivVa6BMm8FDK2foa', 'developer', '2022-04-23 00:00:00', true, null), -- Luis123456789?
+('Pedro García', 'pedro@gmail.com', '$2a$10$mvF.RLPcu0YxmPkH5gpFq.j.julpY1di4tBPDOw2xNs4qeL5L6/Vu', 'user', '2022-05-01 00:00:00', false, null), -- Pedro123456789?
+('Luis Pérez', 'luis@gmail.com', '$2a$10$Nzfkb8c3ReQM5uk7uXsQ4u5NstRK7xHGZtKgtivVa6BMm8FDK2foa', 'developer', '2022-04-23 00:00:00', true, null), -- Luis123456789?
 ('Mario Ruiz', 'mario@gmail.com', '$2a$10$ASuFC/nWF9uwqWdgD2puteOY2bjRJG4MDnEgn00FnHI90mCRD2sqi', 'developer', '2022-09-04 00:00:00', true, null), -- Mario123456789?
 ('Lucía Fernández', 'lucia@gmail.com', '$2a$10$PD6bvc3bf8rXyYfAbqwRgeGTyxTBRxwnFnB6LyvM0LzPKPI0YzzKe', 'developer', '2022-01-12 00:00:00', true, null), -- Lucía123456789?
 ('Carlos Sánchez', 'carlos@gmail.com', '$2a$10$wFSm2qj208oq8YLMWgLbEuhqtTp9yxjZj4RBW9JrkCaKDrERIDUra', 'developer', '2022-12-12 00:00:00', true, null), -- Carlos123456789?
@@ -385,6 +385,9 @@ INSERT INTO games (developer_id, title, upload_date, download_url, downloads, co
 (5, 'Neon Blaze', '2024-01-22 18:07:40', 'url98', 671238, 'gamecover.png', FALSE, 223, 92, 'Neon Blaze is an action-packed platformer set in a futuristic city bathed in neon lights. Dash through levels filled with enemies, traps, and hidden secrets, using quick reflexes and powerful abilities. The vibrant visuals and energetic soundtrack amplify the adrenaline rush.'),
 (4, 'Crystal Horizon', '2023-12-28 09:20:30', 'url99', 525789, 'gamecover.png', TRUE, 290, 115, 'Crystal Horizon is a fantasy exploration game where players traverse diverse landscapes to collect magical crystals that hold ancient powers. Solve puzzles, battle creatures, and uncover the history behind the crystals in an expansive world. The game offers immersive storytelling and captivating gameplay.');
 
+UPDATE games
+SET cover = CONCAT( 'game', id, '.jpg' ),
+	download_url = 'https://github.com/AntonioJRA/NovaGames';
 
 -- CONTENT_BLOCKS
 INSERT INTO content_blocks (game_id, image_name, content) VALUES
